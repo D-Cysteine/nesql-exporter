@@ -1,0 +1,11 @@
+[
+{
+    "modid": "nesql-exporter",
+    "name": "Not Enough SQL Exporter",
+    "description": "Exports recipes and other data into an H2 SQL database",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/D-Cysteine/neisql-exporter",
+    "authorList": ["D-Cysteine"]
+}
+]
