@@ -11,11 +11,17 @@ import java.util.function.Supplier;
 public final class ConfigOptions {
     private static final List<Option<?>> allOptions = new ArrayList<>();
 
+    public static final Option<String> REPOSITORY_NAME =
+            new StringOption(
+                    Category.OPTIONS, "repository_name", "nesql-repository",
+                    "The default name of the exported repository.")
+                    .register();
+
     public static final Option<Boolean> AUTO_EXPORT_ON_CONNECT =
             new BooleanOption(
                     Category.OPTIONS, "auto_export_on_connect", false,
                     "Whether to automatically export upon connecting to a world."
-                            + "\nThe default filename will be used.")
+                            + "\nThe default repository name will be used.")
                     .register();
 
     public static final Option<Boolean> ENABLE_CONFIG_FILE =
@@ -24,13 +30,6 @@ public final class ConfigOptions {
                     "Whether to generate a config file."
                             + "\nConfig changes will be forgotten if this option is not enabled!"
                             + "\nDISABLING THIS OPTION WILL DELETE YOUR CONFIG FILE!")
-                    .register();
-
-    public static final Option<Boolean> EXPORT_ICONS_TO_FILES =
-            new BooleanOption(
-                    Category.OPTIONS, "export_icons_to_files", false,
-                    "Whether to save rendered icons into individual files when exporting."
-                            + "\nHas no effect if render_icons is false.")
                     .register();
 
     public static final Option<Integer> ICON_DIMENSION =
@@ -156,6 +155,29 @@ public final class ConfigOptions {
         @Override
         public Integer get() {
             return property.getInt();
+        }
+    }
+
+    public static final class StringOption extends Option<String> {
+        private StringOption(
+                Category category, String key, String defaultValue, String comment) {
+            super(category, key, defaultValue, comment);
+        }
+
+        private StringOption(
+                Category category, String key, String defaultValue, String comment,
+                boolean requiresRestart) {
+            super(category, key, defaultValue, comment, requiresRestart);
+        }
+
+        @Override
+        Property getProperty() {
+            return Config.CONFIG.get(category.toString(), key, defaultValue, comment);
+        }
+
+        @Override
+        public String get() {
+            return property.getString();
         }
     }
 

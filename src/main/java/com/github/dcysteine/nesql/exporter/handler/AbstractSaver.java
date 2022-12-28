@@ -4,6 +4,7 @@ import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
 
+// TODO delete this directory
 public abstract class AbstractSaver {
     private final Session session;
 

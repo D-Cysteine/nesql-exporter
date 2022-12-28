@@ -2,8 +2,10 @@ package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.handler.minecraft.ItemSaver;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.exporter.processor.base.RecipeProcessor;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
+import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraft.client.Minecraft;
@@ -14,32 +16,38 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
-import javax.persistence.EntityManagerFactory;
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /** Exports recipes and other data to a file. */
 public final class Exporter {
     private static final String FILE_EXTENSION = ".mv.db";
-    private static final String FILE_PATH_FORMAT_STRING =
-            "nesql" + File.separator + "NESQL-%s" + FILE_EXTENSION;
+    private static final String REPOSITORY_PATH_FORMAT_STRING = "nesql" + File.separator + "%s";
+    private static final String DATABASE_FILE_PATH = "nesql-db" + FILE_EXTENSION;
+    private static final String ITEM_IMAGE_PATH = "image" + File.separator + "item";
+    private static final String FLUID_IMAGE_PATH = "image" + File.separator + "fluid";
 
-    private final File outputFile;
+    private final String repositoryName;
+    private final File repositoryDirectory;
+    private final File databaseFile;
+    private final File itemImageDirectory;
+    private final File fluidImageDirectory;
 
     public Exporter() {
-        this(defaultFilenameSuffix());
+        this(ConfigOptions.REPOSITORY_NAME.get());
     }
 
-    public Exporter(String filenameSuffix) {
-        this.outputFile =
+    public Exporter(String repositoryName) {
+        this.repositoryName = repositoryName;
+        this.repositoryDirectory =
                 new File(
                         (File) FMLInjectionData.data()[6],
-                        String.format(FILE_PATH_FORMAT_STRING, filenameSuffix));
-    }
+                        String.format(REPOSITORY_PATH_FORMAT_STRING, repositoryName));
+        this.databaseFile = new File(repositoryDirectory, DATABASE_FILE_PATH);
+        this.itemImageDirectory = new File(repositoryDirectory, ITEM_IMAGE_PATH);
+        this.fluidImageDirectory = new File(repositoryDirectory, FLUID_IMAGE_PATH);
 
-    private static String defaultFilenameSuffix() {
-        return LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     /**
@@ -68,53 +76,59 @@ public final class Exporter {
 
     private void export() {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data to:");
-        Logger.chatMessage(outputFile.getAbsolutePath());
-        File outputDir = outputFile.getParentFile();
-        if (!outputDir.exists() && !outputDir.mkdir()) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED + "Could not create export directory! Aborting!");
-            return;
+        Logger.chatMessage(repositoryDirectory.getAbsolutePath());
+        if (repositoryDirectory.exists()) {
+            throw new RuntimeException(
+                    String.format(
+                            "Cannot create repository \"%s\"; it already exists!", repositoryName));
         }
-        if (outputFile.exists()) {
-            Logger.chatMessage(EnumChatFormatting.RED + "Export file already exists! Aborting!");
-            return;
+        if (!repositoryDirectory.mkdirs()) {
+            throw new RuntimeException(
+                    String.format("Failed to create repository \"%s\"!", repositoryName));
         }
 
         // TODO add logging everywhere. Also log progress of render jobs?
         ImmutableMap<String, String> properties =
                 ImmutableMap.of(
                         "hibernate.connection.url",
-                        "jdbc:h2:file:" + outputFile.getAbsolutePath().replace(FILE_EXTENSION, ""));
+                        "jdbc:h2:file:"
+                                + databaseFile.getAbsolutePath().replace(FILE_EXTENSION, ""));
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("H2", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         ItemSaver itemSaver = new ItemSaver(entityManagerFactory.createEntityManager());
 
         if (ConfigOptions.RENDER_ICONS.get()) {
-            // TODO put rendering stuff here
+            Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
+            Renderer.INSTANCE.preinitialize(itemImageDirectory, fluidImageDirectory);
+            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
         }
-        RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
-        // TODO queue up render jobs here and then wait...
-        RenderDispatcher.INSTANCE.addJob(
-                RenderJob.ofItem(new ItemStack(Items.apple, 1)));
-        RenderDispatcher.INSTANCE.addJob(
-                RenderJob.ofItem(new ItemStack(Blocks.cobblestone, 1)));
-        RenderDispatcher.INSTANCE.addJob(
-                RenderJob.ofFluid(FluidRegistry.getFluid("water")));
-        RenderDispatcher.INSTANCE.addJob(
-                RenderJob.ofFluid(FluidRegistry.getFluid("lava")));
-        while (!RenderDispatcher.INSTANCE.noJobsRemaining()) {
+
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Saving data to database...");
+        // TODO call processors here (and check deps? maybe do that on mod init...)
+        new RecipeProcessor(entityManager).process();
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Saving complete!");
+
+        if (ConfigOptions.RENDER_ICONS.get()) {
             try {
-                // TODO warn that if logging ends here, then rendering probably failed
+                Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");
+                Logger.chatMessage(
+                        EnumChatFormatting.AQUA
+                                + "If you never see a \"Rendering complete!\" message after this,");
+                Logger.chatMessage(
+                        EnumChatFormatting.AQUA
+                                + "then something probably went wrong during rendering.");
                 RenderDispatcher.INSTANCE.waitUntilJobsComplete();
             } catch (InterruptedException wakeUp) {}
+            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.DESTROYING);
+            Logger.chatMessage(EnumChatFormatting.AQUA + "Rendering complete!");
         }
-        RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.DESTROYING);
 
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Writing database...");
         itemSaver.save();
         entityManagerFactory.close();
-
         Logger.chatMessage(EnumChatFormatting.AQUA + "Export complete!");
     }
 }

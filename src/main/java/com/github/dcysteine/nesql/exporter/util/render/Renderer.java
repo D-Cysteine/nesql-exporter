@@ -4,10 +4,10 @@ import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.sql.util.IdUtil;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
@@ -38,60 +38,61 @@ public enum Renderer {
             "nesql" + File.separator + "fluid";
 
     private int imageDim;
-    private boolean saveToFiles;
     private Framebuffer framebuffer;
     private File itemDirectory;
     private File fluidDirectory;
 
-    private void initialize() {
-        imageDim = ConfigOptions.ICON_DIMENSION.get();
-        saveToFiles = ConfigOptions.EXPORT_ICONS_TO_FILES.get();
-        framebuffer = new Framebuffer(imageDim, imageDim, true);
+    /**
+     * This method is meant to be called from the export thread, prior to setting the dispatcher
+     * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
+     */
+    public void preinitialize(File itemDirectory, File fluidDirectory) {
+        this.imageDim = ConfigOptions.ICON_DIMENSION.get();
+        this.itemDirectory = itemDirectory;
+        this.fluidDirectory = fluidDirectory;
 
-        if (saveToFiles) {
-            File rootDirectory = (File) FMLInjectionData.data()[6];
-            itemDirectory = new File(rootDirectory, ITEM_DIRECTORY_PATH);
-            fluidDirectory = new File(rootDirectory, FLUID_DIRECTORY_PATH);
-
-            if ((!itemDirectory.exists() && !itemDirectory.mkdir())
-                    || (!fluidDirectory.exists() && !fluidDirectory.mkdir())) {
-                Logger.chatMessage(
-                        EnumChatFormatting.RED + "Could not create icon files directory!");
-                Logger.chatMessage(EnumChatFormatting.RED + "Skipping export to file!");
-                saveToFiles = false;
-                itemDirectory = null;
-                fluidDirectory = null;
-            }
-        } else {
-            itemDirectory = null;
-            fluidDirectory = null;
+        if ((itemDirectory.exists() || !itemDirectory.mkdirs())
+                || (fluidDirectory.exists() || !fluidDirectory.mkdirs())) {
+            Logger.chatMessage(
+                    EnumChatFormatting.RED + "Could not create images directories!");
+            Logger.chatMessage(EnumChatFormatting.RED + "Skipping rendering!");
+            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
         }
-
     }
 
+    /**
+     * Perform initialization of render-related variables, which must be done on the render thread.
+     */
+    private void initialize() {
+        this.framebuffer = new Framebuffer(imageDim, imageDim, true);
+
+        RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZED);
+    }
+
+    /**
+     * Perform destruction of render-related variables, which must be done on the render thread.
+     */
     private void destroy() {
         framebuffer.deleteFramebuffer();
         framebuffer = null;
+
+        RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.UNINITIALIZED);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SuppressWarnings("unused")
-    public void onRender(TickEvent.RenderTickEvent e) {
-        RenderDispatcher.RendererState state = RenderDispatcher.INSTANCE.getRendererState();
+    public void onRender(TickEvent.RenderTickEvent event) {
         switch (RenderDispatcher.INSTANCE.getRendererState()) {
             case UNINITIALIZED:
+            case ERROR:
                 return;
 
             case INITIALIZING:
                 initialize();
-                RenderDispatcher.INSTANCE.setRendererState(
-                        RenderDispatcher.RendererState.INITIALIZED);
                 return;
 
             case DESTROYING:
                 destroy();
-                RenderDispatcher.INSTANCE.setRendererState(
-                        RenderDispatcher.RendererState.UNINITIALIZED);
                 return;
         }
 
@@ -110,7 +111,34 @@ public enum Renderer {
             RenderJob job = jobOptional.get();
             clearBuffer();
             render(job);
-            RenderDispatcher.INSTANCE.addResult(RenderResult.create(job, readImage(job)));
+            BufferedImage image = readImage(job);
+
+            File outputFile;
+            // TODO the names here need to be set to the unique SQL row key.
+            switch (job.type()) {
+                case ITEM:
+                    outputFile = new File(itemDirectory, IdUtil.itemId(job.item().stack()) + ".png");
+                    break;
+
+                case FLUID:
+                    outputFile = new File(fluidDirectory, IdUtil.fluidId(job.fluid()) + ".png");
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unrecognized job type: " + job);
+            }
+            if (outputFile.exists()) {
+                // If we cannot avoid queueing up duplicate render jobs, we can replace this throw
+                // with a continue, and move this check to before we call readImage(job)
+                throw new RuntimeException(
+                        "Render output file already exists: " + outputFile.getPath());
+            }
+
+            try {
+                ImageIO.write(image, "PNG", outputFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         teardownRenderState();
     }
@@ -209,20 +237,12 @@ public enum Renderer {
         GL11.glPopMatrix();
     }
 
-    /**
-     * Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format.
-     *
-     * <p>Convert this to {@link BufferedImage} with:
-     * <pre>
-     *     BufferedImage image =
-     *         new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
-     *     image.setRGB(0, 0, imageDim, imageDim, returnedArray, 0, imageDim);
-     * </pre>
-     */
-    private int[] readImage(RenderJob job) {
+    /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */
+    private BufferedImage readImage(RenderJob job) {
         ByteBuffer imageByteBuffer = BufferUtils.createByteBuffer(4 * imageDim * imageDim);
         GL11.glReadPixels(
-                0, 0, imageDim, imageDim, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageByteBuffer);
+                0, 0, imageDim, imageDim,
+                GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageByteBuffer);
 
         // OpenGL uses inverted y-coordinates compared to our draw methods.
         // So we must flip the saved image vertically.
@@ -238,33 +258,9 @@ public enum Renderer {
             flippedPixels[i] = pixels[x + imageDim * y];
         }
 
-        if (saveToFiles) {
-            BufferedImage image =
-                    new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
-            image.setRGB(0, 0, imageDim, imageDim, flippedPixels, 0, imageDim);
-
-            File outputFile;
-            switch (job.type()) {
-                case ITEM:
-                    String itemName = job.item().stack().getUnlocalizedName();
-                    outputFile = new File(itemDirectory, itemName + ".png");
-                    break;
-
-                case FLUID:
-                    outputFile = new File(fluidDirectory, job.fluid().getName() + ".png");
-                    break;
-
-                default:
-                    throw new IllegalArgumentException("Unrecognized job type: " + job);
-            }
-
-            try {
-                ImageIO.write(image, "PNG", outputFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return flippedPixels;
+        BufferedImage image =
+                new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
+        image.setRGB(0, 0, imageDim, imageDim, flippedPixels, 0, imageDim);
+        return image;
     }
 }

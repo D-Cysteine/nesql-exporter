@@ -1,5 +1,10 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
+import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
+import net.minecraft.util.EnumChatFormatting;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -34,7 +39,28 @@ public enum RenderDispatcher {
 
         /** Exporter thread has requested renderer destruction. */
         DESTROYING,
+
+        /** We transition to this state if something went wrong during rendering. */
+        ERROR,
     }
+
+    /** Map of valid state transitions. Used for validation. */
+    private static final ImmutableSetMultimap<RendererState, RendererState> STATE_TRANSITIONS =
+            ImmutableSetMultimap.<RendererState, RendererState>builder()
+                    .putAll(RendererState.UNINITIALIZED,
+                            RendererState.INITIALIZING, RendererState.ERROR)
+                    .putAll(RendererState.INITIALIZING,
+                            RendererState.INITIALIZED, RendererState.ERROR)
+                    .putAll(RendererState.INITIALIZED,
+                            RendererState.DESTROYING, RendererState.ERROR)
+                    .putAll(RendererState.DESTROYING,
+                            RendererState.UNINITIALIZED, RendererState.ERROR)
+                    .putAll(RendererState.ERROR,
+                            RendererState.UNINITIALIZED, RendererState.INITIALIZING)
+                    .build();
+
+    private static final ImmutableSet<RendererState> ACTIVE_STATES =
+            ImmutableSet.of(RendererState.INITIALIZING, RendererState.INITIALIZED);
 
     /**
      * Used to keep track of current {@link Renderer} state, as well as ask it to initialize or
@@ -51,24 +77,46 @@ public enum RenderDispatcher {
 
     private final ConcurrentLinkedQueue<RenderJob> jobQueue = new ConcurrentLinkedQueue<>();
 
-    /**
-     * This probably doesn't actually need to be concurrent, as currently it will not be read until
-     * all results have been written to it.
-     */
-    private final ConcurrentLinkedQueue<RenderResult> resultQueue = new ConcurrentLinkedQueue<>();
-
     public RendererState getRendererState() {
         return rendererState;
     }
 
-    public void setRendererState(RendererState state) {
-        rendererState = state;
+    public synchronized void setRendererState(RendererState newState) {
+        if (!STATE_TRANSITIONS.get(rendererState).contains(newState)) {
+            throw new RuntimeException(
+                    String.format(
+                            "Attempted invalid state transition: %s to %s."
+                                    + "\nDid you start up another export"
+                                    + " while one was still in progress?",
+                            rendererState, newState));
+        }
+
+        if ((newState == RendererState.UNINITIALIZED || newState == RendererState.INITIALIZING)
+                && !jobQueue.isEmpty()) {
+            Logger.chatMessage(String.format(
+                    EnumChatFormatting.RED + "Render dispatcher has %s leftover jobs!"
+                            + "\nClearing and transitioning to state %s.",
+                    jobQueue.size(), newState.name()));
+            jobQueue.clear();
+        }
+
+        rendererState = newState;
+    }
+
+    public synchronized boolean isActive() {
+        return ACTIVE_STATES.contains(rendererState);
     }
 
     public synchronized void waitUntilJobsComplete() throws InterruptedException {
-        wait();
+        while (!jobQueue.isEmpty() && isActive()) {
+            wait();
+        }
     }
 
+    /**
+     * This method is kept unsynchronized since it runs on the render thread, and we want it to be
+     * fast. This should be safe.
+     */
     public synchronized void notifyJobsCompleted() {
         notifyAll();
     }
@@ -81,23 +129,19 @@ public enum RenderDispatcher {
         jobQueue.addAll(jobs);
     }
 
+    /**
+     * This method is kept unsynchronized since it runs on the render thread, and we want it to be
+     * fast. This should be safe.
+     */
     public boolean noJobsRemaining() {
-        return jobQueue.peek() == null;
+        return jobQueue.isEmpty();
     }
 
+    /**
+     * This method is kept unsynchronized since it runs on the render thread, and we want it to be
+     * fast. This should be safe.
+     */
     public Optional<RenderJob> getJob() {
         return Optional.ofNullable(jobQueue.poll());
-    }
-
-    public void addResult(RenderResult result) {
-        resultQueue.add(result);
-    }
-
-    public boolean noResultsRemaining() {
-        return resultQueue.peek() == null;
-    }
-
-    public Optional<RenderResult> getResult() {
-        return Optional.ofNullable(resultQueue.poll());
     }
 }

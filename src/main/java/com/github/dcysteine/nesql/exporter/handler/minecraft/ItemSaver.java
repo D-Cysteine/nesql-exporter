@@ -1,8 +1,7 @@
 package com.github.dcysteine.nesql.exporter.handler.minecraft;
 
 import com.github.dcysteine.nesql.exporter.handler.AbstractSaver;
-import com.github.dcysteine.nesql.sql.data.SqlItem;
-import com.github.dcysteine.nesql.sql.repository.ItemRepository;
+import com.github.dcysteine.nesql.sql.repository.base.item.ItemRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 
 import javax.persistence.EntityManager;
@@ -18,8 +17,10 @@ public class ItemSaver extends AbstractSaver {
     @Override
     @SuppressWarnings("unchecked")
     protected void saveImpl() {
-        repository.save(new SqlItem("TEST TEST TEST AAAAA"));
-        repository.save(new SqlItem("123"));
-        repository.save(new SqlItem("456"));
+        /*
+        repository.save(new ItemRow("TEST TEST TEST AAAAA"));
+        repository.save(new ItemRow("123"));
+        repository.save(new ItemRow("456"));
+        */
     }
 }

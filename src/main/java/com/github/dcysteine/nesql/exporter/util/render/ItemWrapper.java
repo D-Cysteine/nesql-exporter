@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.data;
+package com.github.dcysteine.nesql.exporter.util.render;
 
 import com.google.auto.value.AutoValue;
 import net.minecraft.item.Item;
@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Optional;
 
-/** Wrapper for items that supports hashing. */
+/** Wrapper for items that supports hashing, and sets stack size to 1 for rendering. */
 @AutoValue
 public abstract class ItemWrapper {
     public static ItemWrapper create(ItemStack itemStack) {

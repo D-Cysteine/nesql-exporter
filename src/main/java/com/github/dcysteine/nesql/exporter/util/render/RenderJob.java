@@ -1,6 +1,5 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
-import com.github.dcysteine.nesql.exporter.data.ItemWrapper;
 import com.google.auto.value.AutoOneOf;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;

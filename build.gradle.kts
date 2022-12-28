@@ -37,9 +37,9 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-val neSqlVersion: String by project
-group = "com.github.dcysteine.nesql"
-version = neSqlVersion
+val nesqlExporterVersion: String by project
+group = "com.github.dcysteine.nesql.exporter"
+version = nesqlExporterVersion
 
 val minecraftVersion: String by project
 val forgeVersion: String by project
