@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.sql.repository.base.fluid;
+package com.github.dcysteine.nesql.sql.base.fluid;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

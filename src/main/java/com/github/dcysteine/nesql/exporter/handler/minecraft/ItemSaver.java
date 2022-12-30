@@ -1,7 +1,7 @@
 package com.github.dcysteine.nesql.exporter.handler.minecraft;
 
 import com.github.dcysteine.nesql.exporter.handler.AbstractSaver;
-import com.github.dcysteine.nesql.sql.repository.base.item.ItemRepository;
+import com.github.dcysteine.nesql.sql.base.item.ItemRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 
 import javax.persistence.EntityManager;

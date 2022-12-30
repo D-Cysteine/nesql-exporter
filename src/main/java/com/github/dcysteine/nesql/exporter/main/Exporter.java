@@ -1,30 +1,24 @@
 package com.github.dcysteine.nesql.exporter.main;
 
-import com.github.dcysteine.nesql.exporter.handler.minecraft.ItemSaver;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.processor.base.RecipeProcessor;
+import com.github.dcysteine.nesql.exporter.plugin.base.RecipeProcessor;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
-import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.github.dcysteine.nesql.exporter.util.EntitySaver;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fluids.FluidRegistry;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.io.File;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /** Exports recipes and other data to a file. */
 public final class Exporter {
-    private static final String FILE_EXTENSION = ".mv.db";
+    private static final String DATABASE_FILE_EXTENSION = ".mv.db";
     private static final String REPOSITORY_PATH_FORMAT_STRING = "nesql" + File.separator + "%s";
-    private static final String DATABASE_FILE_PATH = "nesql-db" + FILE_EXTENSION;
+    private static final String DATABASE_FILE_PATH = "nesql-db" + DATABASE_FILE_EXTENSION;
     private static final String ITEM_IMAGE_PATH = "image" + File.separator + "item";
     private static final String FLUID_IMAGE_PATH = "image" + File.separator + "fluid";
 
@@ -92,13 +86,12 @@ public final class Exporter {
                 ImmutableMap.of(
                         "hibernate.connection.url",
                         "jdbc:h2:file:"
-                                + databaseFile.getAbsolutePath().replace(FILE_EXTENSION, ""));
+                                + databaseFile.getAbsolutePath()
+                                .replace(DATABASE_FILE_EXTENSION, ""));
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("H2", properties);
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-        ItemSaver itemSaver = new ItemSaver(entityManagerFactory.createEntityManager());
+        EntitySaver entitySaver = new EntitySaver(entityManagerFactory.createEntityManager());
 
         if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
@@ -106,10 +99,10 @@ public final class Exporter {
             RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
         }
 
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Saving data to database...");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Committing data to database...");
         // TODO call processors here (and check deps? maybe do that on mod init...)
-        new RecipeProcessor(entityManager).process();
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Saving complete!");
+        new RecipeProcessor(entitySaver).process();
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Committing complete!");
 
         if (ConfigOptions.RENDER_ICONS.get()) {
             try {
@@ -127,7 +120,6 @@ public final class Exporter {
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Writing database...");
-        itemSaver.save();
         entityManagerFactory.close();
         Logger.chatMessage(EnumChatFormatting.AQUA + "Export complete!");
     }

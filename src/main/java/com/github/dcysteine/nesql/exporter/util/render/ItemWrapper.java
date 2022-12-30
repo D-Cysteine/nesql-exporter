@@ -1,22 +1,32 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
+import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.google.auto.value.AutoValue;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.io.File;
 import java.util.Optional;
 
-/** Wrapper for items that supports hashing, and sets stack size to 1 for rendering. */
+/**
+ * Wrapper for items that contains additional information, supports hashing, and sets stack size to
+ * 1 for rendering.
+ */
 @AutoValue
 public abstract class ItemWrapper {
     public static ItemWrapper create(ItemStack itemStack) {
         return new AutoValue_ItemWrapper(
-                itemStack.getItem(), itemStack.getItemDamage(),
+                itemStack.getItem(),
+                IdUtil.imageFilePath(itemStack),
+                itemStack.getItemDamage(),
                 Optional.ofNullable(itemStack.stackTagCompound));
     }
 
     public abstract Item item();
+
+    public abstract String imageFilePath();
+
     public abstract int damage();
 
     /**

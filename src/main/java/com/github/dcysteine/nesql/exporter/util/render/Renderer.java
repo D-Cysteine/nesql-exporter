@@ -4,7 +4,6 @@ import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.sql.util.IdUtil;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -32,10 +31,8 @@ import java.util.Optional;
 public enum Renderer {
     INSTANCE;
 
-    private static final String ITEM_DIRECTORY_PATH =
-            "nesql" + File.separator + "item";
-    private static final String FLUID_DIRECTORY_PATH =
-            "nesql" + File.separator + "fluid";
+    public static final String IMAGE_FILE_EXTENSION = ".png";
+    private static final String IMAGE_FORMAT = "PNG";
 
     private int imageDim;
     private Framebuffer framebuffer;
@@ -91,9 +88,17 @@ public enum Renderer {
                 initialize();
                 return;
 
+            case INITIALIZED:
+                break;
+
             case DESTROYING:
                 destroy();
                 return;
+
+            default:
+                throw new IllegalArgumentException(
+                        "Unrecognized render state: "
+                                + RenderDispatcher.INSTANCE.getRendererState());
         }
 
         if (RenderDispatcher.INSTANCE.noJobsRemaining()) {
@@ -102,45 +107,58 @@ public enum Renderer {
         }
 
         setupRenderState();
-        for (int i = 0; i < ConfigOptions.RENDER_ICONS_PER_TICK.get(); i++) {
-            Optional<RenderJob> jobOptional = RenderDispatcher.INSTANCE.getJob();
-            if (!jobOptional.isPresent()) {
-                break;
-            }
-
-            RenderJob job = jobOptional.get();
-            clearBuffer();
-            render(job);
-            BufferedImage image = readImage(job);
-
-            File outputFile;
-            // TODO the names here need to be set to the unique SQL row key.
-            switch (job.type()) {
-                case ITEM:
-                    outputFile = new File(itemDirectory, IdUtil.itemId(job.item().stack()) + ".png");
+        try {
+            for (int i = 0; i < ConfigOptions.RENDER_ICONS_PER_TICK.get(); i++) {
+                Optional<RenderJob> jobOptional = RenderDispatcher.INSTANCE.getJob();
+                if (!jobOptional.isPresent()) {
                     break;
+                }
 
-                case FLUID:
-                    outputFile = new File(fluidDirectory, IdUtil.fluidId(job.fluid()) + ".png");
-                    break;
+                RenderJob job = jobOptional.get();
+                clearBuffer();
+                render(job);
+                BufferedImage image = readImage(job);
 
-                default:
-                    throw new IllegalArgumentException("Unrecognized job type: " + job);
-            }
-            if (outputFile.exists()) {
-                // If we cannot avoid queueing up duplicate render jobs, we can replace this throw
-                // with a continue, and move this check to before we call readImage(job)
-                throw new RuntimeException(
-                        "Render output file already exists: " + outputFile.getPath());
-            }
+                File outputFile;
+                switch (job.type()) {
+                    case ITEM:
+                        outputFile = new File(itemDirectory, job.item().imageFilePath());
+                        break;
 
-            try {
-                ImageIO.write(image, "PNG", outputFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                    case FLUID:
+                        outputFile = new File(fluidDirectory, job.fluid().imageFilePath());
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Unrecognized job type: " + job);
+                }
+                if (outputFile.exists()) {
+                    // If we cannot avoid queueing up duplicate render jobs, we can replace this
+                    // throw with a continue, and move this check to before we call readImage(job)
+                    throw new RuntimeException(
+                            "Render output file already exists: " + outputFile.getPath());
+                }
+
+                File parentDir = outputFile.getParentFile();
+                if (parentDir.exists() && !parentDir.isDirectory()) {
+                    throw new RuntimeException(
+                            "Render output file directory already exists as a file: "
+                                    + parentDir.getPath());
+                } else if (!parentDir.exists() && !parentDir.mkdirs()) {
+                    throw new RuntimeException(
+                            "Could not create render output file directory: "
+                                    + parentDir.getPath());
+                }
+
+                try {
+                    ImageIO.write(image, IMAGE_FORMAT, outputFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        } finally {
+            teardownRenderState();
         }
-        teardownRenderState();
     }
 
     private void clearBuffer() {
@@ -157,7 +175,7 @@ public enum Renderer {
                 break;
 
             case FLUID:
-                Fluid fluid = job.fluid();
+                Fluid fluid = job.fluid().fluid();
                 IIcon icon = fluid.getIcon();
                 // Some fluids don't set their icon colour, so we have to blend in the colour.
                 int colour = fluid.getColor();

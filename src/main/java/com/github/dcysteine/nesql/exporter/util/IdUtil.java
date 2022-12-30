@@ -1,11 +1,14 @@
-package com.github.dcysteine.nesql.sql.util;
+package com.github.dcysteine.nesql.exporter.util;
 
+import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -27,9 +30,23 @@ public final class IdUtil {
         return id;
     }
 
-    // TODO if not used, inline into above method
     public static String itemId(Item item) {
-        return item.getUnlocalizedName() + ID_SEPARATOR + Item.getIdFromItem(item);
+        GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
+        return uniqueId + ID_SEPARATOR + Item.getIdFromItem(item);
+    }
+
+    public static String modId(ItemStack itemStack) {
+        return modId(itemStack.getItem());
+    }
+
+    public static String modId(Item item) {
+        GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
+        return uniqueId.modId;
+    }
+
+    public static String imageFilePath(ItemStack itemStack) {
+        // The ':' character is not valid on Windows file systems.
+        return itemId(itemStack).replace(':', File.separatorChar) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
     public static String fluidId(FluidStack fluidStack) {
@@ -42,9 +59,12 @@ public final class IdUtil {
         return id;
     }
 
-    // TODO if not used, inline into above method
     public static String fluidId(Fluid fluid) {
-        return fluid.getUnlocalizedName() + ID_SEPARATOR + fluid.getID();
+        return fluid.getName() + ID_SEPARATOR + fluid.getID();
+    }
+
+    public static String imageFilePath(FluidStack fluidStack) {
+        return fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
     public static String encodeNbt(NBTTagCompound nbt) {

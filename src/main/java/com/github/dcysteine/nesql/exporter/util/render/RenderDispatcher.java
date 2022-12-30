@@ -83,7 +83,7 @@ public enum RenderDispatcher {
 
     public synchronized void setRendererState(RendererState newState) {
         if (!STATE_TRANSITIONS.get(rendererState).contains(newState)) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format(
                             "Attempted invalid state transition: %s to %s."
                                     + "\nDid you start up another export"

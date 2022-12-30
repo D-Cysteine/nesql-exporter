@@ -4,10 +4,10 @@ import net.minecraftforge.gradle.user.UserExtension
 buildscript {
     repositories {
         maven("https://maven.minecraftforge.net") { name = "Forge" }
-        maven("https://jitpack.io") { name = "jitpack.io" }
+        maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") { name = "GTNH Maven" }
     }
     dependencies {
-        classpath("com.github.GTNewHorizons:ForgeGradle:1.2.4")
+        classpath("net.minecraftforge.gradle:ForgeGradle:1.2.13")
     }
 }
 
@@ -70,25 +70,10 @@ repositories {
         name = "Forge"
         metadataSources { artifact() }
     }
-    /*
-    ivy {
-        name = "gtnh_download_source"
-        artifactPattern(
-            "http://downloads.gtnewhorizons.com/Mods_for_Jenkins/[module]-[revision]-[classifier].[ext]")
-        metadataSources { artifact() }
-    }
-     */
-    maven("https://jitpack.io") { name = "jitpack.io" }
-    maven("http://maven.ic2.player.to") {
-        name = "IC2 & Forestry"
-        metadataSources { artifact() }
-    }
+    maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") { name = "GTNH Maven" }
 }
 
 dependencies {
-    // TODO delete this?
-    //compileOnly(fileTree("libs") { include("*.jar") })
-
     val autoValueVersion: String by project
     compileOnly("com.google.auto.value:auto-value-annotations:$autoValueVersion")
     annotationProcessor("com.google.auto.value:auto-value:$autoValueVersion")
@@ -107,36 +92,36 @@ dependencies {
     val threetenVersion: String by project
     shadowRuntime("org.threeten:threetenbp:$threetenVersion")
 
-    val codeChickenCoreVersion: String by project
-    val codeChickenLibVersion: String by project
     val neiVersion: String by project
-    implementation("com.github.GTNewHorizons:CodeChickenCore:$codeChickenCoreVersion:dev")
-    implementation("com.github.GTNewHorizons:CodeChickenLib:$codeChickenLibVersion:dev")
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
 
     val gregTech5Version: String by project
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev") {
+    implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev") {
         isTransitive = false
     }
 
     val forestryVersion: String by project
-    compileOnly("net.sengir.forestry:forestry_1.7.10:$forestryVersion:dev")
+    implementation("com.github.GTNewHorizons:ForestryMC:$forestryVersion:dev") {
+        isTransitive = false
+    }
 
     /*
     // The following are compile-time dependencies of Forestry.
     val buildCraftVersion: String by project
-    compileOnly("com.mod-buildcraft:buildcraft:$buildCraftVersion:dev")
+    implementation("com.github.GTNewHorizons:BuildCraft:$buildCraftVersion:dev") {
+        isTransitive = false
+    }
      */
 
-    /*
-    // The following are compile-time dependencies of GT5.
-    val enderIoVersion: String by project
-    val forestryVersion: String by project
-    val railcraftVersion: String by project
-    compileOnly("crazypants.enderio:EnderIO-$minecraftVersion:${enderIoVersion}_beta:dev")
-    compileOnly("net.sengir.forestry:forestry_$minecraftVersion:$forestryVersion:dev")
-    compileOnly("mods.railcraft:Railcraft_$minecraftVersion:$railcraftVersion:dev")
-     */
+/*
+// The following are compile-time dependencies of GT5.
+val enderIoVersion: String by project
+val forestryVersion: String by project
+val railcraftVersion: String by project
+compileOnly("crazypants.enderio:EnderIO-$minecraftVersion:${enderIoVersion}_beta:dev")
+compileOnly("net.sengir.forestry:forestry_$minecraftVersion:$forestryVersion:dev")
+compileOnly("mods.railcraft:Railcraft_$minecraftVersion:$railcraftVersion:dev")
+ */
 }
 
 tasks.withType<Jar> {
@@ -204,8 +189,16 @@ val devJar by tasks.creating(Jar::class) {
     archiveClassifier.set("dev")
 }
 
+// Export SQL Schema for NESQL Server.
+val sqlJar by tasks.creating(Jar::class) {
+    from(sourceSets.main.get().output)
+    exclude("com/github/dcysteine/nesql/exporter")
+    archiveClassifier.set("sql")
+}
+
 artifacts {
     archives(depsJar)
     archives(sourcesJar)
     archives(devJar)
+    archives(sqlJar)
 }

@@ -1,7 +1,6 @@
-package com.github.dcysteine.nesql.sql.repository.base.fluid;
+package com.github.dcysteine.nesql.sql.base.fluid;
 
-import com.github.dcysteine.nesql.sql.util.IdUtil;
-import net.minecraftforge.fluids.FluidStack;
+import com.github.dcysteine.nesql.sql.Identifiable;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -11,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity(name = "fluid")
 @Table(name = "fluid")
-public class FluidRow {
+public class FluidRow implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
      * multiple fluid rows for the same Forge fluid ID).
@@ -20,7 +19,10 @@ public class FluidRow {
     private String id;
 
     @Column(nullable = false)
-    private String imageFileName;
+    private String imageFilePath;
+
+    @Column(nullable = false)
+    private String internalName;
 
     @Column(nullable = false)
     private String unlocalizedName;
@@ -41,25 +43,38 @@ public class FluidRow {
     /** Needed by Hibernate. */
     protected FluidRow() {}
 
-    public FluidRow(FluidStack fluidStack) {
-        this.id = IdUtil.fluidId(fluidStack);
-        this.imageFileName = IdUtil.fluidId(fluidStack.getFluid());
-        this.unlocalizedName = fluidStack.getUnlocalizedName();
-        this.localizedName = fluidStack.getLocalizedName();
-        this.fluidId = fluidStack.getFluidID();
-        this.nbt = fluidStack.tag == null ? null : fluidStack.tag.toString();
+    public FluidRow(
+            String id,
+            String imageFilePath,
+            String internalName,
+            String unlocalizedName,
+            String localizedName,
+            int fluidId,
+            @Nullable String nbt) {
+        this.id = id;
+        this.imageFilePath = imageFilePath;
+        this.internalName = internalName;
+        this.unlocalizedName = unlocalizedName;
+        this.localizedName = localizedName;
+        this.fluidId = fluidId;
+        this.nbt = nbt;
     }
 
     /**
      * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
      * be multiple item rows for the same Minecraft item ID).
      */
+    @Override
     public String getId() {
         return id;
     }
 
-    public String getImageFileName() {
-        return imageFileName;
+    public String getImageFilePath() {
+        return imageFilePath;
+    }
+
+    public String getInternalName() {
+        return internalName;
     }
 
     public String getUnlocalizedName() {
