@@ -11,8 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
+import jakarta.persistence.EntityManagerFactory;
 import java.io.File;
-import javax.persistence.EntityManagerFactory;
 
 /** Exports recipes and other data to a file. */
 public final class Exporter {

@@ -2,15 +2,15 @@ package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity(name = "fluid")
-@Table(name = "fluid")
-public class FluidRow implements Identifiable<String> {
+@Entity
+@Table
+public class Fluid implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
      * multiple fluid rows for the same Forge fluid ID).
@@ -41,9 +41,9 @@ public class FluidRow implements Identifiable<String> {
     private String nbt;
 
     /** Needed by Hibernate. */
-    protected FluidRow() {}
+    protected Fluid() {}
 
-    public FluidRow(
+    public Fluid(
             String id,
             String imageFilePath,
             String internalName,

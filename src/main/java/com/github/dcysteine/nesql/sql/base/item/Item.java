@@ -2,16 +2,15 @@ package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
-import java.io.File;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity(name = "item")
-@Table(name = "item")
-public class ItemRow implements Identifiable<String> {
+@Entity
+@Table
+public class Item implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
      * be multiple item rows for the same Minecraft item ID).
@@ -51,9 +50,9 @@ public class ItemRow implements Identifiable<String> {
     private String tooltip;
 
     /** Needed by Hibernate. */
-    protected ItemRow() {}
+    protected Item() {}
 
-    public ItemRow(
+    public Item(
             String id,
             String imageFilePath,
             String modId,

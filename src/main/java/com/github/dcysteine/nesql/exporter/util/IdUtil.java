@@ -67,12 +67,12 @@ public final class IdUtil {
         return fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
+    /**
+     * The counterpart to this method is
+     * {@code com.github.dcysteine.nesql.server.util.NbtUtil.decodeNbt()}.
+     */
     public static String encodeNbt(NBTTagCompound nbt) {
         return Base64.getUrlEncoder().encodeToString(
                 nbt.toString().getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static String decodeNbt(String encodedNbt) {
-        return new String(Base64.getUrlDecoder().decode(encodedNbt), StandardCharsets.UTF_8);
     }
 }

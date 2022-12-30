@@ -14,8 +14,8 @@
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <!-- TODO: make this false so we don't spam logs with SQL -->
-            <property name="hibernate.show_sql" value="true"/>
+            <!-- Set this to true to log SQL. -->
+            <property name="hibernate.show_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

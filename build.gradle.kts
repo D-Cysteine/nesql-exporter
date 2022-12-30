@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("net.minecraftforge.gradle:ForgeGradle:1.2.13")
+        classpath("com.google.protobuf:protobuf-gradle-plugin:0.9.1")
     }
 }
 
@@ -78,19 +79,20 @@ dependencies {
     compileOnly("com.google.auto.value:auto-value-annotations:$autoValueVersion")
     annotationProcessor("com.google.auto.value:auto-value:$autoValueVersion")
 
+    val protoBufferVersion: String by project
+    implementation("com.google.protobuf:protobuf-java:$protoBufferVersion")
+
     val springDataVersion: String by project
     shadowImplementation("org.springframework.data:spring-data-jpa:$springDataVersion")
 
+    val jakartaPersistenceVersion: String by project
+    compileOnly("jakarta.persistence:jakarta.persistence-api:$jakartaPersistenceVersion")
+
     val hibernateVersion: String by project
-    shadowImplementation("org.hibernate:hibernate-core:$hibernateVersion")
+    shadowImplementation("org.hibernate:hibernate-core-jakarta:$hibernateVersion")
 
     val h2Version: String by project
     shadowRuntime("com.h2database:h2:$h2Version")
-
-    // Weird bug where Hibernate depends on this, but it doesn't get automatically included.
-    // https://stackoverflow.com/questions/43249301/how-to-fix-classnotfoundexception-for-org-threeten-bp-localdatetime
-    val threetenVersion: String by project
-    shadowRuntime("org.threeten:threetenbp:$threetenVersion")
 
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
