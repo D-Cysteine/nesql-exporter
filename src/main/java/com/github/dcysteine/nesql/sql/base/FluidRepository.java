@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.sql.base.fluid;
+package com.github.dcysteine.nesql.sql.base;
 
 import org.springframework.data.repository.CrudRepository;
 

@@ -16,6 +16,7 @@ plugins {
     idea
     java
     id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.google.protobuf") version "0.9.1"
 }
 
 apply(plugin = "forge")
@@ -80,7 +81,7 @@ dependencies {
     annotationProcessor("com.google.auto.value:auto-value:$autoValueVersion")
 
     val protoBufferVersion: String by project
-    implementation("com.google.protobuf:protobuf-java:$protoBufferVersion")
+    shadowImplementation("com.google.protobuf:protobuf-java:$protoBufferVersion")
 
     val springDataVersion: String by project
     shadowImplementation("org.springframework.data:spring-data-jpa:$springDataVersion")

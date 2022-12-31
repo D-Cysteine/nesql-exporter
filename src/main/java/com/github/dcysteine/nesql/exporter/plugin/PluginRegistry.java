@@ -1,5 +1,5 @@
 package com.github.dcysteine.nesql.exporter.plugin;
 
-public interface Processor {
-    void process();
+// TODO implement me
+public class PluginRegistry {
 }

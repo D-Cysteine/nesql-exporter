@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.exporter.util;
 
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.google.protobuf.Message;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,9 +15,10 @@ import java.util.Base64;
 
 /** Utility class containing methods for generating unique row IDs. */
 public final class IdUtil {
-    /** Static class. */
+    // Static class.
     private IdUtil() {}
 
+    /** This string needs to be URL parameter-safe, as well as file system-safe. */
     private static final String ID_SEPARATOR = "~";
 
     public static String itemId(ItemStack itemStack) {
@@ -67,12 +69,12 @@ public final class IdUtil {
         return fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
-    /**
-     * The counterpart to this method is
-     * {@code com.github.dcysteine.nesql.server.util.NbtUtil.decodeNbt()}.
-     */
     public static String encodeNbt(NBTTagCompound nbt) {
         return Base64.getUrlEncoder().encodeToString(
                 nbt.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String encodeProto(Message proto) {
+        return Base64.getUrlEncoder().encodeToString(proto.toByteArray());
     }
 }

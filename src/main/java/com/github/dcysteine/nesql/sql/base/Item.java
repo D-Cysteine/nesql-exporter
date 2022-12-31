@@ -1,25 +1,27 @@
-package com.github.dcysteine.nesql.sql.base.fluid;
+package com.github.dcysteine.nesql.sql.base;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
+import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import javax.annotation.Nullable;
 
 @Entity
-@Table
-public class Fluid implements Identifiable<String> {
+public class Item extends Identifiable<String> {
     /**
-     * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
-     * multiple fluid rows for the same Forge fluid ID).
+     * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
+     * be multiple item rows for the same Minecraft item ID).
      */
     @Id
     private String id;
 
     @Column(nullable = false)
     private String imageFilePath;
+
+    @Column(nullable = false)
+    private String modId;
 
     @Column(nullable = false)
     private String internalName;
@@ -31,33 +33,43 @@ public class Fluid implements Identifiable<String> {
     private String localizedName;
 
     /**
-     * The Forge fluid ID.
+     * The Minecraft item ID.
      */
-    @Column
-    private int fluidId;
+    private int itemId;
 
-    // Hmm, I wonder if this is long enough?
-    @Column(length = 2048)
+    private int itemDamage;
+
+    @Nullable
+    @Column(length = Sql.STRING_MAX_LENGTH)
     private String nbt;
 
-    /** Needed by Hibernate. */
-    protected Fluid() {}
+    @Column(nullable = false)
+    private String tooltip;
 
-    public Fluid(
+    /** Needed by Hibernate. */
+    protected Item() {}
+
+    public Item(
             String id,
             String imageFilePath,
+            String modId,
             String internalName,
             String unlocalizedName,
             String localizedName,
-            int fluidId,
-            @Nullable String nbt) {
+            int itemId,
+            int itemDamage,
+            @Nullable String nbt,
+            String tooltip) {
         this.id = id;
         this.imageFilePath = imageFilePath;
+        this.modId = modId;
         this.internalName = internalName;
         this.unlocalizedName = unlocalizedName;
         this.localizedName = localizedName;
-        this.fluidId = fluidId;
+        this.itemId = itemId;
+        this.itemDamage = itemDamage;
         this.nbt = nbt;
+        this.tooltip = tooltip;
     }
 
     /**
@@ -73,6 +85,10 @@ public class Fluid implements Identifiable<String> {
         return imageFilePath;
     }
 
+    public String getModId() {
+        return modId;
+    }
+
     public String getInternalName() {
         return internalName;
     }
@@ -85,9 +101,17 @@ public class Fluid implements Identifiable<String> {
         return localizedName;
     }
 
-    /** The Forge fluid ID. */
-    public int getFluidId() {
-        return fluidId;
+    /** The Minecraft item ID. */
+    public int getItemId() {
+        return itemId;
+    }
+
+    public int getItemDamage() {
+        return itemDamage;
+    }
+
+    public boolean hasNbt() {
+        return nbt != null;
     }
 
     @Nullable
@@ -95,5 +119,7 @@ public class Fluid implements Identifiable<String> {
         return nbt;
     }
 
-    // TODO if needed, add toString, hashCode, compareTo, etc.
+    public String getTooltip() {
+        return tooltip;
+    }
 }

@@ -1,12 +1,12 @@
 package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.plugin.base.RecipeProcessor;
+import com.github.dcysteine.nesql.exporter.plugin.base.BasePlugin;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
-import com.github.dcysteine.nesql.exporter.util.EntitySaver;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
+import jakarta.persistence.EntityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -91,7 +91,7 @@ public final class Exporter {
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("H2", properties);
-        EntitySaver entitySaver = new EntitySaver(entityManagerFactory.createEntityManager());
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
@@ -100,8 +100,9 @@ public final class Exporter {
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Committing data to database...");
-        // TODO call processors here (and check deps? maybe do that on mod init...)
-        new RecipeProcessor(entitySaver).process();
+        // TODO call plugins here (and check deps? maybe do that on mod init...)
+        new BasePlugin(entityManager).process();
+        new BasePlugin(entityManager).postProcess();
         Logger.chatMessage(EnumChatFormatting.AQUA + "Committing complete!");
 
         if (ConfigOptions.RENDER_ICONS.get()) {
