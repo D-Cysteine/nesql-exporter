@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 import com.github.dcysteine.nesql.sql.base.Item;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
+import lombok.EqualsAndHashCode;
 
 import java.util.Comparator;
 
@@ -11,11 +12,15 @@ import java.util.Comparator;
  * Used for defining recipes.
  */
 @Embeddable
+@EqualsAndHashCode
 public class ItemStack implements Comparable<ItemStack> {
     @ManyToOne
     private Item item;
 
     private int stackSize;
+
+    /** Needed by Hibernate. */
+    protected ItemStack() {}
 
     public ItemStack(Item item, int stackSize) {
         this.item = item;

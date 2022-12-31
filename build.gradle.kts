@@ -83,6 +83,10 @@ dependencies {
     val protoBufferVersion: String by project
     shadowImplementation("com.google.protobuf:protobuf-java:$protoBufferVersion")
 
+    val lombokVersion: String by project
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
     val springDataVersion: String by project
     shadowImplementation("org.springframework.data:spring-data-jpa:$springDataVersion")
 

@@ -5,19 +5,14 @@ import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
+import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.Fluid;
 import jakarta.persistence.EntityManager;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class FluidFactory extends EntityFactory<Fluid, String> {
-    private final Set<String> renderedFluids;
-
     public FluidFactory(EntityManager entityManager) {
         super(entityManager);
-        renderedFluids = new HashSet<>();
     }
 
     public Fluid getFluid(FluidStack fluidStack) {
@@ -31,7 +26,8 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
                 fluidStack.tag == null ? null : fluidStack.tag.toString());
 
         String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
-        if (ConfigOptions.RENDER_ICONS.get() && renderedFluids.add(renderedFluidKey)) {
+        if (ConfigOptions.RENDER_ICONS.get()
+                && Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)) {
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
         }
         return findOrPersist(Fluid.class, fluid);

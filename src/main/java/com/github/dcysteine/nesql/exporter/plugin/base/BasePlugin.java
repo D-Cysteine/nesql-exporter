@@ -6,7 +6,7 @@ import com.github.dcysteine.nesql.exporter.plugin.base.processor.FurnaceRecipePr
 import jakarta.persistence.EntityManager;
 
 /** Base plugin which handles vanilla Minecraft as well as Forge recipes. */
-public class BasePlugin extends Plugin {
+public class BasePlugin implements Plugin {
     private final EntityManager entityManager;
 
     public BasePlugin(EntityManager entityManager) {

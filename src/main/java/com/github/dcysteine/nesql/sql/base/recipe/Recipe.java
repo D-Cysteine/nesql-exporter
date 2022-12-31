@@ -2,8 +2,6 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
-import com.github.dcysteine.nesql.sql.base.Fluid;
-import com.github.dcysteine.nesql.sql.base.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -12,11 +10,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderColumn;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Entity
-public class Recipe extends Identifiable<String> {
+@EqualsAndHashCode
+public class Recipe implements Identifiable<String> {
     @Id
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String id;
@@ -45,11 +45,11 @@ public class Recipe extends Identifiable<String> {
     @OrderColumn
     private List<FluidGroup> fluidInputs;
 
-    @ElementCollection(targetClass = Item.class)
+    @ElementCollection
     @OrderColumn
     private List<ItemStack> itemOutputs;
 
-    @ElementCollection(targetClass = Fluid.class)
+    @ElementCollection
     @OrderColumn
     private List<FluidStack> fluidOutputs;
 

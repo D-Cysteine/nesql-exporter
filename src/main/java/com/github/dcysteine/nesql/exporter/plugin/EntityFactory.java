@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
  * Abstract class for entity factories.
  *
  * <p>When constructing a new entity, always return the result of calling
- * {@link #persistOrMerge(Class, Identifiable)} (Class, Identifiable)} on it, as we must reference
+ * {@link #findOrPersist(Class, Identifiable)} (Class, Identifiable)} on it, as we must reference
  * the already-persisted instance, if it exists.
  */
 public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>> {

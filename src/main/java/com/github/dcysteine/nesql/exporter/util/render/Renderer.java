@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {
@@ -35,16 +37,24 @@ public enum Renderer {
     private static final String IMAGE_FORMAT = "PNG";
 
     private int imageDim;
-    private Framebuffer framebuffer;
+    // These two hash sets are used to keep track of which items and fluids we've already rendered.
+    // It's a bit messy, but we needed a place to store these that only gets reset when we restart
+    // rendering entirely. Note that these are not concurrent-safe; therefore, they must be accessed
+    // ONLY by the client thread!
+    private Set<String> renderedItems;
+    private Set<String> renderedFluids;
     private File itemDirectory;
     private File fluidDirectory;
+    private Framebuffer framebuffer;
 
     /**
-     * This method is meant to be called from the export thread, prior to setting the dispatcher
+     * This method is meant to be called from the client thread, prior to setting the dispatcher
      * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
      */
     public void preinitialize(File itemDirectory, File fluidDirectory) {
         this.imageDim = ConfigOptions.ICON_DIMENSION.get();
+        this.renderedItems = new HashSet<>();
+        this.renderedFluids = new HashSet<>();
         this.itemDirectory = itemDirectory;
         this.fluidDirectory = fluidDirectory;
 
@@ -55,6 +65,16 @@ public enum Renderer {
             Logger.chatMessage(EnumChatFormatting.RED + "Skipping rendering!");
             RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
         }
+    }
+
+    /** Marks {@code item} as rendered, and returns true if it wasn't marked previously. */
+    public boolean isUnrenderedItem(String item) {
+        return renderedItems.add(item);
+    }
+
+    /** Marks {@code fluid} as rendered, and returns true if it wasn't marked previously. */
+    public boolean isUnrenderedFluid(String fluid) {
+        return renderedFluids.add(fluid);
     }
 
     /**

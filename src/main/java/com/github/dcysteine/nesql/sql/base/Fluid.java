@@ -6,10 +6,13 @@ import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import lombok.EqualsAndHashCode;
+
 import javax.annotation.Nullable;
 
 @Entity
-public class Fluid extends Identifiable<String> {
+@EqualsAndHashCode
+public class Fluid implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
      * multiple fluid rows for the same Forge fluid ID).

@@ -2,28 +2,31 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
-import com.github.dcysteine.nesql.sql.base.Fluid;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.SortNatural;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 /** A group of {@link FluidStack}s, all fitting into a single input slot in a recipe. */
 @Entity
-public class FluidGroup extends Identifiable<String> {
+@EqualsAndHashCode
+public class FluidGroup implements Identifiable<String> {
     @Id
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String id;
 
-    @ManyToMany(targetEntity = Fluid.class)
-    private Set<FluidStack> fluidStacks;
+    @ElementCollection
+    @SortNatural
+    private SortedSet<FluidStack> fluidStacks;
 
     /** Needed by Hibernate. */
     protected FluidGroup() {}
 
-    public FluidGroup(String id, Set<FluidStack> fluidStacks) {
+    public FluidGroup(String id, SortedSet<FluidStack> fluidStacks) {
         this.id = id;
         this.fluidStacks = fluidStacks;
     }
@@ -33,7 +36,7 @@ public class FluidGroup extends Identifiable<String> {
         return id;
     }
 
-    public Set<FluidStack> getFluidStacks() {
+    public SortedSet<FluidStack> getFluidStacks() {
         return fluidStacks;
     }
 }

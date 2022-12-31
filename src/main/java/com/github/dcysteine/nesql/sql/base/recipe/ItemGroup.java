@@ -2,31 +2,31 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
-import com.github.dcysteine.nesql.sql.base.Item;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.SortNatural;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 /** A group of {@link ItemStack}s, all fitting into a single input slot in a recipe. */
 @Entity
-public class ItemGroup extends Identifiable<String> {
+@EqualsAndHashCode
+public class ItemGroup implements Identifiable<String> {
     @Id
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String id;
 
-    @ManyToMany(targetEntity = Item.class)
-    private Set<ItemStack> itemStacks;
+    @ElementCollection
+    @SortNatural
+    private SortedSet<ItemStack> itemStacks;
 
     /** Needed by Hibernate. */
     protected ItemGroup() {}
 
-    public ItemGroup(String id, Set<ItemStack> itemStacks) {
+    public ItemGroup(String id, SortedSet<ItemStack> itemStacks) {
         this.id = id;
         this.itemStacks = itemStacks;
     }
@@ -36,7 +36,7 @@ public class ItemGroup extends Identifiable<String> {
         return id;
     }
 
-    public Set<ItemStack> getItemStacks() {
+    public SortedSet<ItemStack> getItemStacks() {
         return itemStacks;
     }
 }

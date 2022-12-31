@@ -5,6 +5,7 @@ import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
+import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.Item;
 import com.google.common.base.Joiner;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -12,15 +13,9 @@ import jakarta.persistence.EntityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class ItemFactory extends EntityFactory<Item, String> {
-    private final Set<String> renderedItems;
-
     public ItemFactory(EntityManager entityManager) {
         super(entityManager);
-        renderedItems = new HashSet<>();
     }
 
     public Item getItem(ItemStack itemStack) {
@@ -37,7 +32,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                 Joiner.on('\n').join(
                         itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, true)));
 
-        if (ConfigOptions.RENDER_ICONS.get() && renderedItems.add(item.getId())) {
+        if (ConfigOptions.RENDER_ICONS.get() && Renderer.INSTANCE.isUnrenderedItem(item.getId())) {
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }
         return findOrPersist(Item.class, item);

@@ -6,10 +6,13 @@ import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import lombok.EqualsAndHashCode;
+
 import javax.annotation.Nullable;
 
 @Entity
-public class Item extends Identifiable<String> {
+@EqualsAndHashCode
+public class Item implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
      * be multiple item rows for the same Minecraft item ID).

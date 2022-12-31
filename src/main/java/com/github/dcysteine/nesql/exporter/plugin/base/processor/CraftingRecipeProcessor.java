@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
+import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
@@ -32,16 +33,19 @@ public class CraftingRecipeProcessor {
             } else if (recipe instanceof ShapelessOreRecipe) {
                 processShapelessOreRecipe((ShapelessOreRecipe) recipe);
             } else {
-                throw new RuntimeException("Unhandled recipe: " + recipe);
+                Logger.MOD.warn("Unhandled recipe: " + recipe);
             }
         }
-        new CraftingRecipeProcessor(entityManager).process();
     }
 
     private void processShapedRecipe(ShapedRecipes recipe) {
         RecipeBuilder builder =
                 new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING);
         for (Object itemInput : recipe.recipeItems) {
+            if (itemInput == null) {
+                continue;
+            }
+
             builder.addItemGroupInput(NEIServerUtils.extractRecipeItems(itemInput));
         }
         builder.addItemOutput(recipe.getRecipeOutput()).build();
@@ -51,6 +55,10 @@ public class CraftingRecipeProcessor {
         RecipeBuilder builder =
                 new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING_OREDICT);
         for (Object itemInput : recipe.getInput()) {
+            if (itemInput == null) {
+                continue;
+            }
+
             builder.addItemGroupInput(NEIServerUtils.extractRecipeItems(itemInput));
         }
         builder.addItemOutput(recipe.getRecipeOutput()).build();

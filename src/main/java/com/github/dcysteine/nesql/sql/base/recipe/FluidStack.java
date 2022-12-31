@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 import com.github.dcysteine.nesql.sql.base.Fluid;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
+import lombok.EqualsAndHashCode;
 
 import java.util.Comparator;
 
@@ -11,11 +12,15 @@ import java.util.Comparator;
  * Used for defining recipes.
  */
 @Embeddable
+@EqualsAndHashCode
 public class FluidStack implements Comparable<FluidStack> {
     @ManyToOne
     private Fluid fluid;
 
     private int amount;
+
+    /** Needed by Hibernate. */
+    protected FluidStack() {}
 
     public FluidStack(Fluid fluid, int amount) {
         this.fluid = fluid;
