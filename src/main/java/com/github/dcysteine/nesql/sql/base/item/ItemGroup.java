@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
+import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -11,7 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.SortNatural;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 /** A group of {@link ItemStack}s, all fitting into a single input slot in a recipe. */
 @Entity
@@ -24,16 +25,21 @@ public class ItemGroup implements Identifiable<String> {
 
     @ElementCollection
     @SortNatural
-    private Set<ItemStack> itemStacks;
+    private SortedSet<ItemStack> itemStacks;
 
     @ManyToMany
     @SortNatural
-    private Set<WildcardItem> wildcardItems;
+    private SortedSet<WildcardItem> wildcardItems;
+
+    @ManyToMany(mappedBy = "itemInputs")
+    @SortNatural
+    private SortedSet<Recipe> recipesWithInput;
 
     /** Needed by Hibernate. */
     protected ItemGroup() {}
 
-    public ItemGroup(String id, Set<ItemStack> itemStacks, Set<WildcardItem> wildcardItems) {
+    public ItemGroup(
+            String id, SortedSet<ItemStack> itemStacks, SortedSet<WildcardItem> wildcardItems) {
         this.id = id;
         this.itemStacks = itemStacks;
         this.wildcardItems = wildcardItems;
@@ -44,11 +50,15 @@ public class ItemGroup implements Identifiable<String> {
         return id;
     }
 
-    public Set<ItemStack> getItemStacks() {
+    public SortedSet<ItemStack> getItemStacks() {
         return itemStacks;
     }
 
-    public Set<WildcardItem> getWildcardItems() {
+    public SortedSet<WildcardItem> getWildcardItems() {
         return wildcardItems;
+    }
+
+    public SortedSet<Recipe> getRecipesWithInput() {
+        return recipesWithInput;
     }
 }

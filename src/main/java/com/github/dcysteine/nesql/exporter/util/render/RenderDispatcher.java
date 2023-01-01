@@ -56,7 +56,8 @@ public enum RenderDispatcher {
                     .putAll(RendererState.DESTROYING,
                             RendererState.UNINITIALIZED, RendererState.ERROR)
                     .putAll(RendererState.ERROR,
-                            RendererState.UNINITIALIZED, RendererState.INITIALIZING)
+                            RendererState.UNINITIALIZED, RendererState.INITIALIZING,
+                            RendererState.ERROR)
                     .build();
 
     private static final ImmutableSet<RendererState> ACTIVE_STATES =

@@ -1,20 +1,13 @@
 package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.Sql;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.SortNatural;
 
-import java.util.Collection;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.List;
 
 /**
  * Represents a wildcard recipe input.
@@ -31,6 +24,9 @@ public class WildcardItem implements Identifiable<Integer> {
     @Id
     private int itemId;
 
+    @ManyToMany(mappedBy = "wildcardItems")
+    private List<ItemGroup> itemGroups;
+
     /** Needed by Hibernate. */
     protected WildcardItem() {}
 
@@ -41,5 +37,9 @@ public class WildcardItem implements Identifiable<Integer> {
     @Override
     public Integer getId() {
         return itemId;
+    }
+
+    public List<ItemGroup> getItemGroups() {
+        return itemGroups;
     }
 }
