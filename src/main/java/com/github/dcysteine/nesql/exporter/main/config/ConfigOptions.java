@@ -61,7 +61,7 @@ public final class ConfigOptions {
 
     public static final Option<Integer> MAX_FILE_NAME_LENGTH =
             new IntegerOption(
-                    Category.OPTIONS, "max_file_name_length", 250,
+                    Category.OPTIONS, "max_file_name_length", 100,
                     "The maximum length for rendered image file names."
                             + " Increase this if your system supports longer names.")
                     .register();

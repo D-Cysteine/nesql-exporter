@@ -102,33 +102,31 @@ dependencies {
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
 
+    /*
     val gregTech5Version: String by project
     implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev") {
         isTransitive = false
     }
+
+    // The following are compile-time dependencies of GT5.
+    val enderIoVersion: String by project
+    val forestryVersion: String by project
+    val railcraftVersion: String by project
+    compileOnly("crazypants.enderio:EnderIO-$minecraftVersion:${enderIoVersion}_beta:dev")
+    compileOnly("net.sengir.forestry:forestry_$minecraftVersion:$forestryVersion:dev")
+    compileOnly("mods.railcraft:Railcraft_$minecraftVersion:$railcraftVersion:dev")
 
     val forestryVersion: String by project
     implementation("com.github.GTNewHorizons:ForestryMC:$forestryVersion:dev") {
         isTransitive = false
     }
 
-    /*
     // The following are compile-time dependencies of Forestry.
     val buildCraftVersion: String by project
     implementation("com.github.GTNewHorizons:BuildCraft:$buildCraftVersion:dev") {
         isTransitive = false
     }
      */
-
-/*
-// The following are compile-time dependencies of GT5.
-val enderIoVersion: String by project
-val forestryVersion: String by project
-val railcraftVersion: String by project
-compileOnly("crazypants.enderio:EnderIO-$minecraftVersion:${enderIoVersion}_beta:dev")
-compileOnly("net.sengir.forestry:forestry_$minecraftVersion:$forestryVersion:dev")
-compileOnly("mods.railcraft:Railcraft_$minecraftVersion:$railcraftVersion:dev")
- */
 }
 
 tasks.withType<Jar> {

@@ -174,8 +174,15 @@ public enum Renderer {
                  */
 
                 if (outputFile.getName().length() > ConfigOptions.MAX_FILE_NAME_LENGTH.get()) {
+                    // Two reasons not to log here:
+                    //   1. This error happens a LOT in e.g. GTNH, due to very long NBT.
+                    //   2. Logging in rendering thread seems to slow everything down extremely.
+                    // If we do want to log this, recommend either making it controlled by a config
+                    // option, or saving the items somewhere and logging in client thread.
+                    /*
                     Logger.MOD.error(
                             "Render output file name too long:\n" + outputFile.getPath());
+                     */
                     return;  // finally-block should still execute
                 }
 
@@ -249,7 +256,6 @@ public enum Renderer {
         // We need to end with the model-view matrix selected. It's what the rendering code expects.
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glFrontFace(GL11.GL_CCW);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -287,7 +293,6 @@ public enum Renderer {
     private void teardownRenderState() {
         framebuffer.unbindFramebuffer();
 
-        GL11.glPopAttrib();
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPopMatrix();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);

@@ -66,6 +66,9 @@ public final class Exporter {
                     EnumChatFormatting.RED
                             + "Something went wrong during export! Please check your logs.");
             throw e;
+        } finally {
+            // If we crash, stop rendering things.
+            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
         }
     }
 
@@ -108,6 +111,8 @@ public final class Exporter {
         new BasePlugin(entityManager).postProcess();
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Data exported! Committing to database...");
+        Logger.chatMessage(
+                EnumChatFormatting.AQUA + "(This may take several minutes, and lag a lot)");
         transaction.commit();
         entityManager.close();
         entityManagerFactory.close();

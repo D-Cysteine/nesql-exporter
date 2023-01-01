@@ -39,6 +39,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     Joiner.on('\n').join(
                             itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, true)));
         } catch (Exception e) {
+            // Sometimes items will throw exceptions when you try to get their name or tooltip.
             item = new Item(
                     IdUtil.itemId(itemStack),
                     IdUtil.imageFilePath(itemStack),
@@ -51,8 +52,8 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : null,
                     Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString)
                             .collect(Collectors.joining("\n")));
-            Logger.MOD.error(
-                    "Caught exception while trying to persist item: {}\n{}", item.getItemId(), e);
+            Logger.MOD.error("Caught exception while trying to persist item: {}", item.getId());
+            e.printStackTrace();
         }
 
         if (Renderer.INSTANCE.isUnrenderedItem(item.getId())

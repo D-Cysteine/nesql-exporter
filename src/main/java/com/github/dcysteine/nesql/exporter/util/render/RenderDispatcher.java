@@ -98,6 +98,8 @@ public enum RenderDispatcher {
                             + "\nClearing and transitioning to state %s.",
                     jobQueue.size(), newState.name()));
             jobQueue.clear();
+        } else if (newState == RendererState.ERROR) {
+            jobQueue.clear();
         }
 
         rendererState = newState;
@@ -131,6 +133,10 @@ public enum RenderDispatcher {
 
     public void addAllJob(Collection<RenderJob> jobs) {
         jobQueue.addAll(jobs);
+    }
+
+    public void clearJobs() {
+        jobQueue.clear();
     }
 
     /**
