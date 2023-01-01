@@ -198,6 +198,7 @@ val devJar by tasks.creating(Jar::class) {
 val sqlJar by tasks.creating(Jar::class) {
     from(sourceSets.main.get().output)
     exclude("com/github/dcysteine/nesql/exporter")
+    exclude("META-INF")
     archiveClassifier.set("sql")
 }
 
