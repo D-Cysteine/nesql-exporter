@@ -13,8 +13,6 @@
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <!-- TODO delete this? -->
-            <!-- <property name="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"/> -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <!-- Set this to true to log SQL. -->
             <property name="hibernate.show_sql" value="false"/>
