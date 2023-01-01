@@ -7,6 +7,7 @@ import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -99,29 +100,27 @@ public final class Exporter {
             RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
         }
 
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Committing data to database...");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         // TODO call plugins here (and check deps? maybe do that on mod init...)
         new BasePlugin(entityManager).process();
         new BasePlugin(entityManager).postProcess();
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Committing complete!");
+
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Data exported! Committing to database...");
+        transaction.commit();
+        entityManager.close();
+        entityManagerFactory.close();
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete!");
 
         if (ConfigOptions.RENDER_ICONS.get()) {
+            Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");
             try {
-                Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");
-                Logger.chatMessage(
-                        EnumChatFormatting.AQUA
-                                + "If you never see a \"Rendering complete!\" message after this,");
-                Logger.chatMessage(
-                        EnumChatFormatting.AQUA
-                                + "then something probably went wrong during rendering.");
                 RenderDispatcher.INSTANCE.waitUntilJobsComplete();
             } catch (InterruptedException wakeUp) {}
             RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.DESTROYING);
             Logger.chatMessage(EnumChatFormatting.AQUA + "Rendering complete!");
         }
-
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Writing database...");
-        entityManagerFactory.close();
         Logger.chatMessage(EnumChatFormatting.AQUA + "Export complete!");
     }
 }

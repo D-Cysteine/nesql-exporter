@@ -52,6 +52,22 @@ public final class ConfigOptions {
                             + " can't handle the default.")
                     .register();
 
+    public static final Option<Integer> LOGGING_FREQUENCY =
+            new IntegerOption(
+                    Category.OPTIONS, "logging_frequency", 100,
+                    "How often to log progress. Lower is more frequent."
+                            + " Set to <=0 to disable.")
+                    .register();
+
+    public static final Option<Integer> MAX_FILE_NAME_LENGTH =
+            new IntegerOption(
+                    Category.OPTIONS, "max_file_name_length", 250,
+                    "The maximum length for rendered image file names."
+                            + " Increase this if your system supports longer names.")
+                    .register();
+
+    // TODO: allow disabling of plugins by config option. String array of disabled plugins?
+
     public enum Category {
         OPTIONS("options");
 

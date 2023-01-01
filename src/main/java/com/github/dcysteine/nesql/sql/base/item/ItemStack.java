@@ -1,9 +1,10 @@
-package com.github.dcysteine.nesql.sql.base.recipe;
+package com.github.dcysteine.nesql.sql.base.item;
 
-import com.github.dcysteine.nesql.sql.base.Item;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Comparator;
 
@@ -13,8 +14,9 @@ import java.util.Comparator;
  */
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class ItemStack implements Comparable<ItemStack> {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     private int stackSize;

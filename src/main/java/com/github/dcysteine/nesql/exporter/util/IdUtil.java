@@ -11,7 +11,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.zip.Deflater;
 
 /** Utility class containing methods for generating unique row IDs. */
 public final class IdUtil {
@@ -34,7 +36,9 @@ public final class IdUtil {
 
     public static String itemId(Item item) {
         GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return uniqueId + ID_SEPARATOR + Item.getIdFromItem(item);
+        return sanitize(
+                uniqueId.modId + ID_SEPARATOR + uniqueId.name + ID_SEPARATOR
+                        + Item.getIdFromItem(item));
     }
 
     public static String modId(ItemStack itemStack) {
@@ -43,12 +47,17 @@ public final class IdUtil {
 
     public static String modId(Item item) {
         GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return uniqueId.modId;
+        return sanitize(uniqueId.modId);
     }
 
     public static String imageFilePath(ItemStack itemStack) {
-        // The ':' character is not valid on Windows file systems.
-        return itemId(itemStack).replace(':', File.separatorChar) + Renderer.IMAGE_FILE_EXTENSION;
+        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
+        // folder.
+        String itemId = itemId(itemStack);
+        int firstIndex = itemId.indexOf(ID_SEPARATOR);
+        return itemId.substring(0, firstIndex) + File.separator
+                + itemId.substring(firstIndex + ID_SEPARATOR.length())
+                + Renderer.IMAGE_FILE_EXTENSION;
     }
 
     public static String fluidId(FluidStack fluidStack) {
@@ -62,19 +71,64 @@ public final class IdUtil {
     }
 
     public static String fluidId(Fluid fluid) {
-        return fluid.getName() + ID_SEPARATOR + fluid.getID();
+        return sanitize(fluid.getName() + ID_SEPARATOR + fluid.getID());
     }
 
     public static String imageFilePath(FluidStack fluidStack) {
         return fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
+    /**
+     * Strips out URL- and file system-unsafe characters.
+     *
+     * <p>Windows in particular is a bit finicky. We may need to expand this method in the future.
+     * See: https://stackoverflow.com/a/48962674
+     */
+    public static String sanitize(String string) {
+        // =S four backslashes are needed to escape to a single backslash in the target string
+        // We omit ':' here because we rely on it being replaced with a file separator later.
+        return string.replaceAll("[<>:\"/\\\\|?*]", "");
+    }
+
+    public static String encodeBytes(byte[] input) {
+        return Base64.getUrlEncoder().encodeToString(input);
+    }
+
+    public static String encodeString(String string) {
+        return encodeBytes(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String compressString(String string) {
+        return encodeBytes(compressBytes(string.getBytes(StandardCharsets.UTF_8)));
+    }
+
     public static String encodeNbt(NBTTagCompound nbt) {
-        return Base64.getUrlEncoder().encodeToString(
-                nbt.toString().getBytes(StandardCharsets.UTF_8));
+        return compressString(nbt.toString());
     }
 
     public static String encodeProto(Message proto) {
-        return Base64.getUrlEncoder().encodeToString(proto.toByteArray());
+        return encodeBytes(proto.toByteArray());
+    }
+
+    /** Used for recipes, which can have very long encodings. */
+    public static String compressProto(Message proto) {
+        return encodeBytes(compressBytes(proto.toByteArray()));
+    }
+
+    public static byte[] compressBytes(byte[] input) {
+        Deflater compressor = new Deflater(Deflater.BEST_COMPRESSION);
+        compressor.setInput(input);
+        compressor.finish();
+
+        byte[] outputBuffer = new byte[2 * input.length + 50];
+        int outputSize = compressor.deflate(outputBuffer);
+        compressor.end();
+
+        if (!compressor.finished()) {
+            throw new RuntimeException(
+                    "Compression output array too small!\nInput: " + Arrays.toString(input));
+        } else {
+            return Arrays.copyOfRange(outputBuffer, 0, outputSize);
+        }
     }
 }

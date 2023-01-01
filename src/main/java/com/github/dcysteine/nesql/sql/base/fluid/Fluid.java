@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.sql.base;
+package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
@@ -7,17 +7,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.annotation.Nullable;
 
 @Entity
 @EqualsAndHashCode
+@ToString
 public class Fluid implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
      * multiple fluid rows for the same Forge fluid ID).
      */
     @Id
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String id;
 
     @Column(nullable = false)

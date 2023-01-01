@@ -18,6 +18,9 @@
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <!-- Set this to true to log SQL. -->
             <property name="hibernate.show_sql" value="false"/>
+            <!-- This should enable SQL statistics, but doesn't seem to work.
+                 Maybe it needs DEBUG-level logging output enabled? -->
+            <property name="hibernate.generate_statistics" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

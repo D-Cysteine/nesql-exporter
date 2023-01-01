@@ -121,6 +121,10 @@ public enum RenderDispatcher {
         notifyAll();
     }
 
+    public int getJobCount() {
+        return jobQueue.size();
+    }
+
     public void addJob(RenderJob job) {
         jobQueue.add(job);
     }

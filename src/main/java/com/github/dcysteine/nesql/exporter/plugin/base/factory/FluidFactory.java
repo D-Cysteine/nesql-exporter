@@ -1,12 +1,13 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
+import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
-import com.github.dcysteine.nesql.sql.base.Fluid;
+import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import jakarta.persistence.EntityManager;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,8 +27,15 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
                 fluidStack.tag == null ? null : fluidStack.tag.toString());
 
         String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
-        if (ConfigOptions.RENDER_ICONS.get()
-                && Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)) {
+        if (Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)
+                && ConfigOptions.RENDER_ICONS.get()) {
+            if (Logger.intermittentLog(
+                    "Rendering fluid #{}: " + renderedFluidKey,
+                    Renderer.INSTANCE.getRenderedItemCount())) {
+                Logger.MOD.info(
+                        "Remaining rendering jobs: " + RenderDispatcher.INSTANCE.getJobCount());
+            }
+
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
         }
         return findOrPersist(Fluid.class, fluid);

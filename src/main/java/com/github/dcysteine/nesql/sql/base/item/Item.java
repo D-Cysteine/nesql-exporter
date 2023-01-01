@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.sql.base;
+package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
@@ -7,20 +7,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.annotation.Nullable;
 
 @Entity
 @EqualsAndHashCode
+@ToString
 public class Item implements Identifiable<String> {
     /**
      * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
      * be multiple item rows for the same Minecraft item ID).
      */
     @Id
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String imageFilePath;
 
     @Column(nullable = false)
@@ -46,7 +49,7 @@ public class Item implements Identifiable<String> {
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String nbt;
 
-    @Column(nullable = false)
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String tooltip;
 
     /** Needed by Hibernate. */

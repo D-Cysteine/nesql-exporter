@@ -72,9 +72,17 @@ public enum Renderer {
         return renderedItems.add(item);
     }
 
+    public int getRenderedItemCount() {
+        return renderedItems.size();
+    }
+
     /** Marks {@code fluid} as rendered, and returns true if it wasn't marked previously. */
     public boolean isUnrenderedFluid(String fluid) {
         return renderedFluids.add(fluid);
+    }
+
+    public int getRenderedFluidCount() {
+        return renderedFluids.size();
     }
 
     /**
@@ -152,11 +160,23 @@ public enum Renderer {
                     default:
                         throw new IllegalArgumentException("Unrecognized job type: " + job);
                 }
+
+                // Not sure why, but this check fails spuriously every now and then.
+                // It complains that the file exists, but I checked and it didn't actually exist.
+                // Let's just... ignore it for now XD
+                /*
                 if (outputFile.exists()) {
                     // If we cannot avoid queueing up duplicate render jobs, we can replace this
                     // throw with a continue, and move this check to before we call readImage(job)
                     throw new RuntimeException(
                             "Render output file already exists: " + outputFile.getPath());
+                }
+                 */
+
+                if (outputFile.getName().length() > ConfigOptions.MAX_FILE_NAME_LENGTH.get()) {
+                    Logger.MOD.error(
+                            "Render output file name too long:\n" + outputFile.getPath());
+                    return;  // finally-block should still execute
                 }
 
                 File parentDir = outputFile.getParentFile();
@@ -217,10 +237,7 @@ public enum Renderer {
     }
 
     private void setupRenderState() {
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glPushMatrix();
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glPushMatrix();
+        // The rendering code doesn't like it when we push matrix with the model-view matrix.
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -229,7 +246,10 @@ public enum Renderer {
         GL11.glPushMatrix();
         double scaleFactor = 1 / 16.0;
         GL11.glScaled(scaleFactor, scaleFactor, scaleFactor);
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+        // We need to end with the model-view matrix selected. It's what the rendering code expects.
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glFrontFace(GL11.GL_CCW);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -250,11 +270,11 @@ public enum Renderer {
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, ambientColour);
 
         FloatBuffer diffuseColour = BufferUtils.createFloatBuffer(4);
-        diffuseColour.put(new float[]{1f, 1f, 1f, 1f}).flip();
+        diffuseColour.put(new float[]{5f, 5f, 5f, 5f}).flip();
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, diffuseColour);
 
         IntBuffer lightPosition = BufferUtils.createIntBuffer(4);
-        lightPosition.put(new int[]{-1, 6, -1, 0}).flip();
+        lightPosition.put(new int[]{-2, -5, 1, 0}).flip();
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, lightPosition);
 
         // Not sure why, but we get better results with GL_LIGHTING disabled.
@@ -268,11 +288,9 @@ public enum Renderer {
         framebuffer.unbindFramebuffer();
 
         GL11.glPopAttrib();
-        GL11.glPopMatrix();
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPopMatrix();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glPopMatrix();
     }
 
     /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */

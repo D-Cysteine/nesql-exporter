@@ -39,9 +39,16 @@ public abstract class EntityFactory<T extends Identifiable<K>, K extends Compara
             return persisted;
         }
 
-        entityManager.getTransaction().begin();
+        // If you enable transactions, uncomment this.
+        // Don't enable transactions though; it's like literally 100x slowdown.
+        /*
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+        transaction.commit();
+         */
+
+        entityManager.persist(entity);
         return entity;
     }
 }
