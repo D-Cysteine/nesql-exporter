@@ -106,7 +106,8 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        // TODO call plugins here (and check deps? maybe do that on mod init...)
+
+        // TODO call plugin registry here
         new BasePlugin(entityManager).process();
         new BasePlugin(entityManager).postProcess();
 
@@ -120,6 +121,7 @@ public final class Exporter {
 
         if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");
+            Logger.MOD.info("Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
             try {
                 RenderDispatcher.INSTANCE.waitUntilJobsComplete();
             } catch (InterruptedException wakeUp) {}

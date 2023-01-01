@@ -30,10 +30,10 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
         if (Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)
                 && ConfigOptions.RENDER_ICONS.get()) {
             if (Logger.intermittentLog(
-                    "Rendering fluid #{}: " + renderedFluidKey,
+                    "Enqueueing render of fluid #{}: " + renderedFluidKey,
                     Renderer.INSTANCE.getRenderedItemCount())) {
                 Logger.MOD.info(
-                        "Remaining rendering jobs: " + RenderDispatcher.INSTANCE.getJobCount());
+                        "Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
             }
 
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));

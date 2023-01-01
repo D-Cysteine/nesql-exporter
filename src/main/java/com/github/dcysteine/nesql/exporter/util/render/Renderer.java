@@ -174,11 +174,10 @@ public enum Renderer {
                  */
 
                 if (outputFile.getName().length() > ConfigOptions.MAX_FILE_NAME_LENGTH.get()) {
-                    // Two reasons not to log here:
-                    //   1. This error happens a LOT in e.g. GTNH, due to very long NBT.
-                    //   2. Logging in rendering thread seems to slow everything down extremely.
-                    // If we do want to log this, recommend either making it controlled by a config
-                    // option, or saving the items somewhere and logging in client thread.
+                    // This error happens a LOT in e.g. GTNH, due to very long NBT.
+                    // If we do want to log this, recommend doing at least one of these:
+                    //   1. Set to DEBUG level
+                    //   2. Make it controlled by a config option
                     /*
                     Logger.MOD.error(
                             "Render output file name too long:\n" + outputFile.getPath());

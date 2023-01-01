@@ -59,10 +59,10 @@ public class ItemFactory extends EntityFactory<Item, String> {
         if (Renderer.INSTANCE.isUnrenderedItem(item.getId())
                 && ConfigOptions.RENDER_ICONS.get()) {
             if (Logger.intermittentLog(
-                    "Rendering item #{}: " + item.getId(),
+                    "Enqueueing render of item #{}: " + item.getId(),
                     Renderer.INSTANCE.getRenderedItemCount())) {
                 Logger.MOD.info(
-                        "Remaining rendering jobs: " + RenderDispatcher.INSTANCE.getJobCount());
+                        "Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
             }
 
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
