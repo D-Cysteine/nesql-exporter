@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.item;
 
-import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import org.springframework.data.repository.CrudRepository;
+import com.github.dcysteine.nesql.sql.Repository;
 
-public interface ItemGroupRepository extends CrudRepository<ItemGroup, String> {
+public interface ItemGroupRepository extends Repository<ItemGroup, String> {
 }

@@ -1,6 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.fluid;
 
-import org.springframework.data.repository.CrudRepository;
+import com.github.dcysteine.nesql.sql.Repository;
 
-public interface FluidRepository extends CrudRepository<Fluid, String> {
+public interface FluidRepository extends Repository<Fluid, String> {
 }

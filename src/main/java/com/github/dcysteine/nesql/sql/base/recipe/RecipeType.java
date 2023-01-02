@@ -40,6 +40,7 @@ public enum RecipeType {
     ;
 
     public final boolean shapeless;
+    // TODO move the rest of this to server display object
     public final Dimension itemInputDimensions;
     public final Dimension fluidInputDimensions;
     public final Dimension itemOutputDimensions;

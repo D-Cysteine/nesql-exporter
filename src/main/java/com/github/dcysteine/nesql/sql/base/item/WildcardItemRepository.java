@@ -1,6 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.item;
 
-import org.springframework.data.repository.CrudRepository;
+import com.github.dcysteine.nesql.sql.Repository;
 
-public interface WildcardItemRepository extends CrudRepository<WildcardItem, String> {
+public interface WildcardItemRepository extends Repository<WildcardItem, Integer> {
 }
