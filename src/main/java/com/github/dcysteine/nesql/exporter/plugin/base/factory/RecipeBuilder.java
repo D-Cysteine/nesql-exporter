@@ -5,7 +5,7 @@ import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
-import com.github.dcysteine.nesql.sql.base.item.WildcardItem;
+import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
@@ -25,7 +25,6 @@ import java.util.stream.StreamSupport;
 public class RecipeBuilder {
     private final ItemFactory itemFactory;
     private final FluidFactory fluidFactory;
-    private final WildcardItemFactory wildcardItemFactory;
     private final ItemGroupFactory itemGroupFactory;
     private final FluidGroupFactory fluidGroupFactory;
     private final RecipeFactory recipeFactory;
@@ -38,7 +37,6 @@ public class RecipeBuilder {
     public RecipeBuilder(EntityManager entityManager, RecipeType recipeType) {
         this.itemFactory = new ItemFactory(entityManager);
         this.fluidFactory = new FluidFactory(entityManager);
-        this.wildcardItemFactory = new WildcardItemFactory(entityManager);
         this.itemGroupFactory = new ItemGroupFactory(entityManager);
         this.fluidGroupFactory = new FluidGroupFactory(entityManager);
         this.recipeFactory = new RecipeFactory(entityManager);
@@ -55,9 +53,7 @@ public class RecipeBuilder {
         }
 
         if (handleWildcard && ItemUtil.isWildcardItem(input)) {
-            WildcardItem wildcardItem =
-                    wildcardItemFactory.getWildcardItem(ItemUtil.getItemId(input));
-            itemInputs.add(itemGroupFactory.getItemGroup(wildcardItem));
+            itemInputs.add(itemGroupFactory.getItemGroup(buildWildcardItemStack(input)));
         } else {
             itemInputs.add(itemGroupFactory.getItemGroup(buildItemStack(input)));
         }
@@ -87,15 +83,15 @@ public class RecipeBuilder {
         }
 
         SortedSet<ItemStack> itemStacks = new TreeSet<>();
-        SortedSet<WildcardItem> wildcardItems = new TreeSet<>();
+        SortedSet<WildcardItemStack> wildcardItemStacks = new TreeSet<>();
         for (net.minecraft.item.ItemStack input : inputs) {
             if (handleWildcard && ItemUtil.isWildcardItem(input)) {
-                wildcardItems.add(wildcardItemFactory.getWildcardItem(ItemUtil.getItemId(input)));
+                wildcardItemStacks.add(buildWildcardItemStack(input));
             } else {
                 itemStacks.add(buildItemStack(input));
             }
         }
-        itemInputs.add(itemGroupFactory.getItemGroup(itemStacks, wildcardItems));
+        itemInputs.add(itemGroupFactory.getItemGroup(itemStacks, wildcardItemStacks));
         return this;
     }
 
@@ -219,6 +215,10 @@ public class RecipeBuilder {
 
     private ItemStack buildItemStack(net.minecraft.item.ItemStack itemStack) {
         return new ItemStack(itemFactory.getItem(itemStack), itemStack.stackSize);
+    }
+
+    private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {
+        return new WildcardItemStack(ItemUtil.getItemId(itemStack), itemStack.stackSize);
     }
 
     private FluidStack buildFluidStack(net.minecraftforge.fluids.FluidStack fluidStack) {

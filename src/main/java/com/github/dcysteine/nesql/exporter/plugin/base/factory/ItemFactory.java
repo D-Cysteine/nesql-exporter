@@ -67,6 +67,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
 
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }
+
         return findOrPersist(Item.class, item);
     }
 }

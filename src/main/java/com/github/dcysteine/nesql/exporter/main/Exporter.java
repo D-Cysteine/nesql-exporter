@@ -20,14 +20,12 @@ public final class Exporter {
     private static final String DATABASE_FILE_EXTENSION = ".mv.db";
     private static final String REPOSITORY_PATH_FORMAT_STRING = "nesql" + File.separator + "%s";
     private static final String DATABASE_FILE_PATH = "nesql-db" + DATABASE_FILE_EXTENSION;
-    private static final String ITEM_IMAGE_PATH = "image" + File.separator + "item";
-    private static final String FLUID_IMAGE_PATH = "image" + File.separator + "fluid";
+    private static final String IMAGE_DIRECTORY_PATH = "image";
 
     private final String repositoryName;
     private final File repositoryDirectory;
     private final File databaseFile;
-    private final File itemImageDirectory;
-    private final File fluidImageDirectory;
+    private final File imageDirectory;
 
     public Exporter() {
         this(ConfigOptions.REPOSITORY_NAME.get());
@@ -40,8 +38,7 @@ public final class Exporter {
                         (File) FMLInjectionData.data()[6],
                         String.format(REPOSITORY_PATH_FORMAT_STRING, repositoryName));
         this.databaseFile = new File(repositoryDirectory, DATABASE_FILE_PATH);
-        this.itemImageDirectory = new File(repositoryDirectory, ITEM_IMAGE_PATH);
-        this.fluidImageDirectory = new File(repositoryDirectory, FLUID_IMAGE_PATH);
+        this.imageDirectory = new File(repositoryDirectory, IMAGE_DIRECTORY_PATH);
 
     }
 
@@ -97,10 +94,20 @@ public final class Exporter {
                         .createEntityManagerFactory("H2", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        if (ConfigOptions.RENDER_ICONS.get()) {
+        boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
+        if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
-            Renderer.INSTANCE.preinitialize(itemImageDirectory, fluidImageDirectory);
-            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
+
+            if (!imageDirectory.exists() && !imageDirectory.mkdirs()) {
+                Logger.chatMessage(EnumChatFormatting.RED + "Could not create image directory!");
+                Logger.chatMessage(EnumChatFormatting.RED + "Skipping rendering!");
+                RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
+                renderingImages = false;
+            } else {
+                Renderer.INSTANCE.preinitialize(imageDirectory);
+                RenderDispatcher.INSTANCE.setRendererState(
+                        RenderDispatcher.RendererState.INITIALIZING);
+            }
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
@@ -119,7 +126,7 @@ public final class Exporter {
         entityManagerFactory.close();
         Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete!");
 
-        if (ConfigOptions.RENDER_ICONS.get()) {
+        if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");
             Logger.MOD.info("Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
             try {

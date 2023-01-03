@@ -55,7 +55,7 @@ public final class IdUtil {
         // folder.
         String itemId = itemId(itemStack);
         int firstIndex = itemId.indexOf(ID_SEPARATOR);
-        return itemId.substring(0, firstIndex) + File.separator
+        return "item" + File.separator + itemId.substring(0, firstIndex) + File.separator
                 + itemId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
     }
@@ -75,7 +75,8 @@ public final class IdUtil {
     }
 
     public static String imageFilePath(FluidStack fluidStack) {
-        return fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
+        return "fluid" + File.separator
+                + fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
     }
 
     /**

@@ -27,9 +27,9 @@ public class ItemGroup implements Identifiable<String> {
     @SortNatural
     private SortedSet<ItemStack> itemStacks;
 
-    @ManyToMany
+    @ElementCollection
     @SortNatural
-    private SortedSet<WildcardItem> wildcardItems;
+    private SortedSet<WildcardItemStack> wildcardItemStacks;
 
     @ManyToMany(mappedBy = "itemInputs")
     @SortNatural
@@ -39,10 +39,12 @@ public class ItemGroup implements Identifiable<String> {
     protected ItemGroup() {}
 
     public ItemGroup(
-            String id, SortedSet<ItemStack> itemStacks, SortedSet<WildcardItem> wildcardItems) {
+            String id,
+            SortedSet<ItemStack> itemStacks,
+            SortedSet<WildcardItemStack> wildcardItemStacks) {
         this.id = id;
         this.itemStacks = itemStacks;
-        this.wildcardItems = wildcardItems;
+        this.wildcardItemStacks = wildcardItemStacks;
     }
 
     @Override
@@ -54,8 +56,8 @@ public class ItemGroup implements Identifiable<String> {
         return itemStacks;
     }
 
-    public SortedSet<WildcardItem> getWildcardItems() {
-        return wildcardItems;
+    public SortedSet<WildcardItemStack> getWildcardItemStacks() {
+        return wildcardItemStacks;
     }
 
     public SortedSet<Recipe> getRecipesWithInput() {

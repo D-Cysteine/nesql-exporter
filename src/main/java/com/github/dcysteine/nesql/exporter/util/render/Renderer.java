@@ -2,15 +2,14 @@ package com.github.dcysteine.nesql.exporter.util.render;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
-import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.BufferUtils;
@@ -23,8 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -43,28 +40,18 @@ public enum Renderer {
     // ONLY by the client thread!
     private Set<String> renderedItems;
     private Set<String> renderedFluids;
-    private File itemDirectory;
-    private File fluidDirectory;
+    private File imageDirectory;
     private Framebuffer framebuffer;
 
     /**
      * This method is meant to be called from the client thread, prior to setting the dispatcher
      * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
      */
-    public void preinitialize(File itemDirectory, File fluidDirectory) {
+    public void preinitialize(File imageDirectory) {
         this.imageDim = ConfigOptions.ICON_DIMENSION.get();
         this.renderedItems = new HashSet<>();
         this.renderedFluids = new HashSet<>();
-        this.itemDirectory = itemDirectory;
-        this.fluidDirectory = fluidDirectory;
-
-        if ((itemDirectory.exists() || !itemDirectory.mkdirs())
-                || (fluidDirectory.exists() || !fluidDirectory.mkdirs())) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED + "Could not create images directories!");
-            Logger.chatMessage(EnumChatFormatting.RED + "Skipping rendering!");
-            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
-        }
+        this.imageDirectory = imageDirectory;
     }
 
     /** Marks {@code item} as rendered, and returns true if it wasn't marked previously. */
@@ -150,11 +137,11 @@ public enum Renderer {
                 File outputFile;
                 switch (job.type()) {
                     case ITEM:
-                        outputFile = new File(itemDirectory, job.item().imageFilePath());
+                        outputFile = new File(imageDirectory, job.item().imageFilePath());
                         break;
 
                     case FLUID:
-                        outputFile = new File(fluidDirectory, job.fluid().imageFilePath());
+                        outputFile = new File(imageDirectory, job.fluid().imageFilePath());
                         break;
 
                     default:
@@ -243,58 +230,26 @@ public enum Renderer {
     }
 
     private void setupRenderState() {
-        // The rendering code doesn't like it when we push matrix with the model-view matrix.
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GL11.glOrtho(0.0, 1.0, 1.0, 0.0, -100.0, 100.0);
-        GL11.glPushMatrix();
         double scaleFactor = 1 / 16.0;
         GL11.glScaled(scaleFactor, scaleFactor, scaleFactor);
         // We need to end with the model-view matrix selected. It's what the rendering code expects.
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glFrontFace(GL11.GL_CCW);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-        setupLighting();
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
         framebuffer.bindFramebuffer(true);
         // Do we need to bind GL_DRAW_FRAMEBUFFER here as well? Seems to work fine as-is though...
         OpenGlHelper.func_153171_g(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
     }
 
-    private void setupLighting() {
-        // We have to reset these lighting variables each time, since Minecraft seems to reset them.
-        // GL11.GL_LIGHT0 looks like it's used already, so use GL11.GL_LIGHT1 just to reduce chances
-        // of breaking stuff.
-        FloatBuffer ambientColour = BufferUtils.createFloatBuffer(4);
-        ambientColour.put(new float[]{0.1f, 0.1f, 0.1f, 1f}).flip();
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, ambientColour);
-
-        FloatBuffer diffuseColour = BufferUtils.createFloatBuffer(4);
-        diffuseColour.put(new float[]{5f, 5f, 5f, 5f}).flip();
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, diffuseColour);
-
-        IntBuffer lightPosition = BufferUtils.createIntBuffer(4);
-        lightPosition.put(new int[]{-2, -5, 1, 0}).flip();
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, lightPosition);
-
-        // Not sure why, but we get better results with GL_LIGHTING disabled.
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_LIGHT0);
-        GL11.glEnable(GL11.GL_LIGHT1);
-        GL11.glShadeModel(GL11.GL_FLAT);
-    }
-
     private void teardownRenderState() {
         framebuffer.unbindFramebuffer();
-
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glPopMatrix();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
     }
 
     /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */

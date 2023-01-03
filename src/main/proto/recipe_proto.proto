@@ -16,6 +16,6 @@ message RecipePb {
   int32 recipe_type = 1;
   repeated ItemGroupPb item_input = 2;
   repeated FluidGroupPb fluid_input = 3;
-  repeated ItemPb item_output = 4;
-  repeated FluidPb fluid_output = 5;
+  repeated ItemStackPb item_output = 4;
+  repeated FluidStackPb fluid_output = 5;
 }
