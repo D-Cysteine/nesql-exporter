@@ -14,8 +14,8 @@ import "item_proto.proto";
 // instance) to indicate an empty spot. This is used for shaped recipes that have gaps.
 message RecipePb {
   int32 recipe_type = 1;
-  repeated ItemGroupPb item_input = 2;
-  repeated FluidGroupPb fluid_input = 3;
-  repeated ItemStackWithProbabilityPb item_output = 4;
-  repeated FluidStackWithProbabilityPb fluid_output = 5;
+  map<int32, ItemGroupPb> item_input = 2;
+  map<int32, FluidGroupPb> fluid_input = 3;
+  map<int32, ItemStackWithProbabilityPb> item_output = 4;
+  map<int32, FluidStackWithProbabilityPb> fluid_output = 5;
 }

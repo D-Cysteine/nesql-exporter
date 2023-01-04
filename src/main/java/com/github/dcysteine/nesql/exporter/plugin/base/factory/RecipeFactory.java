@@ -12,7 +12,7 @@ import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 
-import java.util.List;
+import java.util.Map;
 
 public class RecipeFactory extends EntityFactory<Recipe, String> {
     public RecipeFactory(EntityManager entityManager) {
@@ -21,10 +21,10 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
 
     public Recipe getRecipe(
             RecipeType recipeType,
-            List<ItemGroup> itemInputs,
-            List<FluidGroup> fluidInputs,
-            List<ItemStackWithProbability> itemOutputs,
-            List<FluidStackWithProbability> fluidOutputs) {
+            Map<Integer, ItemGroup> itemInputs,
+            Map<Integer, FluidGroup> fluidInputs,
+            Map<Integer, ItemStackWithProbability> itemOutputs,
+            Map<Integer, FluidStackWithProbability> fluidOutputs) {
         RecipePb recipePb =
                 ProtoBuilder.buildRecipePb(
                         recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);

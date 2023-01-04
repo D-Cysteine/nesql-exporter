@@ -13,11 +13,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
+import java.util.Map;
 
 @Entity
 @EqualsAndHashCode
@@ -31,33 +30,21 @@ public class Recipe implements Identifiable<String> {
     @Column(nullable = false)
     private RecipeType recipeType;
 
-    /**
-     * Ordered list of item inputs. May contain null for shaped recipes.
-     *
-     * <p>To be clear: it is okay for entries in this list to be null; it is NOT okay for them to be
-     * an empty {@link ItemGroup}! If this happens, it is a sign of a malformed recipe.
-     */
+    /** Map of input index to item group. May be sparse for shaped recipes. */
     @ManyToMany
-    @OrderColumn
-    private List<ItemGroup> itemInputs;
+    private Map<Integer, ItemGroup> itemInputs;
 
-    /**
-     * Ordered list of fluid inputs. May contain null for shaped recipes.
-     *
-     * <p>To be clear: it is okay for entries in this list to be null; it is NOT okay for them to be
-     * an empty {@link FluidGroup}! If this happens, it is a sign of a malformed recipe.
-     */
+    /** Map of input index to fluid group. May be sparse for shaped recipes. */
     @ManyToMany
-    @OrderColumn
-    private List<FluidGroup> fluidInputs;
+    private Map<Integer, FluidGroup> fluidInputs;
 
+    /** Map of output index to item stack. May be sparse for shaped recipes. */
     @ElementCollection
-    @OrderColumn
-    private List<ItemStackWithProbability> itemOutputs;
+    private Map<Integer, ItemStackWithProbability> itemOutputs;
 
+    /** Map of output index to fluid stack. May be sparse for shaped recipes. */
     @ElementCollection
-    @OrderColumn
-    private List<FluidStackWithProbability> fluidOutputs;
+    private Map<Integer, FluidStackWithProbability> fluidOutputs;
 
     /** Needed by Hibernate. */
     protected Recipe() {}
@@ -65,10 +52,10 @@ public class Recipe implements Identifiable<String> {
     public Recipe(
             String id,
             RecipeType recipeType,
-            List<ItemGroup> itemInputs,
-            List<FluidGroup> fluidInputs,
-            List<ItemStackWithProbability> itemOutputs,
-            List<FluidStackWithProbability> fluidOutputs) {
+            Map<Integer, ItemGroup> itemInputs,
+            Map<Integer, FluidGroup> fluidInputs,
+            Map<Integer, ItemStackWithProbability> itemOutputs,
+            Map<Integer, FluidStackWithProbability> fluidOutputs) {
         this.id = id;
         this.recipeType = recipeType;
         this.itemInputs = itemInputs;
@@ -86,19 +73,19 @@ public class Recipe implements Identifiable<String> {
         return recipeType;
     }
 
-    public List<ItemGroup> getItemInputs() {
+    public Map<Integer, ItemGroup> getItemInputs() {
         return itemInputs;
     }
 
-    public List<FluidGroup> getFluidInputs() {
+    public Map<Integer, FluidGroup> getFluidInputs() {
         return fluidInputs;
     }
 
-    public List<ItemStackWithProbability> getItemOutputs() {
+    public Map<Integer, ItemStackWithProbability> getItemOutputs() {
         return itemOutputs;
     }
 
-    public List<FluidStackWithProbability> getFluidOutputs() {
+    public Map<Integer, FluidStackWithProbability> getFluidOutputs() {
         return fluidOutputs;
     }
 }

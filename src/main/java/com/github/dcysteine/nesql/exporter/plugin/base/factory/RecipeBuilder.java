@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
+import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
@@ -12,10 +13,10 @@ import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -31,10 +32,14 @@ public class RecipeBuilder {
     private final FluidGroupFactory fluidGroupFactory;
     private final RecipeFactory recipeFactory;
     private final RecipeType recipeType;
-    private final List<ItemGroup> itemInputs;
-    private final List<FluidGroup> fluidInputs;
-    private final List<ItemStackWithProbability> itemOutputs;
-    private final List<FluidStackWithProbability> fluidOutputs;
+    private final Map<Integer, ItemGroup> itemInputs;
+    private final Map<Integer, FluidGroup> fluidInputs;
+    private final Map<Integer, ItemStackWithProbability> itemOutputs;
+    private final Map<Integer, FluidStackWithProbability> fluidOutputs;
+    private int itemInputsIndex;
+    private int fluidInputsIndex;
+    private int itemOutputsIndex;
+    private int fluidOutputsIndex;
 
     public RecipeBuilder(EntityManager entityManager, RecipeType recipeType) {
         this.itemFactory = new ItemFactory(entityManager);
@@ -43,21 +48,25 @@ public class RecipeBuilder {
         this.fluidGroupFactory = new FluidGroupFactory(entityManager);
         this.recipeFactory = new RecipeFactory(entityManager);
         this.recipeType = recipeType;
-        this.itemInputs = new ArrayList<>();
-        this.fluidInputs = new ArrayList<>();
-        this.itemOutputs = new ArrayList<>();
-        this.fluidOutputs = new ArrayList<>();
+        this.itemInputs = new HashMap<>();
+        this.fluidInputs = new HashMap<>();
+        this.itemOutputs = new HashMap<>();
+        this.fluidOutputs = new HashMap<>();
+        this.itemInputsIndex = 0;
+        this.fluidInputsIndex = 0;
+        this.itemOutputsIndex = 0;
+        this.fluidOutputsIndex = 0;
     }
 
     public RecipeBuilder addItemInput(net.minecraft.item.ItemStack input, boolean handleWildcard) {
-        if (input == null) {
-            return skipItemInput();
-        }
-
         if (handleWildcard && ItemUtil.isWildcardItem(input)) {
-            itemInputs.add(itemGroupFactory.getItemGroup(buildWildcardItemStack(input)));
+            itemInputs.put(
+                    itemInputsIndex++,
+                    itemGroupFactory.getItemGroup(buildWildcardItemStack(input)));
         } else {
-            itemInputs.add(itemGroupFactory.getItemGroup(buildItemStack(input)));
+            itemInputs.put(
+                    itemInputsIndex++,
+                    itemGroupFactory.getItemGroup(buildItemStack(input)));
         }
 
         return this;
@@ -80,10 +89,6 @@ public class RecipeBuilder {
     /** Adds all items in {@code inputs} into a single input slot, as an item group. */
     public RecipeBuilder addItemGroupInput(
             Collection<net.minecraft.item.ItemStack> inputs, boolean handleWildcard) {
-        if (inputs == null) {
-            return skipItemInput();
-        }
-
         SortedSet<ItemStack> itemStacks = new TreeSet<>();
         SortedSet<WildcardItemStack> wildcardItemStacks = new TreeSet<>();
         for (net.minecraft.item.ItemStack input : inputs) {
@@ -93,31 +98,30 @@ public class RecipeBuilder {
                 itemStacks.add(buildItemStack(input));
             }
         }
-        itemInputs.add(itemGroupFactory.getItemGroup(itemStacks, wildcardItemStacks));
+
+        itemInputs.put(
+                itemInputsIndex++, itemGroupFactory.getItemGroup(itemStacks, wildcardItemStacks));
         return this;
     }
 
     /** Adds all items in {@code inputs} into a single input slot, as an item group. */
     public RecipeBuilder addItemGroupInput(
             net.minecraft.item.ItemStack[] inputs, boolean handleWildcard) {
-        if (inputs == null) {
-            return skipItemInput();
-        }
-
         return addItemGroupInput(Arrays.asList(inputs), handleWildcard);
     }
 
     public RecipeBuilder skipItemInput() {
-        itemInputs.add(null);
+        if (recipeType.isShapeless()) {
+            Logger.MOD.warn("Skipping item input index for shapeless recipe!");
+        }
+
+        itemInputsIndex++;
         return this;
     }
 
     public RecipeBuilder addFluidInput(net.minecraftforge.fluids.FluidStack input) {
-        if (input == null) {
-            return skipFluidInput();
-        }
-
-        fluidInputs.add(fluidGroupFactory.getFluidGroup(buildFluidStack(input)));
+        fluidInputs.put(
+                fluidInputsIndex++, fluidGroupFactory.getFluidGroup(buildFluidStack(input)));
         return this;
     }
 
@@ -135,30 +139,26 @@ public class RecipeBuilder {
 
     /** Adds all fluids in {@code inputs} into a single input slot, as an fluid group. */
     public RecipeBuilder addFluidGroupInput(Iterable<net.minecraftforge.fluids.FluidStack> inputs) {
-        if (inputs == null) {
-            return skipFluidInput();
-        }
-
         SortedSet<FluidStack> fluidStacks =
                 StreamSupport.stream(inputs.spliterator(), false)
                         .filter(Objects::nonNull)
                         .map(this::buildFluidStack)
                         .collect(Collectors.toCollection(TreeSet::new));
-        fluidInputs.add(fluidGroupFactory.getFluidGroup(fluidStacks));
+        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(fluidStacks));
         return this;
     }
 
     /** Adds all fluids in {@code inputs} into a single input slot, as an fluid group. */
     public RecipeBuilder addFluidGroupInput(net.minecraftforge.fluids.FluidStack[] inputs) {
-        if (inputs == null) {
-            return skipFluidInput();
-        }
-
         return addFluidGroupInput(Arrays.asList(inputs));
     }
 
     public RecipeBuilder skipFluidInput() {
-        fluidInputs.add(null);
+        if (recipeType.isShapeless()) {
+            Logger.MOD.warn("Skipping fluid input index for shapeless recipe!");
+        }
+
+        fluidInputsIndex++;
         return this;
     }
 
@@ -167,7 +167,7 @@ public class RecipeBuilder {
             return skipItemOutput();
         }
 
-        itemOutputs.add(buildItemStackWithProbability(output, probability));
+        itemOutputs.put(itemOutputsIndex++, buildItemStackWithProbability(output, probability));
         return this;
     }
 
@@ -186,17 +186,17 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipItemOutput() {
-        itemOutputs.add(null);
+        if (recipeType.isShapeless()) {
+            Logger.MOD.warn("Skipping item output index for shapeless recipe!");
+        }
+
+        itemOutputsIndex++;
         return this;
     }
 
     public RecipeBuilder addFluidOutput(
             net.minecraftforge.fluids.FluidStack output, double probability) {
-        if (output == null) {
-            return skipFluidOutput();
-        }
-
-        fluidOutputs.add(buildFluidStackWithProbability(output, probability));
+        fluidOutputs.put(fluidOutputsIndex++, buildFluidStackWithProbability(output, probability));
         return this;
     }
 
@@ -215,7 +215,11 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipFluidOutput() {
-        fluidOutputs.add(null);
+        if (recipeType.isShapeless()) {
+            Logger.MOD.warn("Skipping fluid output index for shapeless recipe!");
+        }
+
+        fluidOutputsIndex++;
         return this;
     }
 

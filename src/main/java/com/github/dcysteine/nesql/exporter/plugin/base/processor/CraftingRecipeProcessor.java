@@ -63,6 +63,7 @@ public class CraftingRecipeProcessor {
                 new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING);
         for (Object itemInput : recipe.recipeItems) {
             if (itemInput == null) {
+                builder.skipItemInput();
                 continue;
             }
 
@@ -76,6 +77,7 @@ public class CraftingRecipeProcessor {
                 new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING_OREDICT);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput == null) {
+                builder.skipItemInput();
                 continue;
             }
 

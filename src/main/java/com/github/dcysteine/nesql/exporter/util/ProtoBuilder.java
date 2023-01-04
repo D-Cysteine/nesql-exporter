@@ -19,8 +19,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 /** Contains shared methods for building protos. */
@@ -30,19 +29,18 @@ public final class ProtoBuilder {
 
     public static RecipePb buildRecipePb(
             RecipeType recipeType,
-            List<ItemGroup> itemInputs,
-            List<FluidGroup> fluidInputs,
-            List<ItemStackWithProbability> itemOutputs,
-            List<FluidStackWithProbability> fluidOutputs) {
+            Map<Integer, ItemGroup> itemInputs,
+            Map<Integer, FluidGroup> fluidInputs,
+            Map<Integer, ItemStackWithProbability> itemOutputs,
+            Map<Integer, FluidStackWithProbability> fluidOutputs) {
         RecipePb.Builder builder = RecipePb.newBuilder().setRecipeType(recipeType.ordinal());
-        itemInputs.forEach(
-                itemGroup -> builder.addItemInput(buildItemGroupPb(itemGroup)));
-        fluidInputs.forEach(
-                fluidGroup -> builder.addFluidInput(buildFluidGroupPb(fluidGroup)));
+        itemInputs.forEach((key, value) -> builder.putItemInput(key, buildItemGroupPb(value)));
+        fluidInputs.forEach((key, value) -> builder.putFluidInput(key, buildFluidGroupPb(value)));
         itemOutputs.forEach(
-                itemStack -> builder.addItemOutput(buildItemStackWithProbabilityPb(itemStack)));
+                (key, value) -> builder.putItemOutput(key, buildItemStackWithProbabilityPb(value)));
         fluidOutputs.forEach(
-                fluidStack -> builder.addFluidOutput(buildFluidStackWithProbabilityPb(fluidStack)));
+                (key, value) ->
+                        builder.putFluidOutput(key, buildFluidStackWithProbabilityPb(value)));
         return builder.build();
     }
 
@@ -82,11 +80,7 @@ public final class ProtoBuilder {
         return builder.build();
     }
 
-    public static ItemStackPb buildItemStackPb(@Nullable ItemStack itemStack) {
-        if (itemStack == null) {
-            return ItemStackPb.getDefaultInstance();
-        }
-
+    public static ItemStackPb buildItemStackPb(ItemStack itemStack) {
         Item item = itemStack.getItem();
         ItemStackPb.Builder builder = ItemStackPb.newBuilder()
                 .setItemId(item.getItemId())
@@ -113,22 +107,14 @@ public final class ProtoBuilder {
     }
 
     public static WildcardItemStackPb buildWildcardItemStackPb(
-            @Nullable WildcardItemStack wildcardItemStack) {
-        if (wildcardItemStack == null) {
-            return WildcardItemStackPb.getDefaultInstance();
-        }
-
+            WildcardItemStack wildcardItemStack) {
         return WildcardItemStackPb.newBuilder()
                 .setItemId(wildcardItemStack.getItemId())
                 .setStackSize(wildcardItemStack.getStackSize())
                 .build();
     }
 
-    public static FluidStackPb buildFluidStackPb(@Nullable FluidStack fluidStack) {
-        if (fluidStack == null) {
-            return FluidStackPb.getDefaultInstance();
-        }
-
+    public static FluidStackPb buildFluidStackPb(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         FluidStackPb.Builder builder = FluidStackPb.newBuilder()
                 .setFluidId(fluid.getFluidId())
