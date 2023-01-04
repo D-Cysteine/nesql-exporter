@@ -5,9 +5,9 @@ import com.github.dcysteine.nesql.exporter.proto.RecipePb;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
-import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
+import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
@@ -23,8 +23,8 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
             RecipeType recipeType,
             List<ItemGroup> itemInputs,
             List<FluidGroup> fluidInputs,
-            List<ItemStack> itemOutputs,
-            List<FluidStack> fluidOutputs) {
+            List<ItemStackWithProbability> itemOutputs,
+            List<FluidStackWithProbability> fluidOutputs) {
         RecipePb recipePb =
                 ProtoBuilder.buildRecipePb(
                         recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);

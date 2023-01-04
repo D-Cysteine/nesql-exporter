@@ -22,4 +22,15 @@ public interface RecipeRepository extends Repository<Recipe, String> {
             + "SELECT RECIPE_ID FROM RECIPE_ITEMOUTPUTS WHERE ITEM_ID = ?1)",
             nativeQuery = true)
     List<Recipe> findByItemOutput(String itemId);
+
+    @Query(value = "SELECT * FROM RECIPE WHERE ID IN ("
+            + "SELECT RECIPESWITHINPUT_ID FROM RECIPE_FLUIDGROUP WHERE FLUIDINPUTS_ID IN ("
+            + "SELECT FLUIDGROUP_ID FROM FLUIDGROUP_FLUIDSTACKS WHERE FLUID_ID = ?1))",
+            nativeQuery = true)
+    List<Recipe> findByFluidInput(String fluidId);
+
+    @Query(value = "SELECT * FROM RECIPE WHERE ID IN ("
+            + "SELECT RECIPE_ID FROM RECIPE_FLUIDOUTPUTS WHERE FLUID_ID = ?1)",
+            nativeQuery = true)
+    List<Recipe> findByFluidOutput(String fluidId);
 }

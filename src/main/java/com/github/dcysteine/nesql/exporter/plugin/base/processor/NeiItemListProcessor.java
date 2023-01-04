@@ -6,6 +6,7 @@ import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 public class NeiItemListProcessor {
     private final EntityManager entityManager;
@@ -17,6 +18,11 @@ public class NeiItemListProcessor {
     public void process() {
         int total = ItemList.items.size();
         Logger.MOD.info("Processing {} NEI items...", total);
+
+        if (total == 0) {
+            Logger.chatMessage(
+                    EnumChatFormatting.RED + "NEI item list is empty; did you forget to load it?");
+        }
 
         ItemFactory itemFactory = new ItemFactory(entityManager);
         int count = 0;

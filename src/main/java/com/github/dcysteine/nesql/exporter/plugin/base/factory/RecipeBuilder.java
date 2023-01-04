@@ -3,8 +3,10 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
+import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
@@ -31,8 +33,8 @@ public class RecipeBuilder {
     private final RecipeType recipeType;
     private final List<ItemGroup> itemInputs;
     private final List<FluidGroup> fluidInputs;
-    private final List<ItemStack> itemOutputs;
-    private final List<FluidStack> fluidOutputs;
+    private final List<ItemStackWithProbability> itemOutputs;
+    private final List<FluidStackWithProbability> fluidOutputs;
 
     public RecipeBuilder(EntityManager entityManager, RecipeType recipeType) {
         this.itemFactory = new ItemFactory(entityManager);
@@ -160,13 +162,17 @@ public class RecipeBuilder {
         return this;
     }
 
-    public RecipeBuilder addItemOutput(net.minecraft.item.ItemStack output) {
+    public RecipeBuilder addItemOutput(net.minecraft.item.ItemStack output, double probability) {
         if (output == null) {
             return skipItemOutput();
         }
 
-        itemOutputs.add(buildItemStack(output));
+        itemOutputs.add(buildItemStackWithProbability(output, probability));
         return this;
+    }
+
+    public RecipeBuilder addItemOutput(net.minecraft.item.ItemStack output) {
+        return addItemOutput(output, 1.0d);
     }
 
     public RecipeBuilder addAllItemOutput(Iterable<net.minecraft.item.ItemStack> outputs) {
@@ -184,13 +190,18 @@ public class RecipeBuilder {
         return this;
     }
 
-    public RecipeBuilder addFluidOutput(net.minecraftforge.fluids.FluidStack output) {
+    public RecipeBuilder addFluidOutput(
+            net.minecraftforge.fluids.FluidStack output, double probability) {
         if (output == null) {
             return skipFluidOutput();
         }
 
-        fluidOutputs.add(buildFluidStack(output));
+        fluidOutputs.add(buildFluidStackWithProbability(output, probability));
         return this;
+    }
+
+    public RecipeBuilder addFluidOutput(net.minecraftforge.fluids.FluidStack output) {
+        return addFluidOutput(output, 1.0d);
     }
 
     public RecipeBuilder addAllFluidOutput(Iterable<net.minecraftforge.fluids.FluidStack> outputs) {
@@ -217,11 +228,23 @@ public class RecipeBuilder {
         return new ItemStack(itemFactory.getItem(itemStack), itemStack.stackSize);
     }
 
+    private ItemStackWithProbability buildItemStackWithProbability(
+            net.minecraft.item.ItemStack itemStack, double probability) {
+        return new ItemStackWithProbability(
+                itemFactory.getItem(itemStack), itemStack.stackSize, probability);
+    }
+
     private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {
         return new WildcardItemStack(ItemUtil.getItemId(itemStack), itemStack.stackSize);
     }
 
     private FluidStack buildFluidStack(net.minecraftforge.fluids.FluidStack fluidStack) {
         return new FluidStack(fluidFactory.getFluid(fluidStack), fluidStack.amount);
+    }
+
+    private FluidStackWithProbability buildFluidStackWithProbability(
+            net.minecraftforge.fluids.FluidStack fluidStack, double probability) {
+        return new FluidStackWithProbability(
+                fluidFactory.getFluid(fluidStack), fluidStack.amount, probability);
     }
 }

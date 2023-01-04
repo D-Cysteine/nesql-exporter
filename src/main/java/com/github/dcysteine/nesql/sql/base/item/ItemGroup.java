@@ -16,7 +16,7 @@ import java.util.SortedSet;
 
 /** A group of {@link ItemStack}s, all fitting into a single input slot in a recipe. */
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "recipesWithInput")  // Prevent stack overflow
 @ToString
 public class ItemGroup implements Identifiable<String> {
     @Id

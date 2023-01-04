@@ -13,4 +13,8 @@ public enum RecipeType {
     RecipeType(boolean shapeless) {
         this.shapeless = shapeless;
     }
+
+    public boolean isShapeless() {
+        return shapeless;
+    }
 }

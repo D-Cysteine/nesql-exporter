@@ -2,10 +2,10 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
+import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
-import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -53,11 +53,11 @@ public class Recipe implements Identifiable<String> {
 
     @ElementCollection
     @OrderColumn
-    private List<ItemStack> itemOutputs;
+    private List<ItemStackWithProbability> itemOutputs;
 
     @ElementCollection
     @OrderColumn
-    private List<FluidStack> fluidOutputs;
+    private List<FluidStackWithProbability> fluidOutputs;
 
     /** Needed by Hibernate. */
     protected Recipe() {}
@@ -67,8 +67,8 @@ public class Recipe implements Identifiable<String> {
             RecipeType recipeType,
             List<ItemGroup> itemInputs,
             List<FluidGroup> fluidInputs,
-            List<ItemStack> itemOutputs,
-            List<FluidStack> fluidOutputs) {
+            List<ItemStackWithProbability> itemOutputs,
+            List<FluidStackWithProbability> fluidOutputs) {
         this.id = id;
         this.recipeType = recipeType;
         this.itemInputs = itemInputs;
@@ -94,11 +94,11 @@ public class Recipe implements Identifiable<String> {
         return fluidInputs;
     }
 
-    public List<ItemStack> getItemOutputs() {
+    public List<ItemStackWithProbability> getItemOutputs() {
         return itemOutputs;
     }
 
-    public List<FluidStack> getFluidOutputs() {
+    public List<FluidStackWithProbability> getFluidOutputs() {
         return fluidOutputs;
     }
 }

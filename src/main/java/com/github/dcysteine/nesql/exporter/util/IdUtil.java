@@ -86,8 +86,7 @@ public final class IdUtil {
      * See: https://stackoverflow.com/a/48962674
      */
     public static String sanitize(String string) {
-        // =S four backslashes are needed to escape to a single backslash in the target string
-        // We omit ':' here because we rely on it being replaced with a file separator later.
+        // Note: four backslashes are needed to escape to a single backslash in the target string.
         return string.replaceAll("[<>:\"/\\\\|?*]", "");
     }
 
@@ -126,6 +125,7 @@ public final class IdUtil {
         compressor.end();
 
         if (!compressor.finished()) {
+            // Throw because this type of failure could lead to ID collision, albeit unlikely.
             throw new RuntimeException(
                     "Compression output array too small!\nInput: " + Arrays.toString(input));
         } else {

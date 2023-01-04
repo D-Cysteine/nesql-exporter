@@ -13,3 +13,10 @@ message FluidStackPb {
   int32 amount = 2;
   string nbt = 3;
 }
+
+message FluidStackWithProbabilityPb {
+  int32 fluid_id = 1;
+  int32 amount = 2;
+  string nbt = 3;
+  double probability = 4;
+}

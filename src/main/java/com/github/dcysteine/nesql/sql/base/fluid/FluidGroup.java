@@ -16,7 +16,7 @@ import java.util.SortedSet;
 
 /** A group of {@link FluidStack}s, all fitting into a single input slot in a recipe. */
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "recipesWithInput")  // Prevent stack overflow
 @ToString
 public class FluidGroup implements Identifiable<String> {
     @Id

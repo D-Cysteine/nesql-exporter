@@ -2,16 +2,20 @@ package com.github.dcysteine.nesql.exporter.util;
 
 import com.github.dcysteine.nesql.exporter.proto.FluidGroupPb;
 import com.github.dcysteine.nesql.exporter.proto.FluidStackPb;
+import com.github.dcysteine.nesql.exporter.proto.FluidStackWithProbabilityPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemGroupPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemStackPb;
+import com.github.dcysteine.nesql.exporter.proto.ItemStackWithProbabilityPb;
 import com.github.dcysteine.nesql.exporter.proto.RecipePb;
 import com.github.dcysteine.nesql.exporter.proto.WildcardItemStackPb;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
+import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 
@@ -28,17 +32,17 @@ public final class ProtoBuilder {
             RecipeType recipeType,
             List<ItemGroup> itemInputs,
             List<FluidGroup> fluidInputs,
-            List<ItemStack> itemOutputs,
-            List<FluidStack> fluidOutputs) {
+            List<ItemStackWithProbability> itemOutputs,
+            List<FluidStackWithProbability> fluidOutputs) {
         RecipePb.Builder builder = RecipePb.newBuilder().setRecipeType(recipeType.ordinal());
         itemInputs.forEach(
                 itemGroup -> builder.addItemInput(buildItemGroupPb(itemGroup)));
         fluidInputs.forEach(
                 fluidGroup -> builder.addFluidInput(buildFluidGroupPb(fluidGroup)));
         itemOutputs.forEach(
-                itemStack -> builder.addItemOutput(buildItemStackPb(itemStack)));
+                itemStack -> builder.addItemOutput(buildItemStackWithProbabilityPb(itemStack)));
         fluidOutputs.forEach(
-                fluidStack -> builder.addFluidOutput(buildFluidStackPb(fluidStack)));
+                fluidStack -> builder.addFluidOutput(buildFluidStackWithProbabilityPb(fluidStack)));
         return builder.build();
     }
 
@@ -94,6 +98,20 @@ public final class ProtoBuilder {
         return builder.build();
     }
 
+    public static ItemStackWithProbabilityPb buildItemStackWithProbabilityPb(
+            ItemStackWithProbability itemStack) {
+        Item item = itemStack.getItem();
+        ItemStackWithProbabilityPb.Builder builder = ItemStackWithProbabilityPb.newBuilder()
+                .setItemId(item.getItemId())
+                .setDamage(item.getItemDamage())
+                .setStackSize(itemStack.getStackSize())
+                .setProbability(itemStack.getProbability());
+        if (item.hasNbt()) {
+            builder.setNbt(item.getNbt());
+        }
+        return builder.build();
+    }
+
     public static WildcardItemStackPb buildWildcardItemStackPb(
             @Nullable WildcardItemStack wildcardItemStack) {
         if (wildcardItemStack == null) {
@@ -115,6 +133,19 @@ public final class ProtoBuilder {
         FluidStackPb.Builder builder = FluidStackPb.newBuilder()
                 .setFluidId(fluid.getFluidId())
                 .setAmount(fluidStack.getAmount());
+        if (fluid.hasNbt()) {
+            builder.setNbt(fluid.getNbt());
+        }
+        return builder.build();
+    }
+
+    public static FluidStackWithProbabilityPb buildFluidStackWithProbabilityPb(
+            FluidStackWithProbability fluidStack) {
+        Fluid fluid = fluidStack.getFluid();
+        FluidStackWithProbabilityPb.Builder builder = FluidStackWithProbabilityPb.newBuilder()
+                .setFluidId(fluid.getFluidId())
+                .setAmount(fluidStack.getAmount())
+                .setProbability(fluidStack.getProbability());
         if (fluid.hasNbt()) {
             builder.setNbt(fluid.getNbt());
         }

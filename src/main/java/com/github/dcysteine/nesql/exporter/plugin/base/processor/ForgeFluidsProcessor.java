@@ -30,7 +30,7 @@ public class ForgeFluidsProcessor {
             fluidFactory.findOrPersist(Fluid.class, fluidFactory.getFluid(fluidStack));
 
             if (Logger.intermittentLog(count)) {
-                Logger.MOD.info("Processed NEI item {} of {}", count, total);
+                Logger.MOD.info("Processed Forge fluid {} of {}", count, total);
                 Logger.MOD.info("Most recent item: {}", fluidStack.getLocalizedName());
             }
         }

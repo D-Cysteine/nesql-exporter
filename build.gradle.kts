@@ -95,6 +95,7 @@ dependencies {
 
     val hibernateVersion: String by project
     shadowImplementation("org.hibernate:hibernate-core-jakarta:$hibernateVersion")
+    annotationProcessor("org.hibernate:hibernate-jpamodelgen-jakarta:$hibernateVersion")
 
     val h2Version: String by project
     shadowRuntime("com.h2database:h2:$h2Version")
