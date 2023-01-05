@@ -4,7 +4,9 @@ The exporter module for NESQL. The server module can be found
 [here](https://github.com/D-Cysteine/nesql-server). Still very WIP.
 
 Currently only supports exporting items, fluids, and vanilla crafting and
-furnace recipes.
+furnace recipes. The exported database is an
+[H2 database](http://www.h2database.com/html/main.html), and can also be queried
+directly with the H2 client.
 
 ### Instructions
 
