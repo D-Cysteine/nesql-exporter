@@ -22,13 +22,14 @@ public class CraftingRecipeProcessor {
         this.entityManager = entityManager;
     }
 
-    @SuppressWarnings("unchecked")
     public void process() {
         int total = CraftingManager.getInstance().getRecipeList().size();
         Logger.MOD.info("Processing {} crafting recipes...", total);
 
+        @SuppressWarnings("unchecked")
+        List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
         int count = 0;
-        for (IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+        for (IRecipe recipe : recipes) {
             count++;
 
             if (recipe.getRecipeOutput() == null) {

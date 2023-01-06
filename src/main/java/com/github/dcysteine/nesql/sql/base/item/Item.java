@@ -3,13 +3,16 @@ package com.github.dcysteine.nesql.sql.base.item;
 import com.github.dcysteine.nesql.sql.Identifiable;
 
 import com.github.dcysteine.nesql.sql.Sql;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @Entity
 @EqualsAndHashCode
@@ -49,8 +52,9 @@ public class Item implements Identifiable<String> {
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String nbt;
 
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
-    private String tooltip;
+    @ElementCollection
+    @OrderColumn
+    private List<String> tooltip;
 
     /** Needed by Hibernate. */
     protected Item() {}
@@ -65,7 +69,7 @@ public class Item implements Identifiable<String> {
             int itemId,
             int itemDamage,
             @Nullable String nbt,
-            String tooltip) {
+            List<String> tooltip) {
         this.id = id;
         this.imageFilePath = imageFilePath;
         this.modId = modId;
@@ -125,7 +129,7 @@ public class Item implements Identifiable<String> {
         return nbt;
     }
 
-    public String getTooltip() {
+    public List<String> getTooltip() {
         return tooltip;
     }
 }

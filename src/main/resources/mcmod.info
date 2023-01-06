@@ -5,7 +5,7 @@
     "description": "Exports recipes and other data into an H2 SQL database",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "https://github.com/D-Cysteine/neisql-exporter",
+    "url": "https://github.com/D-Cysteine/nesql-exporter",
     "authorList": ["D-Cysteine"]
 }
 ]

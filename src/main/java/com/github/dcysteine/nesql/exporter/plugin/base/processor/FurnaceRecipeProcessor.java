@@ -17,8 +17,8 @@ public class FurnaceRecipeProcessor {
         this.entityManager = entityManager;
     }
 
-    @SuppressWarnings("unchecked")
     public void process() {
+        @SuppressWarnings("unchecked")
         Map<ItemStack, ItemStack> recipes = FurnaceRecipes.smelting().getSmeltingList();
         int total = recipes.size();
         Logger.MOD.info("Processing {} furnace recipes...", total);

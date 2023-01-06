@@ -2,8 +2,8 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.proto.ItemGroupPb;
-import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
+import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
@@ -21,7 +21,7 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
             SortedSet<ItemStack> itemStacks, SortedSet<WildcardItemStack> wildcardItemStacks) {
         ItemGroupPb itemGroupPb = ProtoBuilder.buildItemGroupPb(itemStacks, wildcardItemStacks);
         ItemGroup itemGroup =
-                new ItemGroup(IdUtil.compressProto(itemGroupPb), itemStacks, wildcardItemStacks);
+                new ItemGroup(StringUtil.compressProto(itemGroupPb), itemStacks, wildcardItemStacks);
         return findOrPersist(ItemGroup.class, itemGroup);
     }
 

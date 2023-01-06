@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.github.dcysteine.nesql.exporter.proto;
+
+option java_multiple_files = true;
+
+// Encoding of NBT tags into proto format.
+// Unlike the other protos, we will persist the serialized form of this proto in the DB.
+message NbtPb {
+  int32 byte = 1;
+  int32 short = 2;
+  int32 int = 3;
+  int64 long = 4;
+  float float = 5;
+  double double = 6;
+  repeated int32 byte_array = 7;
+  string string = 8;
+  repeated NbtPb list = 9;
+  map<string, NbtPb> compound = 10;
+  repeated int32 int_array = 11;
+}

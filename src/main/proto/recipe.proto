@@ -4,8 +4,8 @@ package com.github.dcysteine.nesql.exporter.proto;
 
 option java_multiple_files = true;
 
-import "fluid_proto.proto";
-import "item_proto.proto";
+import "fluid.proto";
+import "item.proto";
 
 // Message that encodes all of the needed information to uniquely identify a recipe.
 // We will serialize this message and use that as the primary key for the recipe table.
