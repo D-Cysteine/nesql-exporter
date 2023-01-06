@@ -16,6 +16,8 @@ import jakarta.persistence.EntityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,11 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     tooltip);
         } catch (Exception e) {
             // Sometimes items will throw exceptions when you try to get their name or tooltip.
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            e.printStackTrace(printWriter);
+            List<String> stackTrace = Arrays.asList(stringWriter.toString().split("\n"));
+
             item = new Item(
                     IdUtil.itemId(itemStack),
                     IdUtil.imageFilePath(itemStack),
@@ -66,8 +73,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     ItemUtil.getItemId(itemStack),
                     itemStack.getItemDamage(),
                     nbt,
-                    Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString)
-                            .collect(Collectors.toCollection(ArrayList::new)));
+                    stackTrace);
             Logger.MOD.error("Caught exception while trying to persist item: {}", item.getId());
             e.printStackTrace();
         }

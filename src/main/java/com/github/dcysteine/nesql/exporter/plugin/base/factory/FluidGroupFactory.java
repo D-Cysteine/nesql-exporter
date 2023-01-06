@@ -18,7 +18,7 @@ public class FluidGroupFactory extends EntityFactory<FluidGroup, String> {
 
     public FluidGroup getFluidGroup(SortedSet<FluidStack> fluidStacks) {
         FluidGroupPb fluidGroupPb = ProtoBuilder.buildFluidGroupPb(fluidStacks);
-        FluidGroup fluidGroup = new FluidGroup(StringUtil.compressProto(fluidGroupPb), fluidStacks);
+        FluidGroup fluidGroup = new FluidGroup(StringUtil.encodeProto(fluidGroupPb), fluidStacks);
         return findOrPersist(FluidGroup.class, fluidGroup);
     }
 

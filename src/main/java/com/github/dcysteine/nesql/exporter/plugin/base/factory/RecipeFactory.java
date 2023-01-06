@@ -30,7 +30,7 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
                         recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
         Recipe recipe =
                 new Recipe(
-                        StringUtil.compressProto(recipePb), recipeType,
+                        StringUtil.encodeProto(recipePb), recipeType,
                         itemInputs, fluidInputs, itemOutputs, fluidOutputs);
         return findOrPersist(Recipe.class, recipe);
     }

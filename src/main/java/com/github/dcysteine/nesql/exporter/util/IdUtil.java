@@ -32,7 +32,7 @@ public final class IdUtil {
 
     public static String itemId(Item item) {
         GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return StringUtil.sanitize(
+        return sanitize(
                 uniqueId.modId + ID_SEPARATOR + uniqueId.name + ID_SEPARATOR
                         + Item.getIdFromItem(item));
     }
@@ -43,7 +43,7 @@ public final class IdUtil {
 
     public static String modId(Item item) {
         GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return StringUtil.sanitize(uniqueId.modId);
+        return sanitize(uniqueId.modId);
     }
 
     public static String imageFilePath(ItemStack itemStack) {
@@ -68,11 +68,22 @@ public final class IdUtil {
     }
 
     public static String fluidId(Fluid fluid) {
-        return StringUtil.sanitize(fluid.getName() + ID_SEPARATOR + fluid.getID());
+        return sanitize(fluid.getName() + ID_SEPARATOR + fluid.getID());
     }
 
     public static String imageFilePath(FluidStack fluidStack) {
         return "fluid" + File.separator
                 + fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
+    }
+
+    /**
+     * Strips out URL- and file system-unsafe characters.
+     *
+     * <p>Windows in particular is a bit finicky. We may need to expand this method in the future.
+     * See <a href="https://stackoverflow.com/a/48962674">here</a>.
+     */
+    public static String sanitize(String string) {
+        // Note: four backslashes are needed to escape to a single backslash in the target string.
+        return string.replaceAll("[<>:\"/\\\\|?*]", "");
     }
 }

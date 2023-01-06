@@ -21,7 +21,7 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
             SortedSet<ItemStack> itemStacks, SortedSet<WildcardItemStack> wildcardItemStacks) {
         ItemGroupPb itemGroupPb = ProtoBuilder.buildItemGroupPb(itemStacks, wildcardItemStacks);
         ItemGroup itemGroup =
-                new ItemGroup(StringUtil.compressProto(itemGroupPb), itemStacks, wildcardItemStacks);
+                new ItemGroup(StringUtil.encodeProto(itemGroupPb), itemStacks, wildcardItemStacks);
         return findOrPersist(ItemGroup.class, itemGroup);
     }
 
