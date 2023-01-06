@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 
 @Entity
 @EqualsAndHashCode
@@ -101,5 +102,17 @@ public class Fluid implements Identifiable<String> {
     @Nullable
     public String getNbt() {
         return nbt;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof Fluid) {
+            return Comparator.comparing(Fluid::getFluidId)
+                    .thenComparing(Fluid::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                    .thenComparing(Fluid::getId)
+                    .compare(this, (Fluid) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }

@@ -17,7 +17,7 @@ public class NeiItemListProcessor {
 
     public void process() {
         int total = ItemList.items.size();
-        Logger.MOD.info("Processing {} NEI items...", total);
+        Logger.BASE.info("Processing {} NEI items...", total);
 
         if (total == 0) {
             Logger.chatMessage(
@@ -34,17 +34,17 @@ public class NeiItemListProcessor {
                 // GTNH has some bad items, so we have to do this =(
                 // For whatever reason, the exceptions thrown by those items don't even have stack
                 // traces!
-                Logger.MOD.info("Found a bad item: " + itemStack.getDisplayName());
+                Logger.BASE.info("Found a bad item: " + itemStack.getDisplayName());
                 e.printStackTrace();
             }
 
             if (Logger.intermittentLog(count)) {
-                Logger.MOD.info("Processed NEI item {} of {}", count, total);
-                Logger.MOD.info("Most recent item: {}", itemStack.getDisplayName());
+                Logger.BASE.info("Processed NEI item {} of {}", count, total);
+                Logger.BASE.info("Most recent item: {}", itemStack.getDisplayName());
             }
         }
 
-        Logger.MOD.info("Finished processing NEI items!");
+        Logger.BASE.info("Finished processing NEI items!");
     }
 
 }

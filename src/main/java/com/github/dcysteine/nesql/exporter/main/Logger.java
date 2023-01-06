@@ -7,7 +7,9 @@ import org.apache.logging.log4j.LogManager;
 
 public final class Logger {
     public static final org.apache.logging.log4j.Logger MOD =
-            LogManager.getLogger(NotEnoughSQLExporter.MOD_NAME);
+            LogManager.getLogger(Main.MOD_NAME);
+    public static final org.apache.logging.log4j.Logger BASE =
+            LogManager.getLogger(Main.MOD_NAME + "/base");
 
     // Static class.
     private Logger() {}

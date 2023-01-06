@@ -2,8 +2,10 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.base.BasePlugin;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
+import com.github.dcysteine.nesql.exporter.plugin.base.RecipeType;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
 import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -17,14 +19,18 @@ import java.util.List;
 
 public class CraftingRecipeProcessor {
     private final EntityManager entityManager;
+    private final RecipeInfo shapedCrafting;
+    private final RecipeInfo shapelessCrafting;
 
-    public CraftingRecipeProcessor(EntityManager entityManager) {
+    public CraftingRecipeProcessor(BasePlugin plugin, EntityManager entityManager) {
         this.entityManager = entityManager;
+        this.shapedCrafting = plugin.getRecipeInfo(RecipeType.SHAPED_CRAFTING);
+        this.shapelessCrafting = plugin.getRecipeInfo(RecipeType.SHAPELESS_CRAFTING);
     }
 
     public void process() {
         int total = CraftingManager.getInstance().getRecipeList().size();
-        Logger.MOD.info("Processing {} crafting recipes...", total);
+        Logger.BASE.info("Processing {} crafting recipes...", total);
 
         @SuppressWarnings("unchecked")
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
@@ -33,7 +39,7 @@ public class CraftingRecipeProcessor {
             count++;
 
             if (recipe.getRecipeOutput() == null) {
-                Logger.MOD.warn("Skipping crafting recipe with null output: " + recipe);
+                Logger.BASE.warn("Skipping crafting recipe with null output: " + recipe);
                 continue;
             }
 
@@ -46,22 +52,21 @@ public class CraftingRecipeProcessor {
             } else if (recipe instanceof ShapelessOreRecipe) {
                 processShapelessOreRecipe((ShapelessOreRecipe) recipe);
             } else {
-                Logger.MOD.warn("Unhandled crafting recipe: " + recipe);
+                Logger.BASE.warn("Unhandled crafting recipe: " + recipe);
             }
 
             if (Logger.intermittentLog(count)) {
-                Logger.MOD.info("Processed crafting recipe {} of {}", count, total);
-                Logger.MOD.info(
+                Logger.BASE.info("Processed crafting recipe {} of {}", count, total);
+                Logger.BASE.info(
                         "Most recent recipe: {}", recipe.getRecipeOutput().getDisplayName());
             }
         }
 
-        Logger.MOD.info("Finished processing crafting recipes!");
+        Logger.BASE.info("Finished processing crafting recipes!");
     }
 
     private void processShapedRecipe(ShapedRecipes recipe) {
-        RecipeBuilder builder =
-                new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING);
+        RecipeBuilder builder = new RecipeBuilder(entityManager, shapedCrafting);
         for (Object itemInput : recipe.recipeItems) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -74,8 +79,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapedOreRecipe(ShapedOreRecipe recipe) {
-        RecipeBuilder builder =
-                new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPED_CRAFTING_OREDICT);
+        RecipeBuilder builder = new RecipeBuilder(entityManager, shapedCrafting);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -90,11 +94,11 @@ public class CraftingRecipeProcessor {
     private void processShapelessRecipe(ShapelessRecipes recipe) {
         // Apparently this actually happens? At least, according to a comment in NEI source.
         if (recipe.recipeItems == null) {
+            Logger.BASE.warn("Crafting recipe with null inputs: " + recipe);
             return;
         }
 
-        RecipeBuilder builder =
-                new RecipeBuilder(entityManager, RecipeType.MINECRAFT_SHAPELESS_CRAFTING);
+        RecipeBuilder builder = new RecipeBuilder(entityManager, shapelessCrafting);
         for (Object itemInput : recipe.recipeItems) {
             handleItemInput(builder, itemInput);
         }
@@ -102,8 +106,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapelessOreRecipe(ShapelessOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(
-                entityManager, RecipeType.MINECRAFT_SHAPELESS_CRAFTING_OREDICT);
+        RecipeBuilder builder = new RecipeBuilder(entityManager, shapelessCrafting);
         for (Object itemInput : recipe.getInput()) {
             handleItemInput(builder, itemInput);
         }

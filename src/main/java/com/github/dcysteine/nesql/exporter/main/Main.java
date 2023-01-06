@@ -16,13 +16,13 @@ import cpw.mods.fml.relauncher.Side;
 
 /** Main entry point for Not Enough SQL Exporter. */
 @Mod(
-        modid = NotEnoughSQLExporter.MOD_ID,
-        name = NotEnoughSQLExporter.MOD_NAME,
-        version = NotEnoughSQLExporter.MOD_VERSION,
-        acceptableRemoteVersions = "*", // Client-side-only mod.
-        dependencies = NotEnoughSQLExporter.MOD_DEPENDENCIES,
+        modid = Main.MOD_ID,
+        name = Main.MOD_NAME,
+        version = Main.MOD_VERSION,
+        acceptableRemoteVersions = "*",  // Client-side-only mod.
+        dependencies = Main.MOD_DEPENDENCIES,
         guiFactory = ConfigGuiFactory.CLASS_NAME)
-public final class NotEnoughSQLExporter {
+public final class Main {
     public static final String MOD_ID = "nesql-exporter";
     public static final String MOD_NAME = "Not Enough SQL Exporter";
     public static final String MOD_VERSION = "@version@";
@@ -30,13 +30,11 @@ public final class NotEnoughSQLExporter {
 
     @Instance(MOD_ID)
     @SuppressWarnings("unused")
-    public static NotEnoughSQLExporter instance;
+    public static Main instance;
 
     @EventHandler
     @SuppressWarnings("unused")
     public void onInitialization(FMLInitializationEvent event) {
-        // This mod is only intended to run in single-player mode.
-        // It does nothing if run on a dedicated server, or on a client connecting to a server.
         if (event.getSide() != Side.CLIENT) {
             return;
         }
@@ -54,8 +52,6 @@ public final class NotEnoughSQLExporter {
     @EventHandler
     @SuppressWarnings("unused")
     public void onServerStart(FMLServerStartingEvent event) {
-        // This mod is only intended to run in single-player mode.
-        // It does nothing if run on a dedicated server, or on a client connecting to a server.
         if (event.getSide() != Side.CLIENT) {
             return;
         }

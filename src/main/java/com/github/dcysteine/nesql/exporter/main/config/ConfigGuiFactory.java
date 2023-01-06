@@ -1,6 +1,6 @@
 package com.github.dcysteine.nesql.exporter.main.config;
 
-import com.github.dcysteine.nesql.exporter.main.NotEnoughSQLExporter;
+import com.github.dcysteine.nesql.exporter.main.Main;
 import cpw.mods.fml.client.IModGuiFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 public final class ConfigGuiFactory implements IModGuiFactory {
     /**
-     * This is used by {@link NotEnoughSQLExporter} to configure a GUI factory. Make sure to keep it
+     * This is used by {@link Main} to configure a GUI factory. Make sure to keep it
      * updated if this class is moved or renamed.
      */
     public static final String CLASS_NAME =

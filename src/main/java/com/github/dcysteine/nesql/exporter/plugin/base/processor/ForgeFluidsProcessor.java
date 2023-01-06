@@ -19,7 +19,7 @@ public class ForgeFluidsProcessor {
     public void process() {
         Map<String, net.minecraftforge.fluids.Fluid> fluids = FluidRegistry.getRegisteredFluids();
         int total = fluids.size();
-        Logger.MOD.info("Processing {} Forge fluids...", total);
+        Logger.BASE.info("Processing {} Forge fluids...", total);
 
         FluidFactory fluidFactory = new FluidFactory(entityManager);
         int count = 0;
@@ -30,12 +30,12 @@ public class ForgeFluidsProcessor {
             fluidFactory.findOrPersist(Fluid.class, fluidFactory.getFluid(fluidStack));
 
             if (Logger.intermittentLog(count)) {
-                Logger.MOD.info("Processed Forge fluid {} of {}", count, total);
-                Logger.MOD.info("Most recent item: {}", fluidStack.getLocalizedName());
+                Logger.BASE.info("Processed Forge fluid {} of {}", count, total);
+                Logger.BASE.info("Most recent item: {}", fluidStack.getLocalizedName());
             }
         }
 
-        Logger.MOD.info("Finished processing Forge fluids!");
+        Logger.BASE.info("Finished processing Forge fluids!");
     }
 
 }

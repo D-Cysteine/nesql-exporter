@@ -10,7 +10,6 @@ import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.item.Item;
-import com.google.common.collect.Lists;
 import cpw.mods.fml.common.registry.GameRegistry;
 import jakarta.persistence.EntityManager;
 import net.minecraft.client.Minecraft;
@@ -74,7 +73,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     itemStack.getItemDamage(),
                     nbt,
                     stackTrace);
-            Logger.MOD.error("Caught exception while trying to persist item: {}", item.getId());
+            Logger.BASE.error("Caught exception while trying to persist item: {}", item.getId());
             e.printStackTrace();
         }
 
@@ -83,7 +82,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
             if (Logger.intermittentLog(
                     "Enqueueing render of item #{}: " + item.getId(),
                     Renderer.INSTANCE.getRenderedItemCount())) {
-                Logger.MOD.info(
+                Logger.BASE.info(
                         "Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
             }
 

@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.exporter.util;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +14,10 @@ public final class ItemUtil {
 
     public static int getItemId(ItemStack itemStack) {
         return Item.getIdFromItem(itemStack.getItem());
+    }
+
+    public static ItemStack getItemStack(Block block) {
+        return new ItemStack(Item.getItemFromBlock(block), 1);
     }
 
     public static boolean isWildcardItem(ItemStack itemStack) {

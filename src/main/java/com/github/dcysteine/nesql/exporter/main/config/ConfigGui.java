@@ -1,6 +1,6 @@
 package com.github.dcysteine.nesql.exporter.main.config;
 
-import com.github.dcysteine.nesql.exporter.main.NotEnoughSQLExporter;
+import com.github.dcysteine.nesql.exporter.main.Main;
 import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.gui.GuiScreen;
@@ -14,11 +14,11 @@ public final class ConfigGui extends GuiConfig {
         super(
                 parent,
                 getConfigOptions(),
-                NotEnoughSQLExporter.MOD_ID,
+                Main.MOD_ID,
                 false,
                 false,
                 GuiConfig.getAbridgedConfigPath(Config.getConfigFilePath()),
-                NotEnoughSQLExporter.MOD_NAME);
+                Main.MOD_NAME);
     }
 
     @Override

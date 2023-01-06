@@ -1,9 +1,12 @@
 package com.github.dcysteine.nesql.exporter.util;
 
+import com.google.common.primitives.Bytes;
+import com.google.common.primitives.Longs;
 import com.google.protobuf.Message;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 /** Utility class containing methods for handling strings and encoding things. */
@@ -20,8 +23,12 @@ public final class StringUtil {
         // This does have a chance of collision, but it should be miniscule (2^64 entries for 50%),
         // according to
         // https://stackoverflow.com/questions/201705/how-many-random-elements-before-md5-produces-collisions
-        // Replace with Base64.getUrlEncoder().encodeToString(input); if we have to.
-        return UUID.nameUUIDFromBytes(input).toString();
+        UUID uuid = UUID.nameUUIDFromBytes(input);
+
+        byte[] upper = Longs.toByteArray(uuid.getMostSignificantBits());
+        byte[] lower = Longs.toByteArray(uuid.getLeastSignificantBits());
+
+        return Base64.getUrlEncoder().encodeToString(Bytes.concat(upper, lower));
     }
 
     public static String encodeString(String string) {

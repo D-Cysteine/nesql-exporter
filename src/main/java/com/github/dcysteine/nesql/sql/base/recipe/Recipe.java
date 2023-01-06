@@ -8,9 +8,8 @@ import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import lombok.EqualsAndHashCode;
@@ -26,9 +25,9 @@ public class Recipe implements Identifiable<String> {
     @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String id;
 
-    @Enumerated(EnumType.STRING)
+    @Embedded
     @Column(nullable = false)
-    private RecipeType recipeType;
+    private RecipeInfo recipeInfo;
 
     /** Map of input index to item group. May be sparse for shaped recipes. */
     @ManyToMany
@@ -51,13 +50,13 @@ public class Recipe implements Identifiable<String> {
 
     public Recipe(
             String id,
-            RecipeType recipeType,
+            RecipeInfo recipeInfo,
             Map<Integer, ItemGroup> itemInputs,
             Map<Integer, FluidGroup> fluidInputs,
             Map<Integer, ItemStackWithProbability> itemOutputs,
             Map<Integer, FluidStackWithProbability> fluidOutputs) {
         this.id = id;
-        this.recipeType = recipeType;
+        this.recipeInfo = recipeInfo;
         this.itemInputs = itemInputs;
         this.fluidInputs = fluidInputs;
         this.itemOutputs = itemOutputs;
@@ -69,8 +68,8 @@ public class Recipe implements Identifiable<String> {
         return id;
     }
 
-    public RecipeType getRecipeType() {
-        return recipeType;
+    public RecipeInfo getRecipeInfo() {
+        return recipeInfo;
     }
 
     public Map<Integer, ItemGroup> getItemInputs() {

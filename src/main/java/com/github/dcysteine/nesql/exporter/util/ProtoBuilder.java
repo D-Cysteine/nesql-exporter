@@ -6,6 +6,7 @@ import com.github.dcysteine.nesql.exporter.proto.FluidStackWithProbabilityPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemGroupPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemStackPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemStackWithProbabilityPb;
+import com.github.dcysteine.nesql.exporter.proto.RecipeInfoPb;
 import com.github.dcysteine.nesql.exporter.proto.RecipePb;
 import com.github.dcysteine.nesql.exporter.proto.WildcardItemStackPb;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
@@ -17,7 +18,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
 
 import java.util.Map;
 import java.util.SortedSet;
@@ -28,12 +29,13 @@ public final class ProtoBuilder {
     private ProtoBuilder() {}
 
     public static RecipePb buildRecipePb(
-            RecipeType recipeType,
+            RecipeInfo recipeInfo,
             Map<Integer, ItemGroup> itemInputs,
             Map<Integer, FluidGroup> fluidInputs,
             Map<Integer, ItemStackWithProbability> itemOutputs,
             Map<Integer, FluidStackWithProbability> fluidOutputs) {
-        RecipePb.Builder builder = RecipePb.newBuilder().setRecipeType(recipeType.ordinal());
+        RecipePb.Builder builder =
+                RecipePb.newBuilder().setRecipeInfo(buildRecipeInfoPb(recipeInfo));
         itemInputs.forEach((key, value) -> builder.putItemInput(key, buildItemGroupPb(value)));
         fluidInputs.forEach((key, value) -> builder.putFluidInput(key, buildFluidGroupPb(value)));
         itemOutputs.forEach(
@@ -42,6 +44,14 @@ public final class ProtoBuilder {
                 (key, value) ->
                         builder.putFluidOutput(key, buildFluidStackWithProbabilityPb(value)));
         return builder.build();
+    }
+
+    public static RecipeInfoPb buildRecipeInfoPb(RecipeInfo recipeInfo) {
+        return RecipeInfoPb.newBuilder()
+                .setCategory(recipeInfo.getCategory())
+                .setType(recipeInfo.getType())
+                .setShapeless(recipeInfo.isShapeless())
+                .build();
     }
 
     public static ItemGroupPb buildItemGroupPb(

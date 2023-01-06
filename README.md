@@ -20,7 +20,7 @@ directly with the H2 client.
    `/nesql your_repository_name`.
 5. Wait for the export process to finish. It can take a very long time depending
    on how many mods you have installed. For reference, exporting GTNH can take
-   10-30 minutes, and the resulting repository is 3GB, and contains 68k image
+   10-30 minutes, and the resulting repository is ~2GB, and contains ~83k image
    files.
 6. Depending on your computer's specs, rendering may end up taking a lot longer
    to finish than exporting the database. There is currently no logging of the

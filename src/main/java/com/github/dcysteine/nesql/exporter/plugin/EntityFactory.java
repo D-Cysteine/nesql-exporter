@@ -3,14 +3,14 @@ package com.github.dcysteine.nesql.exporter.plugin;
 import com.github.dcysteine.nesql.sql.Identifiable;
 import jakarta.persistence.EntityManager;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Abstract class for entity factories.
  *
  * <p>When constructing a new entity, always return the result of calling
- * {@link #findOrPersist(Class, Identifiable)} (Class, Identifiable)} on it, as we must reference
- * the already-persisted instance, if it exists.
+ * {@link #findOrPersist(Class, Identifiable)} on it, as we must reference the already-persisted
+ * instance, if it exists.
  */
 public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>> {
     protected final EntityManager entityManager;
@@ -20,13 +20,10 @@ public abstract class EntityFactory<T extends Identifiable<K>, K extends Compara
     }
 
     /**
-     * Finds a persisted entity, or returns null if no entity is persisted.
-     *
-     * @return null if {@code entity} was not found.
+     * Finds a persisted entity, or returns empty optional if no entity is persisted.
      */
-    @Nullable
-    public T find(Class<T> clazz, K id) {
-        return entityManager.find(clazz, id);
+    public Optional<T> find(Class<T> clazz, K id) {
+        return Optional.ofNullable(entityManager.find(clazz, id));
     }
 
     /**
@@ -34,19 +31,10 @@ public abstract class EntityFactory<T extends Identifiable<K>, K extends Compara
      * instance.
      */
     public T findOrPersist(Class<T> clazz, T entity) {
-        T persisted = find(clazz, entity.getId());
-        if (persisted != null) {
-            return persisted;
+        Optional<T> persisted = find(clazz, entity.getId());
+        if (persisted.isPresent()) {
+            return persisted.get();
         }
-
-        // If you enable transactions, uncomment this.
-        // Don't enable transactions though; it's like literally 100x slowdown.
-        /*
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(entity);
-        transaction.commit();
-         */
 
         entityManager.persist(entity);
         return entity;

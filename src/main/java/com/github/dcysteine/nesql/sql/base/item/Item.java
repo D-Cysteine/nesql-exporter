@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -131,5 +132,18 @@ public class Item implements Identifiable<String> {
 
     public List<String> getTooltip() {
         return tooltip;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof Item) {
+            return Comparator.comparing(Item::getItemId)
+                    .thenComparing(Item::getItemDamage)
+                    .thenComparing(Item::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                    .thenComparing(Item::getId)
+                    .compare(this, (Item) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }
