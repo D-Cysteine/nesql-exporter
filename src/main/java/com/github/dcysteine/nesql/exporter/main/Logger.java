@@ -31,16 +31,18 @@ public final class Logger {
     /**
      * Logs a message at the configured logging interval.
      *
+     * @param logger the logger to use
      * @param formatString a format string containing exactly one {@code "{}"}, which will be
      *                     replaced with {@code count}
      * @param count a count of the current progress (# of things processed)
      * @return whether the message was logged
      */
-    public static boolean intermittentLog(String formatString, int count) {
-        boolean shouldLog = intermittentLog(count);
-        if (shouldLog) {
-            MOD.info(formatString, count);
+    public static boolean intermittentLog(
+            org.apache.logging.log4j.Logger logger, String formatString, int count) {
+        if (intermittentLog(count)) {
+            logger.info(formatString, count);
+            return true;
         }
-        return shouldLog;
+        return false;
     }
 }

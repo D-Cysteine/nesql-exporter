@@ -14,6 +14,7 @@ import lombok.ToString;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @EqualsAndHashCode
@@ -57,6 +58,14 @@ public class Item implements Identifiable<String> {
     @OrderColumn
     private List<String> tooltip;
 
+    private int maxStackSize;
+
+    private int maxDamage;
+
+    /** Map of tool class to harvest level. */
+    @ElementCollection
+    private Map<String, Integer> toolClasses;
+
     /** Needed by Hibernate. */
     protected Item() {}
 
@@ -70,7 +79,10 @@ public class Item implements Identifiable<String> {
             int itemId,
             int itemDamage,
             @Nullable String nbt,
-            List<String> tooltip) {
+            List<String> tooltip,
+            int maxStackSize,
+            int maxDamage,
+            Map<String, Integer> toolClasses) {
         this.id = id;
         this.imageFilePath = imageFilePath;
         this.modId = modId;
@@ -81,6 +93,9 @@ public class Item implements Identifiable<String> {
         this.itemDamage = itemDamage;
         this.nbt = nbt;
         this.tooltip = tooltip;
+        this.maxStackSize = maxStackSize;
+        this.maxDamage = maxDamage;
+        this.toolClasses = toolClasses;
     }
 
     /**
@@ -132,6 +147,19 @@ public class Item implements Identifiable<String> {
 
     public List<String> getTooltip() {
         return tooltip;
+    }
+
+    public int getMaxStackSize() {
+        return maxStackSize;
+    }
+
+    public int getMaxDamage() {
+        return maxDamage;
+    }
+
+    /** Returns a map of tool class to harvest level. */
+    public Map<String, Integer> getToolClasses() {
+        return toolClasses;
     }
 
     @Override

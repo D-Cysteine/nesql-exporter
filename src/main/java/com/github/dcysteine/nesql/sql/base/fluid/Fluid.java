@@ -45,6 +45,12 @@ public class Fluid implements Identifiable<String> {
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String nbt;
 
+    private int luminosity;
+    private int density;
+    private int temperature;
+    private int viscosity;
+    private boolean gaseous;
+
     /** Needed by Hibernate. */
     protected Fluid() {}
 
@@ -55,7 +61,12 @@ public class Fluid implements Identifiable<String> {
             String unlocalizedName,
             String localizedName,
             int fluidId,
-            @Nullable String nbt) {
+            @Nullable String nbt,
+            int luminosity,
+            int density,
+            int temperature,
+            int viscosity,
+            boolean gaseous) {
         this.id = id;
         this.imageFilePath = imageFilePath;
         this.internalName = internalName;
@@ -63,6 +74,11 @@ public class Fluid implements Identifiable<String> {
         this.localizedName = localizedName;
         this.fluidId = fluidId;
         this.nbt = nbt;
+        this.luminosity = luminosity;
+        this.density = density;
+        this.temperature = temperature;
+        this.viscosity = viscosity;
+        this.gaseous = gaseous;
     }
 
     /**
@@ -97,6 +113,26 @@ public class Fluid implements Identifiable<String> {
 
     public boolean hasNbt() {
         return nbt != null;
+    }
+
+    public int getLuminosity() {
+        return luminosity;
+    }
+
+    public int getDensity() {
+        return density;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public int getViscosity() {
+        return viscosity;
+    }
+
+    public boolean isGaseous() {
+        return gaseous;
     }
 
     @Nullable

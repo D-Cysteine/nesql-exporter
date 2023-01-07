@@ -33,7 +33,12 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
                 fluidStack.getUnlocalizedName(),
                 StringUtil.stripFormatting(fluidStack.getLocalizedName()),
                 fluidStack.getFluidID(),
-                nbt);
+                nbt,
+                fluidStack.getFluid().getLuminosity(fluidStack),
+                fluidStack.getFluid().getDensity(fluidStack),
+                fluidStack.getFluid().getTemperature(fluidStack),
+                fluidStack.getFluid().getViscosity(fluidStack),
+                fluidStack.getFluid().isGaseous(fluidStack));
 
         if (fluidStack.getFluid().getIcon() == null) {
             Logger.BASE.error("Found fluid with null icon: {}", fluid.getId());
@@ -41,13 +46,10 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
             String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
             if (Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)
                     && ConfigOptions.RENDER_ICONS.get()) {
-                if (Logger.intermittentLog(
+                Logger.intermittentLog(
+                        Logger.BASE,
                         "Enqueueing render of fluid #{}: " + renderedFluidKey,
-                        Renderer.INSTANCE.getRenderedFluidCount())) {
-                    Logger.BASE.info(
-                            "Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
-                }
-
+                        Renderer.INSTANCE.getRenderedFluidCount());
                 RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
             }
         }

@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,10 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     ItemUtil.getItemId(itemStack),
                     itemStack.getItemDamage(),
                     nbt,
-                    tooltip);
+                    tooltip,
+                    itemStack.getMaxStackSize(),
+                    itemStack.getMaxDamage(),
+                    ItemUtil.getToolClasses(itemStack));
         } catch (Exception e) {
             // Sometimes items will throw exceptions when you try to get their name or tooltip.
             StringWriter stringWriter = new StringWriter();
@@ -72,20 +76,20 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     ItemUtil.getItemId(itemStack),
                     itemStack.getItemDamage(),
                     nbt,
-                    stackTrace);
+                    stackTrace,
+                    itemStack.getMaxStackSize(),
+                    itemStack.getMaxDamage(),
+                    new HashMap<>());
             Logger.BASE.error("Caught exception while trying to persist item: {}", item.getId());
             e.printStackTrace();
         }
 
         if (Renderer.INSTANCE.isUnrenderedItem(item.getId())
                 && ConfigOptions.RENDER_ICONS.get()) {
-            if (Logger.intermittentLog(
+            Logger.intermittentLog(
+                    Logger.BASE,
                     "Enqueueing render of item #{}: " + item.getId(),
-                    Renderer.INSTANCE.getRenderedItemCount())) {
-                Logger.BASE.info(
-                        "Remaining render jobs: " + RenderDispatcher.INSTANCE.getJobCount());
-            }
-
+                    Renderer.INSTANCE.getRenderedItemCount());
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }
 

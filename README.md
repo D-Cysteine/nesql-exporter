@@ -10,8 +10,8 @@ directly with the H2 client.
 
 ### Instructions
 
-1. Place `NESQL-Exporter-0.1.0.jar` and `NESQL-Exporter-0.1.0-deps.jar` into
-   your `mods/` folder. `NotEnoughItems` is the only dependency.
+1. Place `NESQL-Exporter-0.2.0.jar` and `NESQL-Exporter-0.2.0-deps.jar` into
+   your `mods/` folder. `NotEnoughItems` is the only required dependency.
 2. Start Minecraft and join a single-player world.
 3. If you're using the GTNH version of `NotEnoughItems`, open your inventory and
    view the NEI item list so that it gets loaded. If you forget to do this, some
@@ -20,9 +20,9 @@ directly with the H2 client.
    `/nesql your_repository_name`.
 5. Wait for the export process to finish. It can take a very long time depending
    on how many mods you have installed. For reference, exporting GTNH can take
-   10-30 minutes, and the resulting repository is ~2GB, and contains ~83k image
+   10-30 minutes, and the resulting repository is ~3GB, and contains ~83k image
    files.
 6. Depending on your computer's specs, rendering may end up taking a lot longer
-   to finish than exporting the database. There is currently no logging of the
-   render progress, so you may just need to be patient.
+   to finish than exporting the database. Check your logs to see how many render
+   jobs are left.
 7. Once the export is finished, you can delete the two mod jars.

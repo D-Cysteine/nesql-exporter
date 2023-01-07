@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.util.render;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
+import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -11,7 +12,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -43,6 +44,9 @@ public enum Renderer {
     private File imageDirectory;
     private Framebuffer framebuffer;
 
+    // Used for intermittent logging.
+    private int loggingCounter;
+
     /**
      * This method is meant to be called from the client thread, prior to setting the dispatcher
      * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
@@ -52,6 +56,7 @@ public enum Renderer {
         this.renderedItems = new HashSet<>();
         this.renderedFluids = new HashSet<>();
         this.imageDirectory = imageDirectory;
+        this.loggingCounter = 0;
     }
 
     /** Marks {@code item} as rendered, and returns true if it wasn't marked previously. */
@@ -121,6 +126,11 @@ public enum Renderer {
             return;
         }
 
+        if (Logger.intermittentLog(loggingCounter++)) {
+            Logger.MOD.info("Remaining render jobs: {}", RenderDispatcher.INSTANCE.getJobCount());
+            loggingCounter = 0;
+        }
+
         setupRenderState();
         try {
             for (int i = 0; i < ConfigOptions.RENDER_ICONS_PER_TICK.get(); i++) {
@@ -134,20 +144,7 @@ public enum Renderer {
                 render(job);
                 BufferedImage image = readImage(job);
 
-                File outputFile;
-                switch (job.type()) {
-                    case ITEM:
-                        outputFile = new File(imageDirectory, job.item().imageFilePath());
-                        break;
-
-                    case FLUID:
-                        outputFile = new File(imageDirectory, job.fluid().imageFilePath());
-                        break;
-
-                    default:
-                        throw new IllegalArgumentException("Unrecognized job type: " + job);
-                }
-
+                File outputFile = new File(imageDirectory, job.getImageFilePath());
                 // Not sure why, but this check fails spuriously every now and then.
                 // It complains that the file exists, but I checked and it didn't actually exist.
                 // Let's just... ignore it for now XD
@@ -202,16 +199,16 @@ public enum Renderer {
     }
 
     private void render(RenderJob job) {
-        switch (job.type()) {
+        switch (job.getType()) {
             case ITEM:
-                GuiContainerManager.drawItem(0, 0, job.item().stack());
+                GuiContainerManager.drawItem(0, 0, job.getItem());
                 break;
 
             case FLUID:
-                Fluid fluid = job.fluid().fluid();
-                IIcon icon = fluid.getIcon();
+                FluidStack fluidStack = job.getFluid();
+                IIcon icon = fluidStack.getFluid().getIcon(fluidStack);
                 // Some fluids don't set their icon colour, so we have to blend in the colour.
-                int colour = fluid.getColor();
+                int colour = fluidStack.getFluid().getColor(fluidStack);
                 GL11.glColor3ub(
                         (byte) ((colour & 0xFF0000) >> 16),
                         (byte) ((colour & 0x00FF00) >> 8),
