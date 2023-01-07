@@ -17,6 +17,13 @@ public final class ConfigOptions {
                     "The default name of the exported repository.")
                     .register();
 
+    public static final Option<List<String>> DISABLED_PLUGINS =
+            new StringListOption(
+                    Category.OPTIONS, "disabled_plugins", new ArrayList<>(),
+                    "The list of plugins to manually disable."
+                            + " You should not normally need to modify this.")
+                    .register();
+
     public static final Option<Boolean> AUTO_EXPORT_ON_CONNECT =
             new BooleanOption(
                     Category.OPTIONS, "auto_export_on_connect", false,
@@ -197,26 +204,27 @@ public final class ConfigOptions {
         }
     }
 
-    public static final class StringArrayOption extends Option<String[]> {
-        private StringArrayOption(
-                Category category, String key, String[] defaultValue, String comment) {
+    public static final class StringListOption extends Option<List<String>> {
+        private StringListOption(
+                Category category, String key, List<String> defaultValue, String comment) {
             super(category, key, defaultValue, comment);
         }
 
-        private StringArrayOption(
-                Category category, String key, String[] defaultValue, String comment,
+        private StringListOption(
+                Category category, String key, List<String> defaultValue, String comment,
                 boolean requiresRestart) {
             super(category, key, defaultValue, comment, requiresRestart);
         }
 
         @Override
         Property getProperty() {
-            return Config.CONFIG.get(category.toString(), key, defaultValue, comment);
+            return Config.CONFIG.get(
+                    category.toString(), key, defaultValue.toArray(new String[0]), comment);
         }
 
         @Override
-        public String[] get() {
-            return property.getStringList();
+        public List<String> get() {
+            return Arrays.asList(property.getStringList());
         }
     }
 
@@ -232,14 +240,6 @@ public final class ConfigOptions {
     }
 
     private static String buildDefaultComment(Object defaultValue) {
-        String toString;
-        if (defaultValue instanceof String[]) {
-            // String[] does not have a nice default toString() implementation.
-            toString = Arrays.toString((String[]) defaultValue);
-        } else {
-            toString = defaultValue.toString();
-        }
-
-        return String.format("\nDefault: %s", toString);
+        return String.format("\nDefault: %s", defaultValue);
     }
 }

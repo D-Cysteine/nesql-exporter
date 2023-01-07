@@ -16,7 +16,7 @@ import java.util.EnumMap;
 
 /** Base plugin which handles vanilla Minecraft as well as Forge recipes. */
 public class BasePlugin implements Plugin {
-    private static final String NAME = "base";
+    public static final String NAME = "base";
 
     private final EntityManager entityManager;
     private final EnumMap<RecipeType, RecipeInfo> recipeInfoMap;

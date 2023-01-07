@@ -17,7 +17,7 @@ public class PluginRegistry {
         ImmutableList.Builder<RegistryEntry> builder = ImmutableList.builder();
 
         // Add new plugins here!
-        builder.add(RegistryEntry.create(BasePlugin::new));
+        builder.add(RegistryEntry.create(BasePlugin.NAME, BasePlugin::new));
 
         entries = builder.build();
     }
@@ -29,6 +29,7 @@ public class PluginRegistry {
     public List<Plugin> initialize(EntityManager entityManager) {
         entries.stream()
                 .filter(RegistryEntry::areDependenciesSatisfied)
+                .filter(RegistryEntry::isNotDisabled)
                 .map(entry -> entry.instantiate(entityManager))
                 .forEach(activePlugins::add);
 
