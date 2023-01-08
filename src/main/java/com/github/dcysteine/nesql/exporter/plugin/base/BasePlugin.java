@@ -2,13 +2,15 @@ package com.github.dcysteine.nesql.exporter.plugin.base;
 
 import com.github.dcysteine.nesql.exporter.plugin.Plugin;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
+import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeTypeFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.CraftingRecipeProcessor;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.ForgeFluidsProcessor;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.FurnaceRecipeProcessor;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.NeiItemListProcessor;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
+import com.github.dcysteine.nesql.sql.base.recipe.Dimension;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 import net.minecraft.init.Blocks;
 
@@ -17,17 +19,18 @@ import java.util.EnumMap;
 /** Base plugin which handles vanilla Minecraft as well as Forge recipes. */
 public class BasePlugin implements Plugin {
     public static final String NAME = "base";
+    public static final String RECIPE_CATEGORY = "Minecraft";
 
     private final EntityManager entityManager;
-    private final EnumMap<RecipeType, RecipeInfo> recipeInfoMap;
+    private final EnumMap<BaseRecipeType, RecipeType> recipeTypeMap;
 
     public BasePlugin(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.recipeInfoMap = new EnumMap<>(RecipeType.class);
+        this.recipeTypeMap = new EnumMap<>(BaseRecipeType.class);
     }
 
-    public RecipeInfo getRecipeInfo(RecipeType recipeType) {
-        return recipeInfoMap.get(recipeType);
+    public RecipeType getRecipeType(BaseRecipeType recipeType) {
+        return recipeTypeMap.get(recipeType);
     }
 
     @Override
@@ -37,20 +40,30 @@ public class BasePlugin implements Plugin {
 
     @Override
     public void initialize() {
-        Item craftingTable =
-                new ItemFactory(entityManager).getItem(
-                        ItemUtil.getItemStack(Blocks.crafting_table));
-        recipeInfoMap.put(
-                RecipeType.SHAPED_CRAFTING,
-                new RecipeInfo(NAME, "shaped-crafting", craftingTable, false));
-        recipeInfoMap.put(
-                RecipeType.SHAPELESS_CRAFTING,
-                new RecipeInfo(NAME, "shapeless-crafting", craftingTable, true));
+        RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(entityManager);
+        ItemFactory itemFactory = new ItemFactory(entityManager);
 
-        Item furnace =
-                new ItemFactory(entityManager).getItem(ItemUtil.getItemStack(Blocks.lit_furnace));
-        recipeInfoMap.put(
-                RecipeType.FURNACE, new RecipeInfo(NAME, "furnace", furnace, true));
+        Item craftingTable = itemFactory.getItem(ItemUtil.getItemStack(Blocks.crafting_table));
+        recipeTypeMap.put(
+                BaseRecipeType.SHAPED_CRAFTING,
+                recipeTypeFactory.getRecipeType(
+                        RECIPE_CATEGORY, "Crafting (Shaped)", craftingTable, false,
+                        new Dimension(3, 3), new Dimension(0, 0),
+                        new Dimension(1, 1), new Dimension(0, 0)));
+        recipeTypeMap.put(
+                BaseRecipeType.SHAPELESS_CRAFTING,
+                recipeTypeFactory.getRecipeType(
+                        RECIPE_CATEGORY, "Crafting (Shapeless)", craftingTable, true,
+                        new Dimension(3, 3), new Dimension(0, 0),
+                        new Dimension(1, 1), new Dimension(0, 0)));
+
+        Item furnace = itemFactory.getItem(ItemUtil.getItemStack(Blocks.furnace));
+        recipeTypeMap.put(
+                BaseRecipeType.FURNACE,
+                recipeTypeFactory.getRecipeType(
+                        RECIPE_CATEGORY, "Furnace", furnace, true,
+                        new Dimension(1, 1), new Dimension(0, 0),
+                        new Dimension(1, 1), new Dimension(0, 0)));
     }
 
     @Override

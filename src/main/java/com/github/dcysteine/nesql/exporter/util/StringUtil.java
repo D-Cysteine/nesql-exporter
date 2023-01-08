@@ -20,7 +20,7 @@ public final class StringUtil {
     }
 
     public static String encodeBytes(byte[] input) {
-        // This does have a chance of collision, but it should be miniscule (2^64 entries for 50%),
+        // This does have a chance of collision, but it should be minuscule (2^64 entries for 50%),
         // according to
         // https://stackoverflow.com/questions/201705/how-many-random-elements-before-md5-produces-collisions
         UUID uuid = UUID.nameUUIDFromBytes(input);

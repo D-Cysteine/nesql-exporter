@@ -4,7 +4,7 @@ package com.github.dcysteine.nesql.exporter.plugin;
 public interface Plugin {
     String getName();
 
-    /** Performs any needed initialization, such as constructing {@code RecipeInfo}. */
+    /** Performs any needed initialization, such as constructing {@code BaseRecipeType}. */
     default void initialize() {}
 
     /** Processes the plugin's recipes, and anything else that should be exported. */

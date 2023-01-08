@@ -13,15 +13,14 @@ import "item.proto";
 // For the ingredient lists in this message, add an empty Item or Fluid message (equal to default
 // instance) to indicate an empty spot. This is used for shaped recipes that have gaps.
 message RecipePb {
-  RecipeInfoPb recipe_info = 1;
+  RecipeTypePb recipe_type = 1;
   map<int32, ItemGroupPb> item_input = 2;
   map<int32, FluidGroupPb> fluid_input = 3;
   map<int32, ItemStackWithProbabilityPb> item_output = 4;
   map<int32, FluidStackWithProbabilityPb> fluid_output = 5;
 }
 
-message RecipeInfoPb {
+message RecipeTypePb {
   string category = 1;
   string type = 2;
-  bool shapeless = 3;
 }

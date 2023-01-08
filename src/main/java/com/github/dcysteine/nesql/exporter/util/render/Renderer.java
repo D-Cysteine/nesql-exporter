@@ -126,7 +126,7 @@ public enum Renderer {
             return;
         }
 
-        if (Logger.intermittentLog(loggingCounter++)) {
+        if (Logger.intermittentLog(++loggingCounter)) {
             Logger.MOD.info("Remaining render jobs: {}", RenderDispatcher.INSTANCE.getJobCount());
             loggingCounter = 0;
         }

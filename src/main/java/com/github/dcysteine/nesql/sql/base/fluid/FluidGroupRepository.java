@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FluidGroupRepository extends Repository<FluidGroup, String> {
-    @Query(value = "SELECT * FROM FLUIDGROUP WHERE ID IN ("
-            + "SELECT FLUIDGROUP_ID FROM FLUIDGROUP_FLUIDSTACKS WHERE FLUID_ID = ?1)",
+    @Query(value = "SELECT * FROM FLUID_GROUP WHERE ID IN ("
+            + "SELECT FLUID_GROUP_ID FROM FLUID_GROUP_FLUID_STACKS"
+            + " WHERE FLUID_STACKS_FLUID_ID = ?1)",
             nativeQuery = true)
     List<FluidGroup> findByFluid(String fluidId);
 }

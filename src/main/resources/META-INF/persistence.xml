@@ -14,6 +14,11 @@
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <!-- Generate nicer table and column names. -->
+            <property name="hibernate.physical_naming_strategy"
+                      value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"/>
+            <!-- Needed to handle multiple fields of the same embedded type. -->
+            <property name="hibernate.implicit_naming_strategy" value="component-path"/>
             <!-- Set this to true to log SQL. -->
             <property name="hibernate.show_sql" value="false"/>
             <!-- This should enable SQL statistics, but doesn't seem to work.

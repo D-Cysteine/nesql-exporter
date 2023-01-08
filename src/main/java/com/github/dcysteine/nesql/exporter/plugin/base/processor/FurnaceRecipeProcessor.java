@@ -3,9 +3,9 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePlugin;
+import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
-import com.github.dcysteine.nesql.exporter.plugin.base.RecipeType;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -14,11 +14,11 @@ import java.util.Map;
 
 public class FurnaceRecipeProcessor {
     private final EntityManager entityManager;
-    private final RecipeInfo furnace;
+    private final RecipeType furnace;
 
     public FurnaceRecipeProcessor(BasePlugin plugin, EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.furnace = plugin.getRecipeInfo(RecipeType.FURNACE);
+        this.furnace = plugin.getRecipeType(BaseRecipeType.FURNACE);
     }
 
     public void process() {

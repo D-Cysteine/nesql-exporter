@@ -10,7 +10,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public class RecipeBuilder {
     private final ItemGroupFactory itemGroupFactory;
     private final FluidGroupFactory fluidGroupFactory;
     private final RecipeFactory recipeFactory;
-    private final RecipeInfo recipeInfo;
+    private final RecipeType recipeType;
     private final Map<Integer, ItemGroup> itemInputs;
     private final Map<Integer, FluidGroup> fluidInputs;
     private final Map<Integer, ItemStackWithProbability> itemOutputs;
@@ -41,13 +41,13 @@ public class RecipeBuilder {
     private int itemOutputsIndex;
     private int fluidOutputsIndex;
 
-    public RecipeBuilder(EntityManager entityManager, RecipeInfo recipeInfo) {
+    public RecipeBuilder(EntityManager entityManager, RecipeType recipeType) {
         this.itemFactory = new ItemFactory(entityManager);
         this.fluidFactory = new FluidFactory(entityManager);
         this.itemGroupFactory = new ItemGroupFactory(entityManager);
         this.fluidGroupFactory = new FluidGroupFactory(entityManager);
         this.recipeFactory = new RecipeFactory(entityManager);
-        this.recipeInfo = recipeInfo;
+        this.recipeType = recipeType;
         this.itemInputs = new HashMap<>();
         this.fluidInputs = new HashMap<>();
         this.itemOutputs = new HashMap<>();
@@ -111,7 +111,7 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipItemInput() {
-        if (recipeInfo.isShapeless()) {
+        if (recipeType.isShapeless()) {
             Logger.BASE.warn("Skipping item input index for shapeless recipe!");
         }
 
@@ -154,7 +154,7 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipFluidInput() {
-        if (recipeInfo.isShapeless()) {
+        if (recipeType.isShapeless()) {
             Logger.BASE.warn("Skipping fluid input index for shapeless recipe!");
         }
 
@@ -186,7 +186,7 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipItemOutput() {
-        if (recipeInfo.isShapeless()) {
+        if (recipeType.isShapeless()) {
             Logger.BASE.warn("Skipping item output index for shapeless recipe!");
         }
 
@@ -215,7 +215,7 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder skipFluidOutput() {
-        if (recipeInfo.isShapeless()) {
+        if (recipeType.isShapeless()) {
             Logger.BASE.warn("Skipping fluid output index for shapeless recipe!");
         }
 
@@ -225,7 +225,7 @@ public class RecipeBuilder {
 
     public Recipe build() {
         return recipeFactory.getRecipe(
-                recipeInfo, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
+                recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
     }
 
     private ItemStack buildItemStack(net.minecraft.item.ItemStack itemStack) {

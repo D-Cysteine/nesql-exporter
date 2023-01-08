@@ -9,7 +9,7 @@ import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 
 import java.util.Map;
@@ -20,17 +20,17 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
     }
 
     public Recipe getRecipe(
-            RecipeInfo recipeInfo,
+            RecipeType recipeType,
             Map<Integer, ItemGroup> itemInputs,
             Map<Integer, FluidGroup> fluidInputs,
             Map<Integer, ItemStackWithProbability> itemOutputs,
             Map<Integer, FluidStackWithProbability> fluidOutputs) {
         RecipePb recipePb =
                 ProtoBuilder.buildRecipePb(
-                        recipeInfo, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
+                        recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
         Recipe recipe =
                 new Recipe(
-                        StringUtil.encodeProto(recipePb), recipeInfo,
+                        StringUtil.encodeProto(recipePb), recipeType,
                         itemInputs, fluidInputs, itemOutputs, fluidOutputs);
         return findOrPersist(Recipe.class, recipe);
     }

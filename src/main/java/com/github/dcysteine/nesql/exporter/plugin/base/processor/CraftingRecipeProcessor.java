@@ -3,9 +3,9 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePlugin;
+import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
-import com.github.dcysteine.nesql.exporter.plugin.base.RecipeType;
-import com.github.dcysteine.nesql.sql.base.recipe.RecipeInfo;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,13 +19,13 @@ import java.util.List;
 
 public class CraftingRecipeProcessor {
     private final EntityManager entityManager;
-    private final RecipeInfo shapedCrafting;
-    private final RecipeInfo shapelessCrafting;
+    private final RecipeType shapedCrafting;
+    private final RecipeType shapelessCrafting;
 
     public CraftingRecipeProcessor(BasePlugin plugin, EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.shapedCrafting = plugin.getRecipeInfo(RecipeType.SHAPED_CRAFTING);
-        this.shapelessCrafting = plugin.getRecipeInfo(RecipeType.SHAPELESS_CRAFTING);
+        this.shapedCrafting = plugin.getRecipeType(BaseRecipeType.SHAPED_CRAFTING);
+        this.shapelessCrafting = plugin.getRecipeType(BaseRecipeType.SHAPELESS_CRAFTING);
     }
 
     public void process() {
