@@ -10,6 +10,6 @@ public interface ItemRepository extends Repository<Item, String> {
     List<Item> findByItemId(int minecraftItemId);
 
     @Query(value = "SELECT * FROM ITEM WHERE ITEM_ID = ?1"
-            + " AND NBT IS NULL ORDER BY ITEM_DAMAGE ASC", nativeQuery = true)
+            + " ORDER BY ITEM_DAMAGE ASC, NBT ASC NULLS FIRST", nativeQuery = true)
     List<Item> findBaseItemByItemId(int minecraftItemId);
 }
