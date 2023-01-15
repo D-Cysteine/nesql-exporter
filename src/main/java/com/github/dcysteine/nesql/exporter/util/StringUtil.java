@@ -5,6 +5,7 @@ import com.google.common.primitives.Longs;
 import com.google.protobuf.Message;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
@@ -13,6 +14,16 @@ import java.util.UUID;
 public final class StringUtil {
     // Static class.
     private StringUtil() {}
+
+    /**
+     * Replaces system-specific file separators with forward slash.
+     *
+     * <p>Call this method before saving file paths to the database, since the images are being
+     * served by a web server and should therefore use forward slash.
+     */
+    public static String formatFilePath(String filePath) {
+        return filePath.replace(File.separatorChar, '/');
+    }
 
     /** Strips out Minecraft chat formatting markers. */
     public static String stripFormatting(String string) {

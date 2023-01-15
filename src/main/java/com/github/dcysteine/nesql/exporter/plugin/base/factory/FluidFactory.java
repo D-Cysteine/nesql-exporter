@@ -28,7 +28,7 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
 
         Fluid fluid = new Fluid(
                 IdUtil.fluidId(fluidStack),
-                IdUtil.imageFilePath(fluidStack),
+                StringUtil.formatFilePath(IdUtil.imageFilePath(fluidStack)),
                 fluidStack.getFluid().getName(),
                 fluidStack.getUnlocalizedName(),
                 StringUtil.stripFormatting(fluidStack.getLocalizedName()),

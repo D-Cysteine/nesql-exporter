@@ -17,8 +17,6 @@ import net.minecraft.item.ItemStack;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,15 +37,15 @@ public class ItemFactory extends EntityFactory<Item, String> {
         Item item;
         try {
             @SuppressWarnings("unchecked")
-            List<String> tooltip = itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, true);
-            tooltip = tooltip
-                    .stream()
-                    .map(StringUtil::stripFormatting)
-                    .collect(Collectors.toCollection(ArrayList::new));
+            String tooltip =
+                    ((List<String>) itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, true))
+                            .stream()
+                            .map(StringUtil::stripFormatting)
+                            .collect(Collectors.joining("\n"));
 
             item = new Item(
                     IdUtil.itemId(itemStack),
-                    IdUtil.imageFilePath(itemStack),
+                    StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     IdUtil.modId(itemStack),
                     GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,
                     itemStack.getUnlocalizedName(),
@@ -64,11 +62,11 @@ public class ItemFactory extends EntityFactory<Item, String> {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter);
             e.printStackTrace(printWriter);
-            List<String> stackTrace = Arrays.asList(stringWriter.toString().split("\n"));
+            String stackTrace = stringWriter.toString();
 
             item = new Item(
                     IdUtil.itemId(itemStack),
-                    IdUtil.imageFilePath(itemStack),
+                    StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     IdUtil.modId(itemStack),
                     GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,
                     "ERROR",

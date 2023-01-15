@@ -7,13 +7,11 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -54,9 +52,8 @@ public class Item implements Identifiable<String> {
     @Column(length = Sql.STRING_MAX_LENGTH)
     private String nbt;
 
-    @ElementCollection
-    @OrderColumn
-    private List<String> tooltip;
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    private String tooltip;
 
     private int maxStackSize;
 
@@ -79,7 +76,7 @@ public class Item implements Identifiable<String> {
             int itemId,
             int itemDamage,
             @Nullable String nbt,
-            List<String> tooltip,
+            String tooltip,
             int maxStackSize,
             int maxDamage,
             Map<String, Integer> toolClasses) {
@@ -145,7 +142,7 @@ public class Item implements Identifiable<String> {
         return nbt;
     }
 
-    public List<String> getTooltip() {
+    public String getTooltip() {
         return tooltip;
     }
 
