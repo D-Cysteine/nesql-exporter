@@ -36,7 +36,7 @@ If enchanted items (anything with that purple glint overlay) are showing up as
 blank images for you, then there is likely a conflict with the BugTorch mod.
 
 I believe that
-[this line](https://github.com/GTNewHorizons/BugTorch/blob/master/src/main/java/jss/bugtorch/mixins/minecraft/client/renderer/entity/MixinItemRenderer.java#L23)
+[this line](https://github.com/GTNewHorizons/BugTorch/blob/adec7fb0d48f499344cb9f4cf9c2f597b6ddb687/src/main/java/jss/bugtorch/mixins/minecraft/client/renderer/entity/MixinItemRenderer.java)
 is causing the problem, but it probably can't be fixed by NESQL Exporter since
 it is a mix-in. I recommend just temporarily removing BugTorch from your `mods/`
 folder until after export is complete.
