@@ -10,8 +10,8 @@ directly with the H2 client.
 
 ### Instructions
 
-1. Place `NESQL-Exporter-*.jar` and `NESQL-Exporter-*-deps.jar` into
-   your `mods/` folder. `NotEnoughItems` is the only required dependency.
+1. Place `NESQL-Exporter-*.jar` and `NESQL-Exporter-*-deps.jar` into your
+   `mods/` folder. `NotEnoughItems` is the only required dependency.
 2. If you have `bugtorch-1.7.10-*.jar` in your `mods/` folder, move it somewhere
    else temporarily, as it conflicts with rendering enchanted items. See below.
 3. Start Minecraft and join a single-player world.
