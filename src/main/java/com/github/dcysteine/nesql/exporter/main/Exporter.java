@@ -75,13 +75,16 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data to:");
         Logger.chatMessage(repositoryDirectory.getAbsolutePath());
         if (repositoryDirectory.exists()) {
-            throw new RuntimeException(
-                    String.format(
+            Logger.chatMessage(
+                    EnumChatFormatting.RED + String.format(
                             "Cannot create repository \"%s\"; it already exists!", repositoryName));
+            return;
         }
         if (!repositoryDirectory.mkdirs()) {
-            throw new RuntimeException(
-                    String.format("Failed to create repository \"%s\"!", repositoryName));
+            Logger.chatMessage(
+                    EnumChatFormatting.RED
+                            + String.format("Failed to create repository \"%s\"!", repositoryName));
+            return;
         }
 
         ImmutableMap<String, String> properties =
