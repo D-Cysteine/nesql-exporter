@@ -27,7 +27,7 @@ public class ForgeFluidsProcessor {
             count++;
 
             FluidStack fluidStack = new FluidStack(fluid, 1);
-            fluidFactory.findOrPersist(Fluid.class, fluidFactory.getFluid(fluidStack));
+            fluidFactory.getFluid(fluidStack);
 
             if (Logger.intermittentLog(count)) {
                 Logger.BASE.info("Processed Forge fluid {} of {}", count, total);
