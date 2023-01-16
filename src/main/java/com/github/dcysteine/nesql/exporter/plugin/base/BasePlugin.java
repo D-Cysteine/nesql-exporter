@@ -47,13 +47,15 @@ public class BasePlugin implements Plugin {
         recipeTypeMap.put(
                 BaseRecipeType.SHAPED_CRAFTING,
                 recipeTypeFactory.getRecipeType(
-                        RECIPE_CATEGORY, "Crafting (Shaped)", craftingTable, false,
+                        "base~crafting~shaped", RECIPE_CATEGORY, "Crafting (Shaped)",
+                        craftingTable, false,
                         new Dimension(3, 3), new Dimension(0, 0),
                         new Dimension(1, 1), new Dimension(0, 0)));
         recipeTypeMap.put(
                 BaseRecipeType.SHAPELESS_CRAFTING,
                 recipeTypeFactory.getRecipeType(
-                        RECIPE_CATEGORY, "Crafting (Shapeless)", craftingTable, true,
+                        "base~crafting~shapeless", RECIPE_CATEGORY, "Crafting (Shapeless)",
+                        craftingTable, true,
                         new Dimension(3, 3), new Dimension(0, 0),
                         new Dimension(1, 1), new Dimension(0, 0)));
 
@@ -61,7 +63,7 @@ public class BasePlugin implements Plugin {
         recipeTypeMap.put(
                 BaseRecipeType.FURNACE,
                 recipeTypeFactory.getRecipeType(
-                        RECIPE_CATEGORY, "Furnace", furnace, true,
+                        "base~furnace", RECIPE_CATEGORY, "Furnace", furnace, true,
                         new Dimension(1, 1), new Dimension(0, 0),
                         new Dimension(1, 1), new Dimension(0, 0)));
     }

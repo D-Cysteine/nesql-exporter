@@ -19,6 +19,14 @@ import java.util.SortedSet;
 @EqualsAndHashCode(exclude = "recipes")  // Prevent stack overflow
 @ToString
 public class RecipeType implements Identifiable<String> {
+    /**
+     * Short string that needs to be unique for each recipe type.
+     *
+     * <p>This doesn't need to be human-readable. It's recommended to make it vaguely
+     * understandable, but as short as possible, and not containing non-URL-safe characters.
+     *
+     * <p>Probably a good idea to prefix with the plugin name, to help with uniqueness.
+     */
     @Id
     private String id;
 
@@ -59,10 +67,10 @@ public class RecipeType implements Identifiable<String> {
      * make sure that their combination is unique!
      */
     public RecipeType(
-            String category, String type, Item icon, boolean shapeless,
+            String id, String category, String type, Item icon, boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
-        this.id = String.format("%s~%s", category, type);
+        this.id = id;
         this.category = category;
         this.type = type;
         this.icon = icon;

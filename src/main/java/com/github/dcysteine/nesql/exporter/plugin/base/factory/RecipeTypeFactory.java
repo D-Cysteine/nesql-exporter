@@ -12,12 +12,12 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
     }
 
     public RecipeType getRecipeType(
-            String category, String type, Item icon, boolean shapeless,
+            String id, String category, String type, Item icon, boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
         RecipeType recipeType =
                 new RecipeType(
-                        category, type, icon, shapeless,
+                        id, category, type, icon, shapeless,
                         itemInputDimension, fluidInputDimension,
                         itemOutputDimension, fluidOutputDimension);
         return findOrPersist(RecipeType.class, recipeType);
