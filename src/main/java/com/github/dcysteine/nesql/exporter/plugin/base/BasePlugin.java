@@ -46,26 +46,39 @@ public class BasePlugin implements Plugin {
         Item craftingTable = itemFactory.getItem(ItemUtil.getItemStack(Blocks.crafting_table));
         recipeTypeMap.put(
                 BaseRecipeType.SHAPED_CRAFTING,
-                recipeTypeFactory.getRecipeType(
-                        "base~crafting~shaped", RECIPE_CATEGORY, "Crafting (Shaped)",
-                        craftingTable, false,
-                        new Dimension(3, 3), new Dimension(0, 0),
-                        new Dimension(1, 1), new Dimension(0, 0)));
+                recipeTypeFactory.newBuilder()
+                        .setId("base", "crafting", "shaped")
+                        .setCategory(RECIPE_CATEGORY)
+                        .setType("Crafting (Shaped)")
+                        .setIcon(craftingTable)
+                        .setShapeless(false)
+                        .setItemInputDimension(3, 3)
+                        .setItemOutputDimension(1, 1)
+                        .build());
         recipeTypeMap.put(
                 BaseRecipeType.SHAPELESS_CRAFTING,
-                recipeTypeFactory.getRecipeType(
-                        "base~crafting~shapeless", RECIPE_CATEGORY, "Crafting (Shapeless)",
-                        craftingTable, true,
-                        new Dimension(3, 3), new Dimension(0, 0),
-                        new Dimension(1, 1), new Dimension(0, 0)));
+                recipeTypeFactory.newBuilder()
+                        .setId("base", "crafting", "shapeless")
+                        .setCategory(RECIPE_CATEGORY)
+                        .setType("Crafting (Shapeless)")
+                        .setIcon(craftingTable)
+                        .setShapeless(true)
+                        .setItemInputDimension(3, 3)
+                        .setItemOutputDimension(1, 1)
+                        .build());
 
         Item furnace = itemFactory.getItem(ItemUtil.getItemStack(Blocks.furnace));
         recipeTypeMap.put(
                 BaseRecipeType.FURNACE,
-                recipeTypeFactory.getRecipeType(
-                        "base~furnace", RECIPE_CATEGORY, "Furnace", furnace, true,
-                        new Dimension(1, 1), new Dimension(0, 0),
-                        new Dimension(1, 1), new Dimension(0, 0)));
+                recipeTypeFactory.newBuilder()
+                        .setId("base", "furnace")
+                        .setCategory(RECIPE_CATEGORY)
+                        .setType("Furnace")
+                        .setIcon(furnace)
+                        .setShapeless(true)
+                        .setItemInputDimension(1, 1)
+                        .setItemOutputDimension(1, 1)
+                        .build());
     }
 
     @Override

@@ -7,16 +7,14 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.SortNatural;
 
 import java.util.SortedSet;
 
 /** Contains information about a type of recipe. */
 @Entity
-@EqualsAndHashCode(exclude = "recipes")  // Prevent stack overflow
+@EqualsAndHashCode
 @ToString
 public class RecipeType implements Identifiable<String> {
     /**
@@ -54,10 +52,6 @@ public class RecipeType implements Identifiable<String> {
 
     @Embedded
     private Dimension fluidOutputDimension;
-
-    @OneToMany(mappedBy = "recipeType")
-    @SortNatural
-    private SortedSet<Recipe> recipes;
 
     /** Needed by Hibernate. */
     protected RecipeType() {}
@@ -116,9 +110,5 @@ public class RecipeType implements Identifiable<String> {
 
     public Dimension getFluidOutputDimension() {
         return fluidOutputDimension;
-    }
-
-    public SortedSet<Recipe> getRecipes() {
-        return recipes;
     }
 }

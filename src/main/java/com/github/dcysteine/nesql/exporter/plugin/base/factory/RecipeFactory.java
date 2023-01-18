@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.proto.RecipePb;
+import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
@@ -28,10 +29,9 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
         RecipePb recipePb =
                 ProtoBuilder.buildRecipePb(
                         recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
+        String id = IdPrefixUtil.RECIPE.applyPrefix(StringUtil.encodeProto(recipePb));
         Recipe recipe =
-                new Recipe(
-                        StringUtil.encodeProto(recipePb), recipeType,
-                        itemInputs, fluidInputs, itemOutputs, fluidOutputs);
+                new Recipe(id, recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
         return findOrPersist(Recipe.class, recipe);
     }
 }

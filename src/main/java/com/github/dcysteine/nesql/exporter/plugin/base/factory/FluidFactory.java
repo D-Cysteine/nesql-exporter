@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
@@ -21,13 +22,13 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
     public Fluid getFluid(FluidStack fluidStack) {
         // We're just exporting data, not actually doing recipe matching, so I think we can just
         // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
-        String nbt = null;
+        String nbt = "";
         if (fluidStack.tag != null && !ItemUtil.isWildcardNbt(fluidStack.tag)) {
             nbt = fluidStack.tag.toString();
         }
 
         Fluid fluid = new Fluid(
-                IdUtil.fluidId(fluidStack),
+                IdPrefixUtil.FLUID.applyPrefix(IdUtil.fluidId(fluidStack)),
                 StringUtil.formatFilePath(IdUtil.imageFilePath(fluidStack)),
                 fluidStack.getFluid().getName(),
                 fluidStack.getUnlocalizedName(),

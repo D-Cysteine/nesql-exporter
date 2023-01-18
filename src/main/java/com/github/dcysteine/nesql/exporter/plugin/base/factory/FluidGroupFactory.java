@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.proto.FluidGroupPb;
+import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
@@ -18,7 +19,8 @@ public class FluidGroupFactory extends EntityFactory<FluidGroup, String> {
 
     public FluidGroup getFluidGroup(SortedSet<FluidStack> fluidStacks) {
         FluidGroupPb fluidGroupPb = ProtoBuilder.buildFluidGroupPb(fluidStacks);
-        FluidGroup fluidGroup = new FluidGroup(StringUtil.encodeProto(fluidGroupPb), fluidStacks);
+        String id = IdPrefixUtil.FLUID_GROUP.applyPrefix(StringUtil.encodeProto(fluidGroupPb));
+        FluidGroup fluidGroup = new FluidGroup(id, fluidStacks);
         return findOrPersist(FluidGroup.class, fluidGroup);
     }
 

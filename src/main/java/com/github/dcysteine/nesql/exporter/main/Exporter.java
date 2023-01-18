@@ -6,6 +6,7 @@ import com.github.dcysteine.nesql.exporter.plugin.registry.PluginRegistry;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.google.common.collect.ImmutableMap;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -111,6 +112,12 @@ public final class Exporter {
                 Renderer.INSTANCE.preinitialize(imageDirectory);
                 RenderDispatcher.INSTANCE.setRendererState(
                         RenderDispatcher.RendererState.INITIALIZING);
+            }
+
+            if (Loader.isModLoaded("bugtorch")) {
+                Logger.chatMessage(EnumChatFormatting.RED + "BugTorch mod appears to be loaded;");
+                Logger.chatMessage(
+                        EnumChatFormatting.RED + "enchanted items might not render correctly!");
             }
         }
 

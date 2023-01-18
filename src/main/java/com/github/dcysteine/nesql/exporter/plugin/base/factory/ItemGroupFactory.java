@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.proto.ItemGroupPb;
+import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
@@ -20,8 +21,8 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
     public ItemGroup getItemGroup(
             SortedSet<ItemStack> itemStacks, SortedSet<WildcardItemStack> wildcardItemStacks) {
         ItemGroupPb itemGroupPb = ProtoBuilder.buildItemGroupPb(itemStacks, wildcardItemStacks);
-        ItemGroup itemGroup =
-                new ItemGroup(StringUtil.encodeProto(itemGroupPb), itemStacks, wildcardItemStacks);
+        String id = IdPrefixUtil.ITEM_GROUP.applyPrefix(StringUtil.encodeProto(itemGroupPb));
+        ItemGroup itemGroup = new ItemGroup(id, itemStacks, wildcardItemStacks);
         return findOrPersist(ItemGroup.class, itemGroup);
     }
 

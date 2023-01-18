@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
@@ -29,7 +30,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
     public Item getItem(ItemStack itemStack) {
         // We're just exporting data, not actually doing recipe matching, so I think we can just
         // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
-        String nbt = null;
+        String nbt = "";
         if (itemStack.hasTagCompound() && !ItemUtil.isWildcardNbt(itemStack.getTagCompound())) {
             nbt = itemStack.getTagCompound().toString();
         }
@@ -44,7 +45,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                             .collect(Collectors.joining("\n"));
 
             item = new Item(
-                    IdUtil.itemId(itemStack),
+                    IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     IdUtil.modId(itemStack),
                     GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,
@@ -65,7 +66,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
             String stackTrace = stringWriter.toString();
 
             item = new Item(
-                    IdUtil.itemId(itemStack),
+                    IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     IdUtil.modId(itemStack),
                     GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,

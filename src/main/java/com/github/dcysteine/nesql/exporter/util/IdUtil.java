@@ -16,7 +16,7 @@ public final class IdUtil {
     private IdUtil() {}
 
     /** This string needs to be URL parameter-safe, as well as file system-safe. */
-    private static final String ID_SEPARATOR = "~";
+    public static final String ID_SEPARATOR = "~";
 
     public static String itemId(ItemStack itemStack) {
         String id = itemId(itemStack.getItem());

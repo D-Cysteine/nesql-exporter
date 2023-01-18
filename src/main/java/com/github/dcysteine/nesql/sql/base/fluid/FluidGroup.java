@@ -2,12 +2,10 @@ package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Sql;
-import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.SortNatural;
@@ -16,7 +14,7 @@ import java.util.SortedSet;
 
 /** A group of {@link FluidStack}s, all fitting into a single input slot in a recipe. */
 @Entity
-@EqualsAndHashCode(exclude = "recipesWithInput")  // Prevent stack overflow
+@EqualsAndHashCode
 @ToString
 public class FluidGroup implements Identifiable<String> {
     @Id
@@ -26,10 +24,6 @@ public class FluidGroup implements Identifiable<String> {
     @ElementCollection
     @SortNatural
     private SortedSet<FluidStack> fluidStacks;
-
-    @ManyToMany(mappedBy = "fluidInputs")
-    @SortNatural
-    private SortedSet<Recipe> recipesWithInput;
 
     /** Needed by Hibernate. */
     protected FluidGroup() {}
@@ -46,9 +40,5 @@ public class FluidGroup implements Identifiable<String> {
 
     public SortedSet<FluidStack> getFluidStacks() {
         return fluidStacks;
-    }
-
-    public SortedSet<Recipe> getRecipesWithInput() {
-        return recipesWithInput;
     }
 }

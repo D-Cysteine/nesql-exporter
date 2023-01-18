@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -48,8 +47,7 @@ public class Item implements Identifiable<String> {
 
     private int itemDamage;
 
-    @Nullable
-    @Column(length = Sql.STRING_MAX_LENGTH)
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String nbt;
 
     @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
@@ -75,7 +73,7 @@ public class Item implements Identifiable<String> {
             String localizedName,
             int itemId,
             int itemDamage,
-            @Nullable String nbt,
+            String nbt,
             String tooltip,
             int maxStackSize,
             int maxDamage,
@@ -134,10 +132,9 @@ public class Item implements Identifiable<String> {
     }
 
     public boolean hasNbt() {
-        return nbt != null;
+        return !nbt.isEmpty();
     }
 
-    @Nullable
     public String getNbt() {
         return nbt;
     }

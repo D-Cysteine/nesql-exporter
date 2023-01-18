@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 
 @Entity
@@ -41,8 +40,7 @@ public class Fluid implements Identifiable<String> {
      */
     private int fluidId;
 
-    @Nullable
-    @Column(length = Sql.STRING_MAX_LENGTH)
+    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
     private String nbt;
 
     private int luminosity;
@@ -61,7 +59,7 @@ public class Fluid implements Identifiable<String> {
             String unlocalizedName,
             String localizedName,
             int fluidId,
-            @Nullable String nbt,
+            String nbt,
             int luminosity,
             int density,
             int temperature,
@@ -111,10 +109,6 @@ public class Fluid implements Identifiable<String> {
         return fluidId;
     }
 
-    public boolean hasNbt() {
-        return nbt != null;
-    }
-
     public int getLuminosity() {
         return luminosity;
     }
@@ -135,7 +129,10 @@ public class Fluid implements Identifiable<String> {
         return gaseous;
     }
 
-    @Nullable
+    public boolean hasNbt() {
+        return !nbt.isEmpty();
+    }
+
     public String getNbt() {
         return nbt;
     }
