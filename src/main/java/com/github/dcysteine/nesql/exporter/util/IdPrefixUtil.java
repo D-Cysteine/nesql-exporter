@@ -14,7 +14,7 @@ public enum IdPrefixUtil {
 
     private final String prefix;
 
-    private IdPrefixUtil(String... prefixParts) {
+    IdPrefixUtil(String... prefixParts) {
         prefix = Joiner.on(IdUtil.ID_SEPARATOR).join(prefixParts) + IdUtil.ID_SEPARATOR;
     }
 
