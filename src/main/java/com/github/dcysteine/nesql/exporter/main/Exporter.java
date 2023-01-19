@@ -1,10 +1,11 @@
 package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.plugin.Plugin;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.registry.PluginRegistry;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
@@ -16,7 +17,7 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import jakarta.persistence.EntityManagerFactory;
 import java.io.File;
-import java.util.List;
+import java.util.Map;
 
 /** Exports recipes and other data to a file. */
 public final class Exporter {
@@ -123,9 +124,9 @@ public final class Exporter {
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
         PluginRegistry registry = new PluginRegistry();
-        List<Plugin> activePlugins = registry.initialize(entityManager);
+        Map<Plugin, PluginExporter> activePlugins = registry.initialize(entityManager);
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
-        activePlugins.forEach(
+        activePlugins.keySet().forEach(
                 plugin -> Logger.chatMessage("  " + EnumChatFormatting.YELLOW + plugin.getName()));
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");

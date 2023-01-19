@@ -1,6 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.base;
 
-import com.github.dcysteine.nesql.exporter.plugin.Plugin;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeTypeFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.CraftingRecipeProcessor;
@@ -9,7 +9,6 @@ import com.github.dcysteine.nesql.exporter.plugin.base.processor.FurnaceRecipePr
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.NeiItemListProcessor;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
-import com.github.dcysteine.nesql.sql.base.recipe.Dimension;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import jakarta.persistence.EntityManager;
 import net.minecraft.init.Blocks;
@@ -17,25 +16,19 @@ import net.minecraft.init.Blocks;
 import java.util.EnumMap;
 
 /** Base plugin which handles vanilla Minecraft as well as Forge recipes. */
-public class BasePlugin implements Plugin {
-    public static final String NAME = "base";
+public class BasePluginExporter implements PluginExporter {
     public static final String RECIPE_CATEGORY = "Minecraft";
 
     private final EntityManager entityManager;
     private final EnumMap<BaseRecipeType, RecipeType> recipeTypeMap;
 
-    public BasePlugin(EntityManager entityManager) {
+    public BasePluginExporter(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.recipeTypeMap = new EnumMap<>(BaseRecipeType.class);
     }
 
     public RecipeType getRecipeType(BaseRecipeType recipeType) {
         return recipeTypeMap.get(recipeType);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     @Override

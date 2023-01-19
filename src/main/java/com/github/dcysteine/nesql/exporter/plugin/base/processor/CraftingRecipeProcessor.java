@@ -2,7 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.base.BasePlugin;
+import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
@@ -22,7 +22,7 @@ public class CraftingRecipeProcessor {
     private final RecipeType shapedCrafting;
     private final RecipeType shapelessCrafting;
 
-    public CraftingRecipeProcessor(BasePlugin plugin, EntityManager entityManager) {
+    public CraftingRecipeProcessor(BasePluginExporter plugin, EntityManager entityManager) {
         this.entityManager = entityManager;
         this.shapedCrafting = plugin.getRecipeType(BaseRecipeType.SHAPED_CRAFTING);
         this.shapelessCrafting = plugin.getRecipeType(BaseRecipeType.SHAPELESS_CRAFTING);
