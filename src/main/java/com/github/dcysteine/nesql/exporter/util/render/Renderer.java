@@ -148,6 +148,7 @@ public enum Renderer {
                 // Not sure why, but this check fails spuriously every now and then.
                 // It complains that the file exists, but I checked and it didn't actually exist.
                 // Let's just... ignore it for now XD
+                // The failures might be due to Windows getting confused by '~' in filenames XS
                 /*
                 if (outputFile.exists()) {
                     // If we cannot avoid queueing up duplicate render jobs, we can replace this
@@ -156,18 +157,6 @@ public enum Renderer {
                             "Render output file already exists: " + outputFile.getPath());
                 }
                  */
-
-                if (outputFile.getName().length() > ConfigOptions.MAX_FILE_NAME_LENGTH.get()) {
-                    // This error happens a LOT in e.g. GTNH, due to very long NBT.
-                    // If we do want to log this, recommend doing at least one of these:
-                    //   1. Set to DEBUG level
-                    //   2. Make it controlled by a config option
-                    /*
-                    Logger.MOD.error(
-                            "Render output file name too long:\n" + outputFile.getPath());
-                     */
-                    return;  // finally-block should still execute
-                }
 
                 File parentDir = outputFile.getParentFile();
                 if (parentDir.exists() && !parentDir.isDirectory()) {

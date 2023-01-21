@@ -66,15 +66,6 @@ public final class ConfigOptions {
                             + " Set to <=0 to disable.")
                     .register();
 
-    public static final Option<Integer> MAX_FILE_NAME_LENGTH =
-            new IntegerOption(
-                    Category.OPTIONS, "max_file_name_length", 100,
-                    "The maximum length for rendered image file names."
-                            + " Increase this if your system supports longer names.")
-                    .register();
-
-    // TODO: allow disabling of plugins by config option. String array of disabled plugins?
-
     public enum Category {
         OPTIONS("options");
 
