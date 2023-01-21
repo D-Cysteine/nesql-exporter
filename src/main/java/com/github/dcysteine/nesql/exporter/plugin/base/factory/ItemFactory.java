@@ -28,6 +28,11 @@ public class ItemFactory extends EntityFactory<Item, String> {
     }
 
     public Item getItem(ItemStack itemStack) {
+        GameRegistry.UniqueIdentifier uniqueId =
+                GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
+        String modId = uniqueId.modId;
+        String internalName = uniqueId.name;
+
         // We're just exporting data, not actually doing recipe matching, so I think we can just
         // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
         String nbt = "";
@@ -47,8 +52,8 @@ public class ItemFactory extends EntityFactory<Item, String> {
             item = new Item(
                     IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
-                    IdUtil.modId(itemStack),
-                    GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,
+                    modId,
+                    internalName,
                     itemStack.getUnlocalizedName(),
                     StringUtil.stripFormatting(itemStack.getDisplayName()),
                     ItemUtil.getItemId(itemStack),
@@ -68,8 +73,8 @@ public class ItemFactory extends EntityFactory<Item, String> {
             item = new Item(
                     IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
-                    IdUtil.modId(itemStack),
-                    GameRegistry.findUniqueIdentifierFor(itemStack.getItem()).name,
+                    modId,
+                    internalName,
                     "ERROR",
                     "ERROR",
                     ItemUtil.getItemId(itemStack),

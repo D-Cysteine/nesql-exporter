@@ -11,6 +11,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
+import cpw.mods.fml.common.registry.GameRegistry;
 import jakarta.persistence.EntityManager;
 
 import java.util.Arrays;
@@ -239,7 +240,10 @@ public class RecipeBuilder {
     }
 
     private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {
-        return new WildcardItemStack(ItemUtil.getItemId(itemStack), itemStack.stackSize);
+        GameRegistry.UniqueIdentifier uniqueId =
+                GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
+        return new WildcardItemStack(
+                uniqueId.modId, uniqueId.name, ItemUtil.getItemId(itemStack), itemStack.stackSize);
     }
 
     private FluidStack buildFluidStack(net.minecraftforge.fluids.FluidStack fluidStack) {

@@ -191,13 +191,6 @@ public enum Renderer {
         }
     }
 
-    private void clearBuffer() {
-        // Parameters are RGBA. Set full transparent background.
-        GL11.glClearColor(0f, 0f, 0f, 0f);
-        GL11.glClearDepth(1D);
-        GL11.glClear(16384 | 256);
-    }
-
     private void render(RenderJob job) {
         switch (job.getType()) {
             case ITEM:
@@ -226,29 +219,6 @@ public enum Renderer {
         }
     }
 
-    private void setupRenderState() {
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0.0, 1.0, 1.0, 0.0, -100.0, 100.0);
-        double scaleFactor = 1 / 16.0;
-        GL11.glScaled(scaleFactor, scaleFactor, scaleFactor);
-        // We need to end with the model-view matrix selected. It's what the rendering code expects.
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-
-        framebuffer.bindFramebuffer(true);
-        // Do we need to bind GL_DRAW_FRAMEBUFFER here as well? Seems to work fine as-is though...
-        OpenGlHelper.func_153171_g(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
-    }
-
-    private void teardownRenderState() {
-        framebuffer.unbindFramebuffer();
-    }
-
     /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */
     private BufferedImage readImage(RenderJob job) {
         ByteBuffer imageByteBuffer = BufferUtils.createByteBuffer(4 * imageDim * imageDim);
@@ -274,5 +244,35 @@ public enum Renderer {
                 new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, imageDim, imageDim, flippedPixels, 0, imageDim);
         return image;
+    }
+
+    private void clearBuffer() {
+        // Parameters are RGBA. Set full transparent background.
+        GL11.glClearColor(0f, 0f, 0f, 0f);
+        GL11.glClearDepth(1D);
+        GL11.glClear(16384 | 256);
+    }
+
+    private void setupRenderState() {
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0.0, 1.0, 1.0, 0.0, -100.0, 100.0);
+        double scaleFactor = 1 / 16.0;
+        GL11.glScaled(scaleFactor, scaleFactor, scaleFactor);
+        // We need to end with the model-view matrix selected. It's what the rendering code expects.
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        framebuffer.bindFramebuffer(true);
+        // Do we need to bind GL_DRAW_FRAMEBUFFER here as well? Seems to work fine as-is though...
+        OpenGlHelper.func_153171_g(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
+    }
+
+    private void teardownRenderState() {
+        framebuffer.unbindFramebuffer();
     }
 }

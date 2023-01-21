@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.io.File;
@@ -32,18 +33,7 @@ public final class IdUtil {
 
     public static String itemId(Item item) {
         GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return sanitize(
-                uniqueId.modId + ID_SEPARATOR + uniqueId.name + ID_SEPARATOR
-                        + Item.getIdFromItem(item));
-    }
-
-    public static String modId(ItemStack itemStack) {
-        return modId(itemStack.getItem());
-    }
-
-    public static String modId(Item item) {
-        GameRegistry.UniqueIdentifier uniqueId = GameRegistry.findUniqueIdentifierFor(item);
-        return sanitize(uniqueId.modId);
+        return sanitize(uniqueId.modId + ID_SEPARATOR + uniqueId.name);
     }
 
     public static String imageFilePath(ItemStack itemStack) {
@@ -68,12 +58,21 @@ public final class IdUtil {
     }
 
     public static String fluidId(Fluid fluid) {
-        return sanitize(fluid.getName() + ID_SEPARATOR + fluid.getID());
+        String uniqueName = FluidRegistry.getDefaultFluidName(fluid);
+        int separator = uniqueName.indexOf(':');
+        return sanitize(
+                uniqueName.substring(0, separator)
+                        + ID_SEPARATOR + uniqueName.substring(separator + 1));
     }
 
     public static String imageFilePath(FluidStack fluidStack) {
-        return "fluid" + File.separator
-                + fluidId(fluidStack.getFluid()) + Renderer.IMAGE_FILE_EXTENSION;
+        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
+        // folder.
+        String fluidId = fluidId(fluidStack.getFluid());
+        int firstIndex = fluidId.indexOf(ID_SEPARATOR);
+        return "fluid" + File.separator + fluidId.substring(0, firstIndex) + File.separator
+                + fluidId.substring(firstIndex + ID_SEPARATOR.length())
+                + Renderer.IMAGE_FILE_EXTENSION;
     }
 
     /**

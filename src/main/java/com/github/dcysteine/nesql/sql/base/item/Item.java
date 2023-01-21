@@ -40,9 +40,7 @@ public class Item implements Identifiable<String> {
     @Column(nullable = false)
     private String localizedName;
 
-    /**
-     * The Minecraft item ID.
-     */
+    /** The Minecraft item ID. These IDs can vary from world to world, so don't rely on them! */
     private int itemId;
 
     private int itemDamage;
@@ -122,7 +120,7 @@ public class Item implements Identifiable<String> {
         return localizedName;
     }
 
-    /** The Minecraft item ID. */
+    /** The Minecraft item ID. These IDs can vary from world to world, so don't rely on them! */
     public int getItemId() {
         return itemId;
     }
@@ -159,7 +157,8 @@ public class Item implements Identifiable<String> {
     @Override
     public int compareTo(Identifiable<String> other) {
         if (other instanceof Item) {
-            return Comparator.comparing(Item::getItemId)
+            return Comparator.comparing(Item::getModId)
+                    .thenComparing(Item::getInternalName)
                     .thenComparing(Item::getItemDamage)
                     .thenComparing(Item::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
                     .thenComparing(Item::getId)

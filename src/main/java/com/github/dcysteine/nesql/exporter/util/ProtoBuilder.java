@@ -92,7 +92,8 @@ public final class ProtoBuilder {
     public static ItemStackPb buildItemStackPb(ItemStack itemStack) {
         Item item = itemStack.getItem();
         ItemStackPb.Builder builder = ItemStackPb.newBuilder()
-                .setItemId(item.getItemId())
+                .setModId(item.getModId())
+                .setInternalName(item.getInternalName())
                 .setDamage(item.getItemDamage())
                 .setStackSize(itemStack.getStackSize());
         if (item.hasNbt()) {
@@ -105,7 +106,8 @@ public final class ProtoBuilder {
             ItemStackWithProbability itemStack) {
         Item item = itemStack.getItem();
         ItemStackWithProbabilityPb.Builder builder = ItemStackWithProbabilityPb.newBuilder()
-                .setItemId(item.getItemId())
+                .setModId(item.getModId())
+                .setInternalName(item.getInternalName())
                 .setDamage(item.getItemDamage())
                 .setStackSize(itemStack.getStackSize())
                 .setProbability(itemStack.getProbability());
@@ -118,7 +120,8 @@ public final class ProtoBuilder {
     public static WildcardItemStackPb buildWildcardItemStackPb(
             WildcardItemStack wildcardItemStack) {
         return WildcardItemStackPb.newBuilder()
-                .setItemId(wildcardItemStack.getItemId())
+                .setModId(wildcardItemStack.getModId())
+                .setInternalName(wildcardItemStack.getInternalName())
                 .setStackSize(wildcardItemStack.getStackSize())
                 .build();
     }
@@ -126,7 +129,8 @@ public final class ProtoBuilder {
     public static FluidStackPb buildFluidStackPb(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         FluidStackPb.Builder builder = FluidStackPb.newBuilder()
-                .setFluidId(fluid.getFluidId())
+                .setModId(fluid.getModId())
+                .setInternalName(fluid.getInternalName())
                 .setAmount(fluidStack.getAmount());
         if (fluid.hasNbt()) {
             builder.setNbt(fluid.getNbt());
@@ -138,7 +142,8 @@ public final class ProtoBuilder {
             FluidStackWithProbability fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         FluidStackWithProbabilityPb.Builder builder = FluidStackWithProbabilityPb.newBuilder()
-                .setFluidId(fluid.getFluidId())
+                .setModId(fluid.getModId())
+                .setInternalName(fluid.getInternalName())
                 .setAmount(fluidStack.getAmount())
                 .setProbability(fluidStack.getProbability());
         if (fluid.hasNbt()) {

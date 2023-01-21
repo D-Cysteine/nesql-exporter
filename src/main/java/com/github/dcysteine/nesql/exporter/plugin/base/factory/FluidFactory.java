@@ -12,6 +12,7 @@ import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import jakarta.persistence.EntityManager;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidFactory extends EntityFactory<Fluid, String> {
@@ -20,6 +21,11 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
     }
 
     public Fluid getFluid(FluidStack fluidStack) {
+        String uniqueName = FluidRegistry.getDefaultFluidName(fluidStack.getFluid());
+        int separator = uniqueName.indexOf(':');
+        String modId = uniqueName.substring(0, separator);
+        String internalName = uniqueName.substring(separator + 1);
+
         // We're just exporting data, not actually doing recipe matching, so I think we can just
         // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
         String nbt = "";
@@ -30,7 +36,8 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
         Fluid fluid = new Fluid(
                 IdPrefixUtil.FLUID.applyPrefix(IdUtil.fluidId(fluidStack)),
                 StringUtil.formatFilePath(IdUtil.imageFilePath(fluidStack)),
-                fluidStack.getFluid().getName(),
+                modId,
+                internalName,
                 fluidStack.getUnlocalizedName(),
                 StringUtil.stripFormatting(fluidStack.getLocalizedName()),
                 fluidStack.getFluidID(),

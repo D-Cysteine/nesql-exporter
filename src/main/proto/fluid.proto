@@ -9,14 +9,16 @@ message FluidGroupPb {
 }
 
 message FluidStackPb {
-  int32 fluid_id = 1;
-  int32 amount = 2;
-  string nbt = 3;
+  string mod_id = 1;
+  string internal_name = 2;
+  int32 amount = 3;
+  string nbt = 4;
 }
 
 message FluidStackWithProbabilityPb {
-  int32 fluid_id = 1;
-  int32 amount = 2;
-  string nbt = 3;
-  double probability = 4;
+  string mod_id = 1;
+  string internal_name = 2;
+  int32 amount = 3;
+  string nbt = 4;
+  double probability = 5;
 }

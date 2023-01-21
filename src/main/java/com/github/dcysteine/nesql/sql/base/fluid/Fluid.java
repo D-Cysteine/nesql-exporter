@@ -27,6 +27,9 @@ public class Fluid implements Identifiable<String> {
     private String imageFilePath;
 
     @Column(nullable = false)
+    private String modId;
+
+    @Column(nullable = false)
     private String internalName;
 
     @Column(nullable = false)
@@ -35,9 +38,7 @@ public class Fluid implements Identifiable<String> {
     @Column(nullable = false)
     private String localizedName;
 
-    /**
-     * The Forge fluid ID.
-     */
+    /** The Forge fluid ID. These are regenerated on game startup, and so are not stable! */
     private int fluidId;
 
     @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
@@ -55,6 +56,7 @@ public class Fluid implements Identifiable<String> {
     public Fluid(
             String id,
             String imageFilePath,
+            String modId,
             String internalName,
             String unlocalizedName,
             String localizedName,
@@ -67,6 +69,7 @@ public class Fluid implements Identifiable<String> {
             boolean gaseous) {
         this.id = id;
         this.imageFilePath = imageFilePath;
+        this.modId = modId;
         this.internalName = internalName;
         this.unlocalizedName = unlocalizedName;
         this.localizedName = localizedName;
@@ -80,8 +83,8 @@ public class Fluid implements Identifiable<String> {
     }
 
     /**
-     * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
-     * be multiple item rows for the same Minecraft item ID).
+     * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
+     * multiple fluid rows for the same Forge fluid ID).
      */
     @Override
     public String getId() {
@@ -90,6 +93,10 @@ public class Fluid implements Identifiable<String> {
 
     public String getImageFilePath() {
         return imageFilePath;
+    }
+
+    public String getModId() {
+        return modId;
     }
 
     public String getInternalName() {
@@ -104,7 +111,7 @@ public class Fluid implements Identifiable<String> {
         return localizedName;
     }
 
-    /** The Forge fluid ID. */
+    /** The Forge fluid ID. These are regenerated on game startup, and so are not stable! */
     public int getFluidId() {
         return fluidId;
     }
@@ -140,7 +147,8 @@ public class Fluid implements Identifiable<String> {
     @Override
     public int compareTo(Identifiable<String> other) {
         if (other instanceof Fluid) {
-            return Comparator.comparing(Fluid::getFluidId)
+            return Comparator.comparing(Fluid::getModId)
+                    .thenComparing(Fluid::getInternalName)
                     .thenComparing(Fluid::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
                     .thenComparing(Fluid::getId)
                     .compare(this, (Fluid) other);

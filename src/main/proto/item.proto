@@ -10,21 +10,24 @@ message ItemGroupPb {
 }
 
 message ItemStackPb {
-  int32 item_id = 1;
-  int32 damage = 2;
-  int32 stack_size = 3;
-  string nbt = 4;
+  string mod_id = 1;
+  string internal_name = 2;
+  int32 damage = 3;
+  int32 stack_size = 4;
+  string nbt = 5;
 }
 
 message ItemStackWithProbabilityPb {
-  int32 item_id = 1;
-  int32 damage = 2;
-  int32 stack_size = 3;
-  string nbt = 4;
-  double probability = 5;
+  string mod_id = 1;
+  string internal_name = 2;
+  int32 damage = 3;
+  int32 stack_size = 4;
+  string nbt = 5;
+  double probability = 6;
 }
 
 message WildcardItemStackPb {
-  int32 item_id = 1;
-  int32 stack_size = 2;
+  string mod_id = 1;
+  string internal_name = 2;
+  int32 stack_size = 3;
 }

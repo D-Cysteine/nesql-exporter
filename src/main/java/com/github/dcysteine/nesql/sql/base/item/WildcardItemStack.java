@@ -17,7 +17,16 @@ import java.util.Comparator;
 @EqualsAndHashCode
 @ToString
 public class WildcardItemStack implements Comparable<WildcardItemStack> {
-    /** This is the Minecraft item ID, NOT the {@code Item} entity ID! */
+    private String modId;
+
+    private String internalName;
+
+    /**
+     * The Minecraft item ID. These IDs can vary from world to world, so don't rely on them!
+     *
+     * <p>However, we should be able to use this field to query for members of a wildcard item
+     * stack, since the IDs will be internally consistent within the export.
+     */
     private int itemId;
 
     private int stackSize;
@@ -25,11 +34,27 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
     /** Needed by Hibernate. */
     protected WildcardItemStack() {}
 
-    public WildcardItemStack(int itemId, int stackSize) {
+    public WildcardItemStack(String modId, String internalName, int itemId, int stackSize) {
+        this.modId = modId;
         this.itemId = itemId;
+        this.internalName = internalName;
         this.stackSize = stackSize;
     }
 
+    public String getModId() {
+        return modId;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    /**
+     * The Minecraft item ID. These IDs can vary from world to world, so don't rely on them!
+     *
+     * <p>However, we should be able to use this field to query for members of a wildcard item
+     * stack, since the IDs will be internally consistent within the export.
+     */
     public int getItemId() {
         return itemId;
     }
@@ -40,7 +65,8 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
 
     @Override
     public int compareTo(WildcardItemStack other) {
-        return Comparator.comparing(WildcardItemStack::getItemId)
+        return Comparator.comparing(WildcardItemStack::getModId)
+                .thenComparing(WildcardItemStack::getInternalName)
                 .thenComparing(WildcardItemStack::getStackSize)
                 .compare(this, other);
     }
