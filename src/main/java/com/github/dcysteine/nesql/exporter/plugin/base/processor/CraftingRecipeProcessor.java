@@ -114,6 +114,9 @@ public class CraftingRecipeProcessor {
     }
 
     private void handleItemInput(RecipeBuilder builder, Object itemInput) {
+        // For some reason, a bunch of crafting recipes have stack size > 1, even though crafting
+        // recipes only ever consume one item from each slot. This is probably a bug in the recipes.
+        // TODO maybe handle this? We can fix the stack sizes in this method, but it'll be slower.
         ItemStack[] itemStacks = NEIServerUtils.extractRecipeItems(itemInput);
         if (itemStacks == null || itemStacks.length == 0) {
             builder.skipItemInput();
