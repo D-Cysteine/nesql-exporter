@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CraftingRecipeProcessor {
@@ -114,16 +115,33 @@ public class CraftingRecipeProcessor {
     }
 
     private void handleItemInput(RecipeBuilder builder, Object itemInput) {
-        // For some reason, a bunch of crafting recipes have stack size > 1, even though crafting
-        // recipes only ever consume one item from each slot. This is probably a bug in the recipes.
-        // TODO maybe handle this? We can fix the stack sizes in this method, but it'll be slower.
         ItemStack[] itemStacks = NEIServerUtils.extractRecipeItems(itemInput);
         if (itemStacks == null || itemStacks.length == 0) {
             builder.skipItemInput();
-        } else if (itemStacks.length == 1) {
-            builder.addItemInput(itemStacks[0], true);
-        } else {
-            builder.addItemGroupInput(itemStacks, true);
+            return;
         }
+
+        // For some reason, a bunch of crafting recipes have stack size > 1, even though crafting
+        // recipes only ever consume one item from each slot. This is probably a bug in the recipes.
+        // We'll fix this by manually setting stack sizes to 1.
+        ItemStack[] fixedItemStacks = new ItemStack[itemStacks.length];
+        boolean foundBadStackSize = false;
+        for (int i = 0; i < itemStacks.length; i++) {
+            ItemStack itemStack = itemStacks[i];
+
+            if (itemStack.stackSize != 1) {
+                foundBadStackSize = true;
+                fixedItemStacks[i] = itemStack.copy();
+                fixedItemStacks[i].stackSize = 1;
+            } else {
+                fixedItemStacks[i] = itemStack;
+            }
+        }
+
+        if (foundBadStackSize) {
+            Logger.BASE.warn("Crafting recipe with bad stack size: " + Arrays.toString(itemStacks));
+        }
+
+        builder.addItemGroupInput(fixedItemStacks, true);
     }
 }
