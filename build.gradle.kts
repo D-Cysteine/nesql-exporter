@@ -70,9 +70,19 @@ val shadowRuntime: Configuration by configurations.creating {
 repositories {
     maven("https://maven.minecraftforge.net") {
         name = "Forge"
-        metadataSources { artifact() }
+        metadataSources {
+            artifact()
+        }
     }
-    maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") { name = "GTNH Maven" }
+    maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") {
+        name = "GTNH Maven"
+    }
+    maven("https://maven.ic2.player.to") {
+        name = "IC2 Maven"
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 dependencies {
@@ -103,31 +113,40 @@ dependencies {
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
 
-    /*
     val gregTech5Version: String by project
     implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev") {
         isTransitive = false
     }
-
     // The following are compile-time dependencies of GT5.
-    val enderIoVersion: String by project
+    val industrialCraft2Version: String by project
+    compileOnly("net.industrial-craft:industrialcraft-2:${industrialCraft2Version}-experimental:api") {
+        isTransitive = false
+    }
     val forestryVersion: String by project
+    compileOnly("com.github.GTNewHorizons:ForestryMC:$forestryVersion:api") {
+        isTransitive = false
+    }
     val railcraftVersion: String by project
-    compileOnly("crazypants.enderio:EnderIO-$minecraftVersion:${enderIoVersion}_beta:dev")
-    compileOnly("net.sengir.forestry:forestry_$minecraftVersion:$forestryVersion:dev")
-    compileOnly("mods.railcraft:Railcraft_$minecraftVersion:$railcraftVersion:dev")
-
-    val forestryVersion: String by project
-    implementation("com.github.GTNewHorizons:ForestryMC:$forestryVersion:dev") {
+    compileOnly("com.github.GTNewHorizons:Railcraft:$railcraftVersion:api") {
         isTransitive = false
     }
-
-    // The following are compile-time dependencies of Forestry.
     val buildCraftVersion: String by project
-    implementation("com.github.GTNewHorizons:BuildCraft:$buildCraftVersion:dev") {
+    compileOnly("com.github.GTNewHorizons:BuildCraft:$buildCraftVersion:api") {
         isTransitive = false
     }
-     */
+    val enderIoVersion: String by project
+    compileOnly("com.github.GTNewHorizons:EnderIO:${enderIoVersion}:api") {
+        isTransitive = false
+    }
+    val projectRedVersion: String by project
+    compileOnly("com.github.GTNewHorizons:ProjectRed:${projectRedVersion}:dev") {
+        isTransitive = false
+    }
+
+    val betterQuestingVersion: String by project
+    compileOnly("com.github.GTNewHorizons:BetterQuesting:${betterQuestingVersion}:dev") {
+        isTransitive = false
+    }
 }
 
 tasks.withType<Jar> {

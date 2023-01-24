@@ -15,6 +15,10 @@ public enum ModDependency {
             }
         }
     },
+
+    FORESTRY("Forestry"),
+
+    BETTER_QUESTING("betterquesting"),
     ;
 
     public final String modId;
