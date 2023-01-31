@@ -5,6 +5,7 @@ import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.registry.PluginRegistry;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.common.Loader;
@@ -132,6 +133,8 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
+
+        entityManager.persist(new Metadata(activePlugins.keySet()));
 
         registry.initializePlugins();
         registry.processPlugins();
