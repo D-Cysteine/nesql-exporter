@@ -88,8 +88,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
             e.printStackTrace();
         }
 
-        if (Renderer.INSTANCE.isUnrenderedItem(item.getId())
-                && ConfigOptions.RENDER_ICONS.get()) {
+        if (ConfigOptions.RENDER_ICONS.get() && Renderer.INSTANCE.isUnrenderedItem(item.getId())) {
             Logger.intermittentLog(
                     Logger.BASE,
                     "Enqueueing render of item #{}: " + item.getId(),

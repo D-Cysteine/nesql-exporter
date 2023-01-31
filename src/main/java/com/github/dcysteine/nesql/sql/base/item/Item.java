@@ -22,10 +22,10 @@ public class Item implements Identifiable<String> {
      * be multiple item rows for the same Minecraft item ID).
      */
     @Id
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(nullable = false)
     private String id;
 
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(nullable = false)
     private String imageFilePath;
 
     @Column(nullable = false)
@@ -45,10 +45,10 @@ public class Item implements Identifiable<String> {
 
     private int itemDamage;
 
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
     private String nbt;
 
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
     private String tooltip;
 
     private int maxStackSize;

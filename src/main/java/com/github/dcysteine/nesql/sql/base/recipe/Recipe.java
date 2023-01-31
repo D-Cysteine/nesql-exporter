@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.Sql;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
@@ -22,7 +21,7 @@ import java.util.Map;
 @ToString
 public class Recipe implements Identifiable<String> {
     @Id
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(nullable = false)
     private String id;
 
     @ManyToOne

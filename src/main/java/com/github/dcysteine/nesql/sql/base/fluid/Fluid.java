@@ -20,7 +20,7 @@ public class Fluid implements Identifiable<String> {
      * multiple fluid rows for the same Forge fluid ID).
      */
     @Id
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(nullable = false)
     private String id;
 
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class Fluid implements Identifiable<String> {
     /** The Forge fluid ID. These are regenerated on game startup, and so are not stable! */
     private int fluidId;
 
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
     private String nbt;
 
     private int luminosity;

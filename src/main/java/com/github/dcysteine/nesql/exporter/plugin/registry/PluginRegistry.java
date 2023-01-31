@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.exporter.plugin.registry;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
 import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableList;
 import jakarta.persistence.EntityManager;
@@ -21,6 +22,10 @@ public class PluginRegistry {
         // Add new plugins here!
         builder.add(RegistryEntry.create(Plugin.BASE, BasePluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
+
+        builder.add(
+                RegistryEntry.create(
+                        Plugin.QUEST, QuestPluginExporter::new, ModDependency.BETTER_QUESTING));
 
         entries = builder.build();
     }

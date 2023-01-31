@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -18,7 +17,7 @@ import java.util.SortedSet;
 @ToString
 public class FluidGroup implements Identifiable<String> {
     @Id
-    @Column(length = Sql.STRING_MAX_LENGTH, nullable = false)
+    @Column(nullable = false)
     private String id;
 
     @ElementCollection

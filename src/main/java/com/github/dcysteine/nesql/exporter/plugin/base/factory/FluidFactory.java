@@ -52,8 +52,8 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
             Logger.BASE.error("Found fluid with null icon: {}", fluid.getId());
         } else {
             String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
-            if (Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)
-                    && ConfigOptions.RENDER_ICONS.get()) {
+            if (ConfigOptions.RENDER_ICONS.get()
+                    && Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)) {
                 Logger.intermittentLog(
                         Logger.BASE,
                         "Enqueueing render of fluid #{}: " + renderedFluidKey,

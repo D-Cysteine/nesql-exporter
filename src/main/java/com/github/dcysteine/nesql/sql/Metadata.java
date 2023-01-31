@@ -18,9 +18,20 @@ import java.util.Set;
 public class Metadata implements Identifiable<Integer> {
     public static final int ID = 0;
 
+    /**
+     * This constant will be replaced with the NESQL version by the buildscript.
+     *
+     * <p>The server can check this field to know its version of the SQL schema, and check the
+     * {@link #version} field on the {@code Metadata} row to know the version of the repository.
+     */
+    public static final String VERSION = "@version@";
+
     /** There will only ever be one metadata entry, and it will have ID {@link #ID}. */
     @Id
     private int id;
+
+    @Column(nullable = false)
+    private String version;
 
     /** When this database was created, in epoch milliseconds. */
     @Column(nullable = false)
@@ -36,6 +47,7 @@ public class Metadata implements Identifiable<Integer> {
 
     public Metadata(Set<Plugin> activePlugins) {
         this.id = ID;
+        this.version = VERSION;
         this.creationTimeMillis = System.currentTimeMillis();
         this.activePlugins = activePlugins;
     }
@@ -43,6 +55,10 @@ public class Metadata implements Identifiable<Integer> {
     @Override
     public Integer getId() {
         return id;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public long getCreationTimeMillis() {
