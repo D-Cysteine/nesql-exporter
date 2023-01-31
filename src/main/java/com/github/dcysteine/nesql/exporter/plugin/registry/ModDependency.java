@@ -16,8 +16,9 @@ public enum ModDependency {
         }
     },
 
+    AVARITIA("Avaritia"),
     FORESTRY("Forestry"),
-
+    THAUMCRAFT("Thaumcraft"),
     BETTER_QUESTING("betterquesting"),
     ;
 

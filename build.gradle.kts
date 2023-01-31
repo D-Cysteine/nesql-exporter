@@ -77,10 +77,19 @@ repositories {
     maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") {
         name = "GTNH Maven"
     }
+
     maven("https://maven.ic2.player.to") {
         name = "IC2 Maven"
         metadataSources {
             artifact()
+        }
+        content {
+            includeGroup("net.industrial-craft")
+        }
+    }
+    maven("https://gregtech.overminddl1.com") {
+        content {
+            includeGroup("thaumcraft")
         }
     }
 }
@@ -119,7 +128,7 @@ dependencies {
     }
     // The following are compile-time dependencies of GT5.
     val industrialCraft2Version: String by project
-    compileOnly("net.industrial-craft:industrialcraft-2:${industrialCraft2Version}-experimental:api") {
+    compileOnly("net.industrial-craft:industrialcraft-2:$industrialCraft2Version-experimental:api") {
         isTransitive = false
     }
     val forestryVersion: String by project
@@ -135,16 +144,21 @@ dependencies {
         isTransitive = false
     }
     val enderIoVersion: String by project
-    compileOnly("com.github.GTNewHorizons:EnderIO:${enderIoVersion}:api") {
+    compileOnly("com.github.GTNewHorizons:EnderIO:$enderIoVersion:api") {
         isTransitive = false
     }
     val projectRedVersion: String by project
-    compileOnly("com.github.GTNewHorizons:ProjectRed:${projectRedVersion}:dev") {
+    compileOnly("com.github.GTNewHorizons:ProjectRed:$projectRedVersion:dev") {
+        isTransitive = false
+    }
+
+    val thaumcraftVersion: String by project
+    compileOnly("thaumcraft:Thaumcraft:$minecraftVersion-$thaumcraftVersion:dev") {
         isTransitive = false
     }
 
     val betterQuestingVersion: String by project
-    compileOnly("com.github.GTNewHorizons:BetterQuesting:${betterQuestingVersion}:dev") {
+    compileOnly("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev") {
         isTransitive = false
     }
 }
