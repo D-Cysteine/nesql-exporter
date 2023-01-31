@@ -6,7 +6,6 @@ import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeTypeFactory
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.CraftingRecipeProcessor;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.ForgeFluidsProcessor;
 import com.github.dcysteine.nesql.exporter.plugin.base.processor.FurnaceRecipeProcessor;
-import com.github.dcysteine.nesql.exporter.plugin.base.processor.NeiItemListProcessor;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
@@ -76,7 +75,6 @@ public class BasePluginExporter implements PluginExporter {
 
     @Override
     public void process() {
-        new NeiItemListProcessor(entityManager).process();
         new ForgeFluidsProcessor(entityManager).process();
         new CraftingRecipeProcessor(this, entityManager).process();
         new FurnaceRecipeProcessor(this, entityManager).process();

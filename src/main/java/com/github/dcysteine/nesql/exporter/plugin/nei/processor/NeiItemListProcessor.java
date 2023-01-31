@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.plugin.base.processor;
+package com.github.dcysteine.nesql.exporter.plugin.nei.processor;
 
 import codechicken.nei.ItemList;
 import com.github.dcysteine.nesql.exporter.main.Logger;
