@@ -1,29 +1,29 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
-import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
-import jakarta.persistence.EntityManager;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Map;
 
 public class ForgeFluidsProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
 
-    public ForgeFluidsProcessor(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public ForgeFluidsProcessor(Database database) {
+        this.database = database;
     }
 
     public void process() {
-        Map<String, net.minecraftforge.fluids.Fluid> fluids = FluidRegistry.getRegisteredFluids();
+        Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
         int total = fluids.size();
         Logger.BASE.info("Processing {} Forge fluids...", total);
 
-        FluidFactory fluidFactory = new FluidFactory(entityManager);
+        FluidFactory fluidFactory = new FluidFactory(database);
         int count = 0;
-        for (net.minecraftforge.fluids.Fluid fluid : fluids.values()) {
+        for (Fluid fluid : fluids.values()) {
             count++;
 
             FluidStack fluidStack = new FluidStack(fluid, 1);

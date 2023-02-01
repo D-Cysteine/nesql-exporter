@@ -13,10 +13,12 @@ import java.util.Optional;
  * instance, if it exists.
  */
 public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>> {
+    protected final Database database;
     protected final EntityManager entityManager;
 
-    protected EntityFactory(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    protected EntityFactory(Database database) {
+        this.database = database;
+        this.entityManager = database.getEntityManager();
     }
 
     /**
@@ -31,9 +33,9 @@ public abstract class EntityFactory<T extends Identifiable<K>, K extends Compara
      * instance.
      */
     public T findOrPersist(Class<T> clazz, T entity) {
-        Optional<T> persisted = find(clazz, entity.getId());
-        if (persisted.isPresent()) {
-            return persisted.get();
+        T persisted = entityManager.find(clazz, entity.getId());
+        if (persisted != null) {
+            return persisted;
         }
 
         entityManager.persist(entity);

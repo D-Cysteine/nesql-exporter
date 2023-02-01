@@ -4,6 +4,8 @@ public interface PluginExporter {
     /** Performs any needed initialization, such as constructing {@code BaseRecipeType}. */
     default void initialize() {}
 
+    default void registerListeners() {}
+
     /** Processes the plugin's recipes, and anything else that should be exported. */
     default void process() {}
 

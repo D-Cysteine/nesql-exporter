@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
@@ -9,10 +10,8 @@ import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
-import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import cpw.mods.fml.common.registry.GameRegistry;
-import jakarta.persistence.EntityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
@@ -20,14 +19,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemFactory extends EntityFactory<Item, String> {
-    public ItemFactory(EntityManager entityManager) {
-        super(entityManager);
+    public ItemFactory(Database database) {
+        super(database);
     }
 
     public Item getItem(ItemStack itemStack) {
+        String id = IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack));
+        Item item = entityManager.find(Item.class, id);
+        if (item != null) {
+            return item;
+        }
+
         GameRegistry.UniqueIdentifier uniqueId =
                 GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
         String modId = uniqueId.modId;
@@ -40,7 +46,6 @@ public class ItemFactory extends EntityFactory<Item, String> {
             nbt = itemStack.getTagCompound().toString();
         }
 
-        Item item;
         try {
             @SuppressWarnings("unchecked")
             String tooltip =
@@ -50,7 +55,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                             .collect(Collectors.joining("\n"));
 
             item = new Item(
-                    IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
+                    id,
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     modId,
                     internalName,
@@ -71,7 +76,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
             String stackTrace = stringWriter.toString();
 
             item = new Item(
-                    IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack)),
+                    id,
                     StringUtil.formatFilePath(IdUtil.imageFilePath(itemStack)),
                     modId,
                     internalName,
@@ -88,14 +93,16 @@ public class ItemFactory extends EntityFactory<Item, String> {
             e.printStackTrace();
         }
 
-        if (ConfigOptions.RENDER_ICONS.get() && Renderer.INSTANCE.isUnrenderedItem(item.getId())) {
+        if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.intermittentLog(
                     Logger.BASE,
                     "Enqueueing render of item #{}: " + item.getId(),
-                    Renderer.INSTANCE.getRenderedItemCount());
+                    database.incrementItemCount());
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }
 
-        return findOrPersist(Item.class, item);
+        entityManager.persist(item);
+        database.invokeItemListeners(item, itemStack);
+        return item;
     }
 }

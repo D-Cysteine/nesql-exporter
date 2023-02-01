@@ -2,17 +2,16 @@ package com.github.dcysteine.nesql.exporter.plugin.nei.processor;
 
 import codechicken.nei.ItemList;
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
-import com.github.dcysteine.nesql.exporter.util.ItemUtil;
-import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
 public class NeiItemListProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
 
-    public NeiItemListProcessor(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public NeiItemListProcessor(Database database) {
+        this.database = database;
     }
 
     public void process() {
@@ -24,7 +23,7 @@ public class NeiItemListProcessor {
                     EnumChatFormatting.RED + "NEI item list is empty; did you forget to load it?");
         }
 
-        ItemFactory itemFactory = new ItemFactory(entityManager);
+        ItemFactory itemFactory = new ItemFactory(database);
         int count = 0;
         for (ItemStack itemStack : ItemList.items) {
             count++;

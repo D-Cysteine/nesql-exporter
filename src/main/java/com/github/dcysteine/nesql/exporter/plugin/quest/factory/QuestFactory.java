@@ -16,6 +16,7 @@ import bq_standard.tasks.TaskCrafting;
 import bq_standard.tasks.TaskHunt;
 import bq_standard.tasks.TaskRetrieval;
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
@@ -26,7 +27,6 @@ import com.github.dcysteine.nesql.sql.quest.Reward;
 import com.github.dcysteine.nesql.sql.quest.RewardType;
 import com.github.dcysteine.nesql.sql.quest.Task;
 import com.github.dcysteine.nesql.sql.quest.TaskType;
-import jakarta.persistence.EntityManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
 public class QuestFactory extends EntityFactory<Quest, String> {
     private final ItemFactory itemFactory;
 
-    public QuestFactory(EntityManager entityManager) {
-        super(entityManager);
-        itemFactory = new ItemFactory(entityManager);
+    public QuestFactory(Database database) {
+        super(database);
+        itemFactory = new ItemFactory(database);
     }
 
     public Quest getQuest(int questId, IQuest quest) {
@@ -81,11 +81,11 @@ public class QuestFactory extends EntityFactory<Quest, String> {
 
     public Quest findQuest(int questId) {
         String id = IdPrefixUtil.QUEST.applyPrefix(Integer.toString(questId));
-        Optional<Quest> quest = find(Quest.class, id);
-        if (!quest.isPresent()) {
+        Quest quest = entityManager.find(Quest.class, id);
+        if (quest == null) {
             throw new IllegalStateException("Could not find quest: " + questId);
         }
-        return quest.get();
+        return quest;
     }
 
     public void setRequiredQuests(Quest quest, int[] requiredQuestIds) {

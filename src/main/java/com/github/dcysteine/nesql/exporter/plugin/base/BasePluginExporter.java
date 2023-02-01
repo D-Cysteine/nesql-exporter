@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.base;
 
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeTypeFactory;
@@ -9,7 +10,6 @@ import com.github.dcysteine.nesql.exporter.plugin.base.processor.FurnaceRecipePr
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
-import jakarta.persistence.EntityManager;
 import net.minecraft.init.Blocks;
 
 import java.util.EnumMap;
@@ -18,11 +18,11 @@ import java.util.EnumMap;
 public class BasePluginExporter implements PluginExporter {
     public static final String RECIPE_CATEGORY = "Minecraft";
 
-    private final EntityManager entityManager;
+    private final Database database;
     private final EnumMap<BaseRecipeType, RecipeType> recipeTypeMap;
 
-    public BasePluginExporter(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public BasePluginExporter(Database database) {
+        this.database = database;
         this.recipeTypeMap = new EnumMap<>(BaseRecipeType.class);
     }
 
@@ -32,8 +32,8 @@ public class BasePluginExporter implements PluginExporter {
 
     @Override
     public void initialize() {
-        RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(entityManager);
-        ItemFactory itemFactory = new ItemFactory(entityManager);
+        RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(database);
+        ItemFactory itemFactory = new ItemFactory(database);
 
         Item craftingTable = itemFactory.getItem(ItemUtil.getItemStack(Blocks.crafting_table));
         recipeTypeMap.put(
@@ -75,8 +75,8 @@ public class BasePluginExporter implements PluginExporter {
 
     @Override
     public void process() {
-        new ForgeFluidsProcessor(entityManager).process();
-        new CraftingRecipeProcessor(this, entityManager).process();
-        new FurnaceRecipeProcessor(this, entityManager).process();
+        new ForgeFluidsProcessor(database).process();
+        new CraftingRecipeProcessor(this, database).process();
+        new FurnaceRecipeProcessor(this, database).process();
     }
 }

@@ -1,28 +1,27 @@
 package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.processor;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectFactory;
-import com.github.dcysteine.nesql.sql.thaumcraft.Aspect;
-import jakarta.persistence.EntityManager;
+import thaumcraft.api.aspects.Aspect;
 
 import java.util.Collection;
 
 public class AspectProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
 
-    public AspectProcessor(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public AspectProcessor(Database database) {
+        this.database = database;
     }
 
     public void process() {
-        Collection<thaumcraft.api.aspects.Aspect> aspects =
-                thaumcraft.api.aspects.Aspect.aspects.values();
+        Collection<Aspect> aspects = Aspect.aspects.values();
         int total = aspects.size();
         Logger.THAUMCRAFT.info("Processing {} aspects...", total);
 
-        AspectFactory aspectFactory = new AspectFactory(entityManager);
+        AspectFactory aspectFactory = new AspectFactory(database);
         int count = 0;
-        for (thaumcraft.api.aspects.Aspect aspect : aspects) {
+        for (Aspect aspect : aspects) {
             count++;
             aspectFactory.getAspect(aspect);
 

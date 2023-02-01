@@ -2,22 +2,22 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
-import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 import java.util.Map;
 
 public class FurnaceRecipeProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
     private final RecipeType furnace;
 
-    public FurnaceRecipeProcessor(BasePluginExporter plugin, EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public FurnaceRecipeProcessor(BasePluginExporter plugin, Database database) {
+        this.database = database;
         this.furnace = plugin.getRecipeType(BaseRecipeType.FURNACE);
     }
 
@@ -32,7 +32,7 @@ public class FurnaceRecipeProcessor {
             count++;
 
             ItemStack[] itemStacks = NEIServerUtils.extractRecipeItems(recipe.getKey());
-            RecipeBuilder builder = new RecipeBuilder(entityManager, furnace);
+            RecipeBuilder builder = new RecipeBuilder(database, furnace);
             if (itemStacks == null || itemStacks.length == 0) {
                 builder.skipItemInput();
             } else if (itemStacks.length == 1) {

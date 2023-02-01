@@ -2,12 +2,12 @@ package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory;
 
 import com.djgiannuzz.thaumcraftneiplugin.ModItems;
 import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.thaumcraft.Aspect;
-import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.AspectList;
 
@@ -20,32 +20,37 @@ import java.util.stream.Collectors;
 public class AspectFactory extends EntityFactory<Aspect, String> {
     private final ItemFactory itemFactory;
 
-    public AspectFactory(EntityManager entityManager) {
-        super(entityManager);
-        itemFactory = new ItemFactory(entityManager);
+    public AspectFactory(Database database) {
+        super(database);
+        itemFactory = new ItemFactory(database);
     }
 
     public Aspect getAspect(thaumcraft.api.aspects.Aspect aspect) {
         String id = IdPrefixUtil.ASPECT.applyPrefix(aspect.getName());
+        Aspect aspectEntity = entityManager.find(Aspect.class, id);
+        if (aspectEntity != null) {
+            return aspectEntity;
+        }
 
         ItemStack iconItemStack = new ItemStack(ModItems.itemAspect, 1, 0);
         ItemAspect.setAspects(iconItemStack, new AspectList().add(aspect, 2));
         Item icon = itemFactory.getItem(iconItemStack);
 
-        Aspect aspectEntity =
+        aspectEntity =
                 new Aspect(
                         id, icon,
                         aspect.getName(), aspect.getLocalizedDescription(), aspect.isPrimal());
-        return findOrPersist(Aspect.class, aspectEntity);
+        entityManager.persist(aspectEntity);
+        return aspectEntity;
     }
 
     public Aspect findAspect(thaumcraft.api.aspects.Aspect aspect) {
         String id = IdPrefixUtil.ASPECT.applyPrefix(aspect.getName());
-        Optional<Aspect> aspectEntity = find(Aspect.class, id);
-        if (!aspectEntity.isPresent()) {
+        Aspect aspectEntity = entityManager.find(Aspect.class, id);
+        if (aspectEntity == null) {
             throw new IllegalStateException("Could not find aspect: " + aspect.getName());
         }
-        return aspectEntity.get();
+        return aspectEntity;
     }
 
     public void setComponents(thaumcraft.api.aspects.Aspect aspect) {

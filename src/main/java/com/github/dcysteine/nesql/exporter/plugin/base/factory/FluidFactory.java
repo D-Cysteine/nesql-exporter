@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
@@ -9,18 +10,24 @@ import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
-import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
-import jakarta.persistence.EntityManager;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Optional;
+
 public class FluidFactory extends EntityFactory<Fluid, String> {
-    public FluidFactory(EntityManager entityManager) {
-        super(entityManager);
+    public FluidFactory(Database database) {
+        super(database);
     }
 
     public Fluid getFluid(FluidStack fluidStack) {
+        String id = IdPrefixUtil.FLUID.applyPrefix(IdUtil.fluidId(fluidStack));
+        Fluid fluid = entityManager.find(Fluid.class, id);
+        if (fluid != null) {
+            return fluid;
+        }
+
         String uniqueName = FluidRegistry.getDefaultFluidName(fluidStack.getFluid());
         int separator = uniqueName.indexOf(':');
         String modId = uniqueName.substring(0, separator);
@@ -33,8 +40,8 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
             nbt = fluidStack.tag.toString();
         }
 
-        Fluid fluid = new Fluid(
-                IdPrefixUtil.FLUID.applyPrefix(IdUtil.fluidId(fluidStack)),
+        fluid = new Fluid(
+                id,
                 StringUtil.formatFilePath(IdUtil.imageFilePath(fluidStack)),
                 modId,
                 internalName,
@@ -52,16 +59,16 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
             Logger.BASE.error("Found fluid with null icon: {}", fluid.getId());
         } else {
             String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
-            if (ConfigOptions.RENDER_ICONS.get()
-                    && Renderer.INSTANCE.isUnrenderedFluid(renderedFluidKey)) {
+            if (ConfigOptions.RENDER_ICONS.get()) {
                 Logger.intermittentLog(
                         Logger.BASE,
                         "Enqueueing render of fluid #{}: " + renderedFluidKey,
-                        Renderer.INSTANCE.getRenderedFluidCount());
+                        database.incrementFluidCount());
                 RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
             }
         }
 
-        return findOrPersist(Fluid.class, fluid);
+        entityManager.persist(fluid);
+        return fluid;
     }
 }

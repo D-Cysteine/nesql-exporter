@@ -1,19 +1,19 @@
 package com.github.dcysteine.nesql.exporter.plugin.nei;
 
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.processor.NeiItemListProcessor;
-import jakarta.persistence.EntityManager;
 
 /** Plugin which exports the NEI item list. */
 public class NeiPluginExporter implements PluginExporter {
-    private final EntityManager entityManager;
+    private final Database database;
 
-    public NeiPluginExporter(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public NeiPluginExporter(Database database) {
+        this.database = database;
     }
 
     @Override
     public void process() {
-        new NeiItemListProcessor(entityManager).process();
+        new NeiItemListProcessor(database).process();
     }
 }

@@ -2,11 +2,11 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
-import jakarta.persistence.EntityManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -19,12 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CraftingRecipeProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
     private final RecipeType shapedCrafting;
     private final RecipeType shapelessCrafting;
 
-    public CraftingRecipeProcessor(BasePluginExporter plugin, EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public CraftingRecipeProcessor(BasePluginExporter plugin, Database database) {
+        this.database = database;
         this.shapedCrafting = plugin.getRecipeType(BaseRecipeType.SHAPED_CRAFTING);
         this.shapelessCrafting = plugin.getRecipeType(BaseRecipeType.SHAPELESS_CRAFTING);
     }
@@ -67,7 +67,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapedRecipe(ShapedRecipes recipe) {
-        RecipeBuilder builder = new RecipeBuilder(entityManager, shapedCrafting);
+        RecipeBuilder builder = new RecipeBuilder(database, shapedCrafting);
         for (Object itemInput : recipe.recipeItems) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -80,7 +80,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapedOreRecipe(ShapedOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(entityManager, shapedCrafting);
+        RecipeBuilder builder = new RecipeBuilder(database, shapedCrafting);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -99,7 +99,7 @@ public class CraftingRecipeProcessor {
             return;
         }
 
-        RecipeBuilder builder = new RecipeBuilder(entityManager, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(database, shapelessCrafting);
         for (Object itemInput : recipe.recipeItems) {
             handleItemInput(builder, itemInput);
         }
@@ -107,7 +107,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapelessOreRecipe(ShapelessOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(entityManager, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(database, shapelessCrafting);
         for (Object itemInput : recipe.getInput()) {
             handleItemInput(builder, itemInput);
         }

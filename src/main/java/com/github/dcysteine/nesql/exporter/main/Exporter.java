@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.registry.PluginRegistry;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
@@ -100,6 +101,7 @@ public final class Exporter {
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("H2", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Database database = new Database(entityManager);
 
         boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
         if (renderingImages) {
@@ -125,7 +127,7 @@ public final class Exporter {
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
         PluginRegistry registry = new PluginRegistry();
-        Map<Plugin, PluginExporter> activePlugins = registry.initialize(entityManager);
+        Map<Plugin, PluginExporter> activePlugins = registry.initialize(database);
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
         activePlugins.keySet().forEach(
                 plugin -> Logger.chatMessage("  " + EnumChatFormatting.YELLOW + plugin.getName()));

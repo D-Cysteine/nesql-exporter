@@ -35,12 +35,6 @@ public enum Renderer {
     private static final String IMAGE_FORMAT = "PNG";
 
     private int imageDim;
-    // These two hash sets are used to keep track of which items and fluids we've already rendered.
-    // It's a bit messy, but we needed a place to store these that only gets reset when we restart
-    // rendering entirely. Note that these are not concurrent-safe; therefore, they must be accessed
-    // ONLY by the client thread!
-    private Set<String> renderedItems;
-    private Set<String> renderedFluids;
     private File imageDirectory;
     private Framebuffer framebuffer;
 
@@ -53,28 +47,8 @@ public enum Renderer {
      */
     public void preinitialize(File imageDirectory) {
         this.imageDim = ConfigOptions.ICON_DIMENSION.get();
-        this.renderedItems = new HashSet<>();
-        this.renderedFluids = new HashSet<>();
         this.imageDirectory = imageDirectory;
         this.loggingCounter = 0;
-    }
-
-    /** Marks {@code item} as rendered, and returns true if it wasn't marked previously. */
-    public boolean isUnrenderedItem(String item) {
-        return renderedItems.add(item);
-    }
-
-    public int getRenderedItemCount() {
-        return renderedItems.size();
-    }
-
-    /** Marks {@code fluid} as rendered, and returns true if it wasn't marked previously. */
-    public boolean isUnrenderedFluid(String fluid) {
-        return renderedFluids.add(fluid);
-    }
-
-    public int getRenderedFluidCount() {
-        return renderedFluids.size();
     }
 
     /**

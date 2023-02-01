@@ -1,16 +1,16 @@
 package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.postprocessor;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectFactory;
-import jakarta.persistence.EntityManager;
 
 import java.util.Collection;
 
 public class AspectPostProcessor {
-    private final EntityManager entityManager;
+    private final Database database;
 
-    public AspectPostProcessor(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public AspectPostProcessor(Database database) {
+        this.database = database;
     }
 
     public void postProcess() {
@@ -19,7 +19,7 @@ public class AspectPostProcessor {
         int total = aspects.size();
         Logger.THAUMCRAFT.info("Post-processing {} aspects...", total);
 
-        AspectFactory aspectFactory = new AspectFactory(entityManager);
+        AspectFactory aspectFactory = new AspectFactory(database);
         int count = 0;
         for (thaumcraft.api.aspects.Aspect aspect : aspects) {
             count++;

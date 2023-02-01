@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
@@ -7,14 +8,13 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.Dimension;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import com.google.common.base.Joiner;
-import jakarta.persistence.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
-    public RecipeTypeFactory(EntityManager entityManager) {
-        super(entityManager);
+    public RecipeTypeFactory(Database database) {
+        super(database);
     }
 
     /** {@code idParts} will be joined with {@link IdUtil#ID_SEPARATOR} to form the ID. */

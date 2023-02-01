@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
@@ -12,7 +13,6 @@ import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import cpw.mods.fml.common.registry.GameRegistry;
-import jakarta.persistence.EntityManager;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,12 +42,12 @@ public class RecipeBuilder {
     private int itemOutputsIndex;
     private int fluidOutputsIndex;
 
-    public RecipeBuilder(EntityManager entityManager, RecipeType recipeType) {
-        this.itemFactory = new ItemFactory(entityManager);
-        this.fluidFactory = new FluidFactory(entityManager);
-        this.itemGroupFactory = new ItemGroupFactory(entityManager);
-        this.fluidGroupFactory = new FluidGroupFactory(entityManager);
-        this.recipeFactory = new RecipeFactory(entityManager);
+    public RecipeBuilder(Database database, RecipeType recipeType) {
+        this.itemFactory = new ItemFactory(database);
+        this.fluidFactory = new FluidFactory(database);
+        this.itemGroupFactory = new ItemGroupFactory(database);
+        this.fluidGroupFactory = new FluidGroupFactory(database);
+        this.recipeFactory = new RecipeFactory(database);
         this.recipeType = recipeType;
         this.itemInputs = new HashMap<>();
         this.fluidInputs = new HashMap<>();

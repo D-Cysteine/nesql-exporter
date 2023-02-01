@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.registry;
 
+import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
@@ -7,7 +8,6 @@ import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.ThaumcraftPluginExporter;
 import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableList;
-import jakarta.persistence.EntityManager;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -38,14 +38,14 @@ public class PluginRegistry {
     private final Map<Plugin, PluginExporter> activePlugins = new EnumMap<>(Plugin.class);
 
     /** Constructs plugins whose dependencies are met. Returns a list of activated plugins. */
-    public Map<Plugin, PluginExporter> initialize(EntityManager entityManager) {
+    public Map<Plugin, PluginExporter> initialize(Database database) {
         entries.stream()
                 .filter(RegistryEntry::areDependenciesSatisfied)
                 .filter(RegistryEntry::isNotDisabled)
                 .forEach(
                         entry ->
                                 activePlugins.put(
-                                        entry.getPlugin(), entry.instantiate(entityManager)));
+                                        entry.getPlugin(), entry.instantiate(database)));
 
         return activePlugins;
     }
