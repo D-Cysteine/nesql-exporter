@@ -13,7 +13,6 @@ import thaumcraft.api.aspects.AspectList;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,11 +53,16 @@ public class AspectFactory extends EntityFactory<Aspect, String> {
     }
 
     public void setComponents(thaumcraft.api.aspects.Aspect aspect) {
-        Set<Aspect> components =
+        thaumcraft.api.aspects.Aspect[] components = aspect.getComponents();
+        if (components == null) {
+            return;
+        }
+
+        Set<Aspect> componentEntities =
                 Arrays.stream(aspect.getComponents())
                         .map(this::findAspect)
                         .collect(Collectors.toCollection(HashSet::new));
 
-        findAspect(aspect).setComponents(components);
+        findAspect(aspect).setComponents(componentEntities);
     }
 }

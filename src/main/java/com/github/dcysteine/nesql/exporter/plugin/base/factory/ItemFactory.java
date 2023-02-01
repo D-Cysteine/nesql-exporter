@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemFactory extends EntityFactory<Item, String> {
@@ -96,7 +95,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
         if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.intermittentLog(
                     Logger.BASE,
-                    "Enqueueing render of item #{}: " + item.getId(),
+                    "Enqueueing render of item #{}: " + item.getLocalizedName(),
                     database.incrementItemCount());
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }

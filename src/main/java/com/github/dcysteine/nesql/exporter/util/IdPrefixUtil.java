@@ -14,6 +14,8 @@ public enum IdPrefixUtil {
     ASPECT("tca"),
     ASPECT_ENTRY("tcae"),
     QUEST("q"),
+    QUEST_TASK("qt"),
+    QUEST_REWARD("qr"),
     ;
 
     private final String prefix;

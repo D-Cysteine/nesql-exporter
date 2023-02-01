@@ -2,10 +2,10 @@ package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
-import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -41,7 +41,8 @@ public class Fluid implements Identifiable<String> {
     /** The Forge fluid ID. These are regenerated on game startup, and so are not stable! */
     private int fluidId;
 
-    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String nbt;
 
     private int luminosity;

@@ -17,6 +17,9 @@ public enum RewardType {
     /** Sets the {@code xp} and {@code levels} fields. */
     XP("xp"),
 
+    /** Sets the {@code completeQuestId} field. */
+    COMPLETE_QUEST("complete quest"),
+
     /** Does not set any fields. */
     UNHANDLED("unhandled"),
     ;

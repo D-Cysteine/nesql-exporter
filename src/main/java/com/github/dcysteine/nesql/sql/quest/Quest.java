@@ -1,15 +1,15 @@
 package com.github.dcysteine.nesql.sql.quest;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.Sql;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,7 +35,8 @@ public class Quest implements Identifiable<String> {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = Sql.EXTREME_STRING_MAX_LENGTH, nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -59,11 +60,11 @@ public class Quest implements Identifiable<String> {
     @Column(nullable = false)
     private String taskLogic;
 
-    @ElementCollection
+    @OneToMany
     @OrderColumn
     private List<Task> tasks;
 
-    @ElementCollection
+    @OneToMany
     @OrderColumn
     private List<Reward> rewards;
 

@@ -14,8 +14,6 @@ import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Optional;
-
 public class FluidFactory extends EntityFactory<Fluid, String> {
     public FluidFactory(Database database) {
         super(database);
@@ -56,13 +54,12 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
                 fluidStack.getFluid().isGaseous(fluidStack));
 
         if (fluidStack.getFluid().getIcon() == null) {
-            Logger.BASE.error("Found fluid with null icon: {}", fluid.getId());
+            Logger.BASE.error("Found fluid with null icon: {}", fluid.getLocalizedName());
         } else {
-            String renderedFluidKey = IdUtil.fluidId(fluidStack.getFluid());
             if (ConfigOptions.RENDER_ICONS.get()) {
                 Logger.intermittentLog(
                         Logger.BASE,
-                        "Enqueueing render of fluid #{}: " + renderedFluidKey,
+                        "Enqueueing render of fluid #{}: " + fluid.getLocalizedName(),
                         database.incrementFluidCount());
                 RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
             }

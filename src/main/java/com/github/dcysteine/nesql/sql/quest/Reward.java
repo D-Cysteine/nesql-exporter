@@ -1,27 +1,31 @@
 package com.github.dcysteine.nesql.sql.quest;
 
-import com.github.dcysteine.nesql.sql.base.item.Item;
+import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Id;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
- * This class contains data for all of the various types of BetterQuesting rewards.
+ * This class contains data for the various types of BetterQuesting rewards.
  *
  * <p>Each field will only be set for certain reward types. See {@link RewardType} for details.
  */
-@Embeddable
+@Entity
 @EqualsAndHashCode
 @ToString
-public class Reward implements Comparable<Reward> {
+public class Reward implements Identifiable<String> {
+    @Id
+    private String id;
+
     /** This field is always set. */
     @Column(nullable = false)
     private String name;
@@ -30,9 +34,9 @@ public class Reward implements Comparable<Reward> {
     @Enumerated(EnumType.STRING)
     private RewardType type;
 
-    @ManyToMany
+    @ElementCollection
     @OrderColumn
-    private List<Item> items;
+    private List<ItemStack> itemStacks;
 
     @Column(nullable = false)
     private String command;
@@ -41,18 +45,27 @@ public class Reward implements Comparable<Reward> {
 
     private boolean levels;
 
+    private int completeQuestId;
+
     /** Needed by Hibernate. */
     protected Reward() {}
 
     public Reward(
-            String name, RewardType type, List<Item> items,
-            String command, int xp, boolean levels) {
+            String id, String name, RewardType type, List<ItemStack> itemStacks,
+            String command, int xp, boolean levels, int completeQuestId) {
+        this.id = id;
         this.name = name;
         this.type = type;
-        this.items = items;
+        this.itemStacks = itemStacks;
         this.command = command;
         this.xp = xp;
         this.levels = levels;
+        this.completeQuestId = completeQuestId;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -63,8 +76,8 @@ public class Reward implements Comparable<Reward> {
         return type;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<ItemStack> getItemStacks() {
+        return itemStacks;
     }
 
     public String getCommand() {
@@ -79,8 +92,7 @@ public class Reward implements Comparable<Reward> {
         return levels;
     }
 
-    @Override
-    public int compareTo(Reward other) {
-        return Comparator.comparing(Reward::getType).compare(this, other);
+    public int getCompleteQuestId() {
+        return completeQuestId;
     }
 }

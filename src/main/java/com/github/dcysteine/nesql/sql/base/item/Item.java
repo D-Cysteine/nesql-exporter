@@ -2,11 +2,11 @@ package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 
-import com.github.dcysteine.nesql.sql.Sql;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -45,10 +45,12 @@ public class Item implements Identifiable<String> {
 
     private int itemDamage;
 
-    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String nbt;
 
-    @Column(length = Sql.LONG_STRING_MAX_LENGTH, nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String tooltip;
 
     private int maxStackSize;
