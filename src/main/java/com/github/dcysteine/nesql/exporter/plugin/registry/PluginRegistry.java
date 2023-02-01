@@ -54,6 +54,10 @@ public class PluginRegistry {
         return activePlugins;
     }
 
+    public void registerListeners() {
+        activePlugins.values().forEach(PluginExporter::registerListeners);
+    }
+
     public void initializePlugins() {
         activePlugins.values().forEach(PluginExporter::initialize);
     }

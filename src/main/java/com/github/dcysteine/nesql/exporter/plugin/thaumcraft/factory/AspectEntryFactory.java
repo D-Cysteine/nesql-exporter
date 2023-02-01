@@ -13,12 +13,12 @@ public class AspectEntryFactory extends EntityFactory<AspectEntry, String> {
         super(database);
     }
 
-    public AspectEntry getAspectEntry(Aspect aspect, Item item, int quantity) {
+    public AspectEntry getAspectEntry(Aspect aspect, Item item, int amount) {
         String id =
                 IdPrefixUtil.ASPECT_ENTRY.applyPrefix(
                         aspect.getId() + IdUtil.ID_SEPARATOR + item.getId());
 
-        AspectEntry aspectEntry = new AspectEntry(id, aspect, item, quantity);
+        AspectEntry aspectEntry = new AspectEntry(id, aspect, item, amount);
         return findOrPersist(AspectEntry.class, aspectEntry);
     }
 }

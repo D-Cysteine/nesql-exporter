@@ -148,8 +148,4 @@ public class Quest implements Identifiable<String> {
     public List<Reward> getRewards() {
         return rewards;
     }
-
-    public int compareTo(Quest other) {
-        return Comparator.comparing(Quest::getQuestId).compare(this, other);
-    }
 }

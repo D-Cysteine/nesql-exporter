@@ -136,9 +136,11 @@ public final class Exporter {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        entityManager.persist(new Metadata(activePlugins.keySet()));
+        String version = Loader.instance().activeModContainer().getDisplayVersion();
+        entityManager.persist(new Metadata(version, activePlugins.keySet()));
 
         registry.initializePlugins();
+        registry.registerListeners();
         registry.processPlugins();
         registry.postProcessPlugins();
 

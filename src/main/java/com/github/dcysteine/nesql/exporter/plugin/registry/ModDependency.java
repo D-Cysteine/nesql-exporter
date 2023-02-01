@@ -34,6 +34,7 @@ public enum ModDependency {
     }
 
     public String getVersion() {
+        // TODO should this be getDisplayVersion() ?
         return getMod().getVersion();
     }
 

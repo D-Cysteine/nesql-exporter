@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.listener;
 
+import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectEntryFactory;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectFactory;
@@ -20,11 +21,26 @@ public class AspectEntryListener implements Database.ItemListener {
 
     @Override
     public void accept(Item item, ItemStack itemStack) {
-        AspectList aspects = ThaumcraftCraftingManager.getObjectTags(itemStack);
-        aspects = ThaumcraftCraftingManager.getBonusTags(itemStack, aspects);
-        for (thaumcraft.api.aspects.Aspect aspect : aspects.getAspects()) {
-            Aspect aspectEntity = aspectFactory.getAspect(aspect);
-            aspectEntryFactory.getAspectEntry(aspectEntity, item, aspects.getAmount(aspect));
+        try {
+            AspectList aspects = ThaumcraftCraftingManager.getObjectTags(itemStack);
+            aspects = ThaumcraftCraftingManager.getBonusTags(itemStack, aspects);
+            if (aspects.size() <= 0) {
+                return;
+            }
+
+            for (thaumcraft.api.aspects.Aspect aspect : aspects.getAspects()) {
+                int amount = aspects.getAmount(aspect);
+                if (amount <= 0) {
+                    continue;
+                }
+
+                Aspect aspectEntity = aspectFactory.getAspect(aspect);
+                aspectEntryFactory.getAspectEntry(aspectEntity, item, amount);
+            }
+        } catch (StackOverflowError e) {
+            // Thaumcraft why you do this T_T
+            Logger.THAUMCRAFT.error(
+                    "Stack overflow computing aspects for: " + item.getLocalizedName(), e);
         }
     }
 }

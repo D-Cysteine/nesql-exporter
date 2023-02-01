@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
+
 /** Holds information about an {@link Item}'s quantity of a single aspect. */
 @Entity
 @EqualsAndHashCode
@@ -25,16 +27,16 @@ public class AspectEntry implements Identifiable<String> {
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
-    private int quantity;
+    private int amount;
 
     /** Needed by Hibernate. */
     protected AspectEntry() {}
 
-    public AspectEntry(String id, Aspect aspect, Item item, int quantity) {
+    public AspectEntry(String id, Aspect aspect, Item item, int amount) {
         this.id = id;
         this.aspect = aspect;
         this.item = item;
-        this.quantity = quantity;
+        this.amount = amount;
     }
 
     @Override
@@ -50,7 +52,19 @@ public class AspectEntry implements Identifiable<String> {
         return item;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof AspectEntry) {
+            return Comparator.comparing(AspectEntry::getAspect)
+                    .thenComparing(AspectEntry::getAmount)
+                    .thenComparing(AspectEntry::getId)
+                    .compare(this, (AspectEntry) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }
