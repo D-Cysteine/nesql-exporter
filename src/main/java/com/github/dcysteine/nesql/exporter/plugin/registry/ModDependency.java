@@ -19,6 +19,7 @@ public enum ModDependency {
     AVARITIA("Avaritia"),
     FORESTRY("Forestry"),
     THAUMCRAFT("Thaumcraft"),
+    THAUMCRAFT_NEI("thaumcraftneiplugin"),
     BETTER_QUESTING("betterquesting"),
     ;
 

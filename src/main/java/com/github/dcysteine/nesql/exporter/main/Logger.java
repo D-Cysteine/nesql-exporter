@@ -10,6 +10,10 @@ public final class Logger {
             LogManager.getLogger(Main.MOD_NAME);
     public static final org.apache.logging.log4j.Logger BASE =
             LogManager.getLogger(Main.MOD_NAME + "/base");
+    public static final org.apache.logging.log4j.Logger THAUMCRAFT =
+            LogManager.getLogger(Main.MOD_NAME + "/thaumcraft");
+    public static final org.apache.logging.log4j.Logger QUEST =
+            LogManager.getLogger(Main.MOD_NAME + "/quest");
 
     // Static class.
     private Logger() {}

@@ -20,7 +20,7 @@ public class QuestProcessor {
     public void process() {
         List<DBEntry<IQuest>> questEntries = QuestDatabase.INSTANCE.getEntries();
         int total = questEntries.size();
-        Logger.BASE.info("Processing {} quests...", total);
+        Logger.QUEST.info("Processing {} quests...", total);
 
         QuestFactory questFactory = new QuestFactory(entityManager);
         int count = 0;
@@ -29,11 +29,11 @@ public class QuestProcessor {
             Quest quest = questFactory.getQuest(entry.getID(), entry.getValue());
 
             if (Logger.intermittentLog(count)) {
-                Logger.BASE.info("Processed quest {} of {}", count, total);
-                Logger.BASE.info("Most recent quest: {}", quest.getName());
+                Logger.QUEST.info("Processed quest {} of {}", count, total);
+                Logger.QUEST.info("Most recent quest: {}", quest.getName());
             }
         }
 
-        Logger.BASE.info("Finished processing quests!");
+        Logger.QUEST.info("Finished processing quests!");
     }
 }

@@ -10,6 +10,10 @@ public enum IdPrefixUtil {
     FLUID_GROUP("fg"),
     RECIPE("r"),
     RECIPE_TYPE("rt"),
+
+    ASPECT("tca"),
+    ASPECT_ENTRY("tcae"),
+    QUEST("q"),
     ;
 
     private final String prefix;

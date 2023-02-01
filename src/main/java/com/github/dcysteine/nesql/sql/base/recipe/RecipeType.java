@@ -5,6 +5,7 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
@@ -36,7 +37,7 @@ public class RecipeType implements Identifiable<String> {
     @Column(nullable = false)
     private String type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item icon;
 
     private boolean shapeless;

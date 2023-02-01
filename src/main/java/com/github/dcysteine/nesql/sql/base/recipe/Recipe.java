@@ -8,6 +8,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -24,7 +25,7 @@ public class Recipe implements Identifiable<String> {
     @Column(nullable = false)
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private RecipeType recipeType;
 
     /** Map of input index to item group. May be sparse for shaped recipes. */

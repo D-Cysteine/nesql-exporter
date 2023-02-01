@@ -4,6 +4,7 @@ public enum Plugin {
     BASE("base"),
     NEI("nei"),
 
+    THAUMCRAFT("thaumcraft"),
     QUEST("quest"),
     ;
 

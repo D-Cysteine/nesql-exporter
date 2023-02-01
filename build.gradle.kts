@@ -77,6 +77,9 @@ repositories {
     maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") {
         name = "GTNH Maven"
     }
+    maven("https://cursemaven.com") {
+        name = "Curse Maven"
+    }
 
     maven("https://maven.ic2.player.to") {
         name = "IC2 Maven"
@@ -153,12 +156,12 @@ dependencies {
     }
 
     val thaumcraftVersion: String by project
-    compileOnly("thaumcraft:Thaumcraft:$minecraftVersion-$thaumcraftVersion:dev") {
-        isTransitive = false
-    }
+    implementation("thaumcraft:Thaumcraft:$minecraftVersion-$thaumcraftVersion:dev")
+    val thaumcraftNeiVersion: String by project
+    implementation("curse.maven:thaumcraft-nei-plugin-225095:$thaumcraftNeiVersion")
 
     val betterQuestingVersion: String by project
-    compileOnly("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev") {
+    implementation("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev") {
         isTransitive = false
     }
 }
