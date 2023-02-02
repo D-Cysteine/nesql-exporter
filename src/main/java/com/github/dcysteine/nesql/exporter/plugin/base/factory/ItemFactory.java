@@ -2,8 +2,8 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemFactory extends EntityFactory<Item, String> {
-    public ItemFactory(Database database) {
-        super(database);
+    public ItemFactory(PluginExporter exporter) {
+        super(exporter);
     }
 
     public Item getItem(ItemStack itemStack) {
@@ -88,20 +88,20 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     itemStack.getMaxStackSize(),
                     itemStack.getMaxDamage(),
                     new HashMap<>());
-            Logger.BASE.error("Caught exception while trying to persist item: {}", item.getId());
+            logger.error("Caught exception while trying to persist item: {}", item.getId());
             e.printStackTrace();
         }
 
         if (ConfigOptions.RENDER_ICONS.get()) {
             Logger.intermittentLog(
-                    Logger.BASE,
+                    logger,
                     "Enqueueing render of item #{}: " + item.getLocalizedName(),
-                    database.incrementItemCount());
+                    exporterState.incrementItemCount());
             RenderDispatcher.INSTANCE.addJob(RenderJob.ofItem(itemStack));
         }
 
         entityManager.persist(item);
-        database.invokeItemListeners(item, itemStack);
+        exporterState.invokeItemListeners(item, itemStack);
         return item;
     }
 }

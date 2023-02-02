@@ -6,8 +6,8 @@ import betterquesting.api.questing.rewards.IReward;
 import betterquesting.api.questing.tasks.ITask;
 import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.QuestTranslation;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
@@ -28,11 +28,11 @@ public class QuestFactory extends EntityFactory<Quest, String> {
     private final TaskFactory taskFactory;
     private final RewardFactory rewardFactory;
 
-    public QuestFactory(Database database) {
-        super(database);
-        itemFactory = new ItemFactory(database);
-        taskFactory = new TaskFactory(database);
-        rewardFactory = new RewardFactory(database);
+    public QuestFactory(PluginExporter exporter) {
+        super(exporter);
+        itemFactory = new ItemFactory(exporter);
+        taskFactory = new TaskFactory(exporter);
+        rewardFactory = new RewardFactory(exporter);
     }
 
     public Quest getQuest(int questId, IQuest quest) {

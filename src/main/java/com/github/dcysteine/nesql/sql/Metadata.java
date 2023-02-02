@@ -16,7 +16,16 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class Metadata implements Identifiable<Integer> {
+    /** There will only ever be one metadata entry, and it will have this ID. */
     public static final int ID = 0;
+
+    /**
+     * This constant will be replaced with the NESQL version by the buildscript.
+     *
+     * <p>The server can check this field to know its version of the SQL schema, and check the
+     * {@link #version} field on the {@code Metadata} row to know the version of the repository.
+     */
+    public static final String VERSION = "@version@";
 
     /** There will only ever be one metadata entry, and it will have ID {@link #ID}. */
     @Id
@@ -37,9 +46,9 @@ public class Metadata implements Identifiable<Integer> {
     /** Needed by Hibernate. */
     protected Metadata() {}
 
-    public Metadata(String version, Set<Plugin> activePlugins) {
+    public Metadata(Set<Plugin> activePlugins) {
         this.id = ID;
-        this.version = version;
+        this.version = VERSION;
         this.creationTimeMillis = System.currentTimeMillis();
         this.activePlugins = activePlugins;
     }

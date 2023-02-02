@@ -8,8 +8,8 @@ import bq_standard.rewards.RewardItem;
 import bq_standard.rewards.RewardQuestCompletion;
 import bq_standard.rewards.RewardXP;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
@@ -24,9 +24,9 @@ import java.util.List;
 public class RewardFactory extends EntityFactory<Reward, String> {
     private final ItemFactory itemFactory;
 
-    public RewardFactory(Database database) {
-        super(database);
-        itemFactory = new ItemFactory(database);
+    public RewardFactory(PluginExporter exporter) {
+        super(exporter);
+        itemFactory = new ItemFactory(exporter);
     }
 
     public Reward getReward(int questId, int index, IReward reward) {
@@ -67,7 +67,7 @@ public class RewardFactory extends EntityFactory<Reward, String> {
 
         } else {
             // TODO add any additional reward types that we need to handle here.
-            Logger.QUEST.warn("Unhandled reward type: " + reward);
+            logger.warn("Unhandled reward type: " + reward);
             rewardEntity =
                     new Reward(id, name, RewardType.UNHANDLED, new ArrayList<>(), "", 0, false, 0);
         }

@@ -2,9 +2,9 @@ package com.github.dcysteine.nesql.exporter.plugin.base.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
-import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
-import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeType;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
+import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeTypeHandler;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import net.minecraft.item.ItemStack;
@@ -18,20 +18,23 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.util.Arrays;
 import java.util.List;
 
-public class CraftingRecipeProcessor {
-    private final Database database;
+public class CraftingRecipeProcessor extends PluginHelper {
     private final RecipeType shapedCrafting;
     private final RecipeType shapelessCrafting;
 
-    public CraftingRecipeProcessor(BasePluginExporter plugin, Database database) {
-        this.database = database;
-        this.shapedCrafting = plugin.getRecipeType(BaseRecipeType.SHAPED_CRAFTING);
-        this.shapelessCrafting = plugin.getRecipeType(BaseRecipeType.SHAPELESS_CRAFTING);
+    public CraftingRecipeProcessor(PluginExporter exporter, BaseRecipeTypeHandler recipeTypeHandler) {
+        super(exporter);
+        this.shapedCrafting =
+                recipeTypeHandler.getRecipeType(
+                        BaseRecipeTypeHandler.BaseRecipeType.SHAPED_CRAFTING);
+        this.shapelessCrafting =
+                recipeTypeHandler.getRecipeType(
+                        BaseRecipeTypeHandler.BaseRecipeType.SHAPELESS_CRAFTING);
     }
 
     public void process() {
         int total = CraftingManager.getInstance().getRecipeList().size();
-        Logger.BASE.info("Processing {} crafting recipes...", total);
+        logger.info("Processing {} crafting recipes...", total);
 
         @SuppressWarnings("unchecked")
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
@@ -40,7 +43,7 @@ public class CraftingRecipeProcessor {
             count++;
 
             if (recipe.getRecipeOutput() == null) {
-                Logger.BASE.warn("Skipping crafting recipe with null output: " + recipe);
+                logger.warn("Skipping crafting recipe with null output: " + recipe);
                 continue;
             }
 
@@ -53,21 +56,21 @@ public class CraftingRecipeProcessor {
             } else if (recipe instanceof ShapelessOreRecipe) {
                 processShapelessOreRecipe((ShapelessOreRecipe) recipe);
             } else {
-                Logger.BASE.warn("Unhandled crafting recipe: " + recipe);
+                logger.warn("Unhandled crafting recipe: " + recipe);
             }
 
             if (Logger.intermittentLog(count)) {
-                Logger.BASE.info("Processed crafting recipe {} of {}", count, total);
-                Logger.BASE.info(
+                logger.info("Processed crafting recipe {} of {}", count, total);
+                logger.info(
                         "Most recent recipe: {}", recipe.getRecipeOutput().getDisplayName());
             }
         }
 
-        Logger.BASE.info("Finished processing crafting recipes!");
+        logger.info("Finished processing crafting recipes!");
     }
 
     private void processShapedRecipe(ShapedRecipes recipe) {
-        RecipeBuilder builder = new RecipeBuilder(database, shapedCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapedCrafting);
         for (Object itemInput : recipe.recipeItems) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -80,7 +83,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapedOreRecipe(ShapedOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(database, shapedCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapedCrafting);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -95,11 +98,11 @@ public class CraftingRecipeProcessor {
     private void processShapelessRecipe(ShapelessRecipes recipe) {
         // Apparently this actually happens? At least, according to a comment in NEI source.
         if (recipe.recipeItems == null) {
-            Logger.BASE.warn("Crafting recipe with null inputs: " + recipe);
+            logger.warn("Crafting recipe with null inputs: " + recipe);
             return;
         }
 
-        RecipeBuilder builder = new RecipeBuilder(database, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessCrafting);
         for (Object itemInput : recipe.recipeItems) {
             handleItemInput(builder, itemInput);
         }
@@ -107,7 +110,7 @@ public class CraftingRecipeProcessor {
     }
 
     private void processShapelessOreRecipe(ShapelessOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(database, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessCrafting);
         for (Object itemInput : recipe.getInput()) {
             handleItemInput(builder, itemInput);
         }
@@ -139,7 +142,7 @@ public class CraftingRecipeProcessor {
         }
 
         if (foundBadStackSize) {
-            Logger.BASE.warn("Crafting recipe with bad stack size: " + Arrays.toString(itemStacks));
+            logger.warn("Crafting recipe with bad stack size: " + Arrays.toString(itemStacks));
         }
 
         builder.addItemGroupInput(fixedItemStacks, true);

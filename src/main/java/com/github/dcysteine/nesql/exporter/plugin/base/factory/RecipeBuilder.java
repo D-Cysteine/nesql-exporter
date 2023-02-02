@@ -1,7 +1,7 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
-import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /** Helper class that builds {@link Recipe} instances. */
-public class RecipeBuilder {
+public class RecipeBuilder extends PluginHelper {
     private final ItemFactory itemFactory;
     private final FluidFactory fluidFactory;
     private final ItemGroupFactory itemGroupFactory;
@@ -42,12 +42,13 @@ public class RecipeBuilder {
     private int itemOutputsIndex;
     private int fluidOutputsIndex;
 
-    public RecipeBuilder(Database database, RecipeType recipeType) {
-        this.itemFactory = new ItemFactory(database);
-        this.fluidFactory = new FluidFactory(database);
-        this.itemGroupFactory = new ItemGroupFactory(database);
-        this.fluidGroupFactory = new FluidGroupFactory(database);
-        this.recipeFactory = new RecipeFactory(database);
+    public RecipeBuilder(PluginExporter exporter, RecipeType recipeType) {
+        super(exporter);
+        this.itemFactory = new ItemFactory(exporter);
+        this.fluidFactory = new FluidFactory(exporter);
+        this.itemGroupFactory = new ItemGroupFactory(exporter);
+        this.fluidGroupFactory = new FluidGroupFactory(exporter);
+        this.recipeFactory = new RecipeFactory(exporter);
         this.recipeType = recipeType;
         this.itemInputs = new HashMap<>();
         this.fluidInputs = new HashMap<>();
@@ -113,7 +114,7 @@ public class RecipeBuilder {
 
     public RecipeBuilder skipItemInput() {
         if (recipeType.isShapeless()) {
-            Logger.BASE.warn("Skipping item input index for shapeless recipe!");
+            logger.warn("Skipping item input index for shapeless recipe!");
         }
 
         itemInputsIndex++;
@@ -156,7 +157,7 @@ public class RecipeBuilder {
 
     public RecipeBuilder skipFluidInput() {
         if (recipeType.isShapeless()) {
-            Logger.BASE.warn("Skipping fluid input index for shapeless recipe!");
+            logger.warn("Skipping fluid input index for shapeless recipe!");
         }
 
         fluidInputsIndex++;
@@ -188,7 +189,7 @@ public class RecipeBuilder {
 
     public RecipeBuilder skipItemOutput() {
         if (recipeType.isShapeless()) {
-            Logger.BASE.warn("Skipping item output index for shapeless recipe!");
+            logger.warn("Skipping item output index for shapeless recipe!");
         }
 
         itemOutputsIndex++;
@@ -217,7 +218,7 @@ public class RecipeBuilder {
 
     public RecipeBuilder skipFluidOutput() {
         if (recipeType.isShapeless()) {
-            Logger.BASE.warn("Skipping fluid output index for shapeless recipe!");
+            logger.warn("Skipping fluid output index for shapeless recipe!");
         }
 
         fluidOutputsIndex++;

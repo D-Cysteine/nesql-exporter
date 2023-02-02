@@ -1,28 +1,27 @@
-package com.github.dcysteine.nesql.exporter.plugin.quest.postprocessor;
+package com.github.dcysteine.nesql.exporter.plugin.quest;
 
 import betterquesting.api.questing.IQuest;
 import betterquesting.api2.storage.DBEntry;
 import betterquesting.questing.QuestDatabase;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.quest.factory.QuestFactory;
 import com.github.dcysteine.nesql.sql.quest.Quest;
 
 import java.util.List;
 
-public class QuestPostProcessor {
-    private final Database database;
-
-    public QuestPostProcessor(Database database) {
-        this.database = database;
+public class QuestPostProcessor extends PluginHelper {
+    public QuestPostProcessor(PluginExporter exporter) {
+        super(exporter);
     }
 
     public void postProcess() {
         List<DBEntry<IQuest>> questEntries = QuestDatabase.INSTANCE.getEntries();
         int total = questEntries.size();
-        Logger.QUEST.info("Post-processing {} quests...", total);
+        logger.info("Post-processing {} quests...", total);
 
-        QuestFactory questFactory = new QuestFactory(database);
+        QuestFactory questFactory = new QuestFactory(exporter);
         int count = 0;
         for (DBEntry<IQuest> entry : questEntries) {
             count++;
@@ -31,11 +30,11 @@ public class QuestPostProcessor {
             questFactory.setRequiredQuests(quest, entry.getValue().getRequirements());
 
             if (Logger.intermittentLog(count)) {
-                Logger.QUEST.info("Post-processed quest {} of {}", count, total);
-                Logger.QUEST.info("Most recent quest: {}", quest.getName());
+                logger.info("Post-processed quest {} of {}", count, total);
+                logger.info("Most recent quest: {}", quest.getName());
             }
         }
 
-        Logger.QUEST.info("Finished post-processing quests!");
+        logger.info("Finished post-processing quests!");
     }
 }

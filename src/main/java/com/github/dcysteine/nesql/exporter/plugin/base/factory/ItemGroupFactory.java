@@ -1,7 +1,7 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.proto.ItemGroupPb;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
@@ -14,8 +14,8 @@ import com.google.common.collect.ImmutableSortedSet;
 import java.util.SortedSet;
 
 public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
-    public ItemGroupFactory(Database database) {
-        super(database);
+    public ItemGroupFactory(PluginExporter exporter) {
+        super(exporter);
     }
 
     public ItemGroup getItemGroup(

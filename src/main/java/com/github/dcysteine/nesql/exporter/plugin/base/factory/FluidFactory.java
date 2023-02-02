@@ -2,8 +2,8 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.exporter.util.ItemUtil;
@@ -15,8 +15,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidFactory extends EntityFactory<Fluid, String> {
-    public FluidFactory(Database database) {
-        super(database);
+    public FluidFactory(PluginExporter exporter) {
+        super(exporter);
     }
 
     public Fluid getFluid(FluidStack fluidStack) {
@@ -54,13 +54,13 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
                 fluidStack.getFluid().isGaseous(fluidStack));
 
         if (fluidStack.getFluid().getIcon() == null) {
-            Logger.BASE.error("Found fluid with null icon: {}", fluid.getLocalizedName());
+            logger.error("Found fluid with null icon: {}", fluid.getLocalizedName());
         } else {
             if (ConfigOptions.RENDER_ICONS.get()) {
                 Logger.intermittentLog(
-                        Logger.BASE,
+                        logger,
                         "Enqueueing render of fluid #{}: " + fluid.getLocalizedName(),
-                        database.incrementFluidCount());
+                        exporterState.incrementFluidCount());
                 RenderDispatcher.INSTANCE.addJob(RenderJob.ofFluid(fluidStack));
             }
         }

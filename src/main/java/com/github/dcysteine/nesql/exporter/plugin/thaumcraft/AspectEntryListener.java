@@ -1,7 +1,8 @@
-package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.listener;
+package com.github.dcysteine.nesql.exporter.plugin.thaumcraft;
 
-import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectEntryFactory;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory.AspectFactory;
 import com.github.dcysteine.nesql.sql.base.item.Item;
@@ -10,13 +11,14 @@ import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.lib.crafting.ThaumcraftCraftingManager;
 
-public class AspectEntryListener implements Database.ItemListener {
+public class AspectEntryListener extends PluginHelper implements ExporterState.ItemListener {
     AspectFactory aspectFactory;
     AspectEntryFactory aspectEntryFactory;
 
-    public AspectEntryListener(Database database) {
-        aspectFactory = new AspectFactory(database);
-        aspectEntryFactory = new AspectEntryFactory(database);
+    public AspectEntryListener(PluginExporter exporter) {
+        super(exporter);
+        aspectFactory = new AspectFactory(exporter);
+        aspectEntryFactory = new AspectEntryFactory(exporter);
     }
 
     @Override
@@ -39,8 +41,7 @@ public class AspectEntryListener implements Database.ItemListener {
             }
         } catch (StackOverflowError e) {
             // Thaumcraft why you do this T_T
-            Logger.THAUMCRAFT.error(
-                    "Stack overflow computing aspects for: " + item.getLocalizedName(), e);
+            logger.error("Stack overflow computing aspects for: " + item.getLocalizedName(), e);
         }
     }
 }

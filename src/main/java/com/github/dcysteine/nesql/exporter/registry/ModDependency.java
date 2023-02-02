@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.plugin.registry;
+package com.github.dcysteine.nesql.exporter.registry;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -34,7 +34,6 @@ public enum ModDependency {
     }
 
     public String getVersion() {
-        // TODO should this be getDisplayVersion() ?
         return getMod().getVersion();
     }
 

@@ -2,8 +2,8 @@ package com.github.dcysteine.nesql.exporter.plugin.thaumcraft.factory;
 
 import com.djgiannuzz.thaumcraftneiplugin.ModItems;
 import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 public class AspectFactory extends EntityFactory<Aspect, String> {
     private final ItemFactory itemFactory;
 
-    public AspectFactory(Database database) {
-        super(database);
-        itemFactory = new ItemFactory(database);
+    public AspectFactory(PluginExporter exporter) {
+        super(exporter);
+        itemFactory = new ItemFactory(exporter);
     }
 
     public Aspect getAspect(thaumcraft.api.aspects.Aspect aspect) {

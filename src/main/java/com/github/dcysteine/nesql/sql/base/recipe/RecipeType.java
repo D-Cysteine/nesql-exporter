@@ -29,11 +29,11 @@ public class RecipeType implements Identifiable<String> {
     @Id
     private String id;
 
-    /** Human-readable string describing the recipe's general category, such as originating mod. */
+    /** String describing the recipe's general category, such as originating mod or plugin. */
     @Column(nullable = false)
     private String category;
 
-    /** Human-readable string describing the specific type of recipe. */
+    /** String describing the specific type of recipe. */
     @Column(nullable = false)
     private String type;
 

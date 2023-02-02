@@ -12,13 +12,13 @@ import java.util.Optional;
  * {@link #findOrPersist(Class, Identifiable)} on it, as we must reference the already-persisted
  * instance, if it exists.
  */
-public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>> {
-    protected final Database database;
+public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>>
+        extends PluginHelper {
     protected final EntityManager entityManager;
 
-    protected EntityFactory(Database database) {
-        this.database = database;
-        this.entityManager = database.getEntityManager();
+    protected EntityFactory(PluginExporter exporter) {
+        super(exporter);
+        this.entityManager = exporterState.getEntityManager();
     }
 
     /**

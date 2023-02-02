@@ -1,8 +1,9 @@
-package com.github.dcysteine.nesql.exporter.plugin.registry;
+package com.github.dcysteine.nesql.exporter.registry;
 
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.GregTechPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.ThaumcraftPluginExporter;
@@ -26,6 +27,9 @@ public class PluginRegistry {
 
         builder.add(
                 RegistryEntry.create(
+                        Plugin.GREGTECH, GregTechPluginExporter::new, ModDependency.GREGTECH_5));
+        builder.add(
+                RegistryEntry.create(
                         Plugin.THAUMCRAFT, ThaumcraftPluginExporter::new,
                         ModDependency.THAUMCRAFT, ModDependency.THAUMCRAFT_NEI));
         builder.add(
@@ -38,24 +42,20 @@ public class PluginRegistry {
     private final Map<Plugin, PluginExporter> activePlugins = new EnumMap<>(Plugin.class);
 
     /** Constructs plugins whose dependencies are met. Returns a list of activated plugins. */
-    public Map<Plugin, PluginExporter> initialize(Database database) {
+    public Map<Plugin, PluginExporter> initialize(ExporterState exporterState) {
         entries.stream()
                 .filter(RegistryEntry::areDependenciesSatisfied)
                 .filter(RegistryEntry::isNotDisabled)
                 .forEach(
                         entry ->
                                 activePlugins.put(
-                                        entry.getPlugin(), entry.instantiate(database)));
+                                        entry.getPlugin(), entry.instantiate(exporterState)));
 
         return activePlugins;
     }
 
     public Map<Plugin, PluginExporter> getActivePlugins() {
         return activePlugins;
-    }
-
-    public void registerListeners() {
-        activePlugins.values().forEach(PluginExporter::registerListeners);
     }
 
     public void initializePlugins() {

@@ -11,17 +11,21 @@ import java.util.function.BiConsumer;
 /**
  * Class that holds the accessor for the database, stores any needed state, and handles listeners.
  */
-public class Database {
+public class ExporterState {
     public interface ItemListener extends BiConsumer<Item, ItemStack> {}
 
     private final EntityManager entityManager;
     private int itemCount;
     private int fluidCount;
+
     // TODO do we want to provide some sort of RecipeType registry here?
+    // If so, something like: Map<Class<T>, T> where T is a plugin-custom recipe repository class.
+
     private final List<ItemListener> itemListeners;
+
     // TODO do we want to add listeners on iteration through the vanilla crafting recipe list?
 
-    public Database(EntityManager entityManager) {
+    public ExporterState(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.itemCount = 0;
         this.fluidCount = 0;

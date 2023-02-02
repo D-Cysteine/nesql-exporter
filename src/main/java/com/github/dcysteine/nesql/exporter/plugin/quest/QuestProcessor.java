@@ -1,39 +1,38 @@
-package com.github.dcysteine.nesql.exporter.plugin.quest.processor;
+package com.github.dcysteine.nesql.exporter.plugin.quest;
 
 import betterquesting.api.questing.IQuest;
 import betterquesting.api2.storage.DBEntry;
 import betterquesting.questing.QuestDatabase;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.quest.factory.QuestFactory;
 import com.github.dcysteine.nesql.sql.quest.Quest;
 
 import java.util.List;
 
-public class QuestProcessor {
-    private final Database database;
-
-    public QuestProcessor(Database database) {
-        this.database = database;
+public class QuestProcessor extends PluginHelper {
+    public QuestProcessor(PluginExporter exporter) {
+        super(exporter);
     }
 
     public void process() {
         List<DBEntry<IQuest>> questEntries = QuestDatabase.INSTANCE.getEntries();
         int total = questEntries.size();
-        Logger.QUEST.info("Processing {} quests...", total);
+        logger.info("Processing {} quests...", total);
 
-        QuestFactory questFactory = new QuestFactory(database);
+        QuestFactory questFactory = new QuestFactory(exporter);
         int count = 0;
         for (DBEntry<IQuest> entry : questEntries) {
             count++;
             Quest quest = questFactory.getQuest(entry.getID(), entry.getValue());
 
             if (Logger.intermittentLog(count)) {
-                Logger.QUEST.info("Processed quest {} of {}", count, total);
-                Logger.QUEST.info("Most recent quest: {}", quest.getName());
+                logger.info("Processed quest {} of {}", count, total);
+                logger.info("Most recent quest: {}", quest.getName());
             }
         }
 
-        Logger.QUEST.info("Finished processing quests!");
+        logger.info("Finished processing quests!");
     }
 }

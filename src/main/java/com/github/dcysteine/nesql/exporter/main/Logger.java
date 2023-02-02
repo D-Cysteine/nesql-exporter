@@ -1,22 +1,20 @@
 package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import com.github.dcysteine.nesql.sql.Plugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import org.apache.logging.log4j.LogManager;
 
 public final class Logger {
-    public static final org.apache.logging.log4j.Logger MOD =
-            LogManager.getLogger(Main.MOD_NAME);
-    public static final org.apache.logging.log4j.Logger BASE =
-            LogManager.getLogger(Main.MOD_NAME + "/base");
-    public static final org.apache.logging.log4j.Logger THAUMCRAFT =
-            LogManager.getLogger(Main.MOD_NAME + "/thaumcraft");
-    public static final org.apache.logging.log4j.Logger QUEST =
-            LogManager.getLogger(Main.MOD_NAME + "/quest");
+    public static final org.apache.logging.log4j.Logger MOD = LogManager.getLogger(Main.MOD_NAME);
 
     // Static class.
     private Logger() {}
+
+    public static org.apache.logging.log4j.Logger getLogger(Plugin plugin) {
+        return LogManager.getLogger(String.format("%s/%s", Main.MOD_NAME, plugin.getName()));
+    }
 
     public static void chatMessage(String message) {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(message));

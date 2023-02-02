@@ -1,9 +1,9 @@
 package com.github.dcysteine.nesql.exporter.main;
 
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
-import com.github.dcysteine.nesql.exporter.plugin.registry.PluginRegistry;
+import com.github.dcysteine.nesql.exporter.registry.PluginRegistry;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import com.github.dcysteine.nesql.sql.Metadata;
@@ -101,7 +101,7 @@ public final class Exporter {
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("H2", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Database database = new Database(entityManager);
+        ExporterState exporterState = new ExporterState(entityManager);
 
         boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
         if (renderingImages) {
@@ -127,7 +127,7 @@ public final class Exporter {
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
         PluginRegistry registry = new PluginRegistry();
-        Map<Plugin, PluginExporter> activePlugins = registry.initialize(database);
+        Map<Plugin, PluginExporter> activePlugins = registry.initialize(exporterState);
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
         activePlugins.keySet().forEach(
                 plugin -> Logger.chatMessage("  " + EnumChatFormatting.YELLOW + plugin.getName()));
@@ -136,11 +136,9 @@ public final class Exporter {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        String version = Loader.instance().activeModContainer().getDisplayVersion();
-        entityManager.persist(new Metadata(version, activePlugins.keySet()));
+        entityManager.persist(new Metadata(activePlugins.keySet()));
 
         registry.initializePlugins();
-        registry.registerListeners();
         registry.processPlugins();
         registry.postProcessPlugins();
 

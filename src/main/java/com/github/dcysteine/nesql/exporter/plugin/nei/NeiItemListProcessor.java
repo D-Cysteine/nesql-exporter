@@ -1,29 +1,29 @@
-package com.github.dcysteine.nesql.exporter.plugin.nei.processor;
+package com.github.dcysteine.nesql.exporter.plugin.nei;
 
 import codechicken.nei.ItemList;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
-public class NeiItemListProcessor {
-    private final Database database;
+public class NeiItemListProcessor extends PluginHelper {
 
-    public NeiItemListProcessor(Database database) {
-        this.database = database;
+    public NeiItemListProcessor(PluginExporter exporter) {
+        super(exporter);
     }
 
     public void process() {
         int total = ItemList.items.size();
-        Logger.BASE.info("Processing {} NEI items...", total);
+        logger.info("Processing {} NEI items...", total);
 
         if (total == 0) {
             Logger.chatMessage(
                     EnumChatFormatting.RED + "NEI item list is empty; did you forget to load it?");
         }
 
-        ItemFactory itemFactory = new ItemFactory(database);
+        ItemFactory itemFactory = new ItemFactory(exporter);
         int count = 0;
         for (ItemStack itemStack : ItemList.items) {
             count++;
@@ -33,17 +33,17 @@ public class NeiItemListProcessor {
                 // GTNH has some bad items, so we have to do this =(
                 // For whatever reason, the exceptions thrown by those items don't even have stack
                 // traces!
-                Logger.BASE.info("Found a bad item: " + itemStack.getDisplayName());
+                logger.info("Found a bad item: " + itemStack.getDisplayName());
                 e.printStackTrace();
             }
 
             if (Logger.intermittentLog(count)) {
-                Logger.BASE.info("Processed NEI item {} of {}", count, total);
-                Logger.BASE.info("Most recent item: {}", itemStack.getDisplayName());
+                logger.info("Processed NEI item {} of {}", count, total);
+                logger.info("Most recent item: {}", itemStack.getDisplayName());
             }
         }
 
-        Logger.BASE.info("Finished processing NEI items!");
+        logger.info("Finished processing NEI items!");
     }
 
 }

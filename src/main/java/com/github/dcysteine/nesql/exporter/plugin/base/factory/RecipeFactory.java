@@ -1,7 +1,7 @@
 package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.proto.RecipePb;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.ProtoBuilder;
@@ -16,8 +16,8 @@ import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import java.util.Map;
 
 public class RecipeFactory extends EntityFactory<Recipe, String> {
-    public RecipeFactory(Database database) {
-        super(database);
+    public RecipeFactory(PluginExporter exporter) {
+        super(exporter);
     }
 
     public Recipe getRecipe(

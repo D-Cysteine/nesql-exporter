@@ -9,8 +9,8 @@ import bq_standard.tasks.TaskHunt;
 import bq_standard.tasks.TaskLocation;
 import bq_standard.tasks.TaskRetrieval;
 import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.plugin.Database;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
+import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
@@ -28,10 +28,10 @@ public class TaskFactory extends EntityFactory<Task, String> {
     private final ItemFactory itemFactory;
     private final FluidFactory fluidFactory;
 
-    public TaskFactory(Database database) {
-        super(database);
-        itemFactory = new ItemFactory(database);
-        fluidFactory = new FluidFactory(database);
+    public TaskFactory(PluginExporter exporter) {
+        super(exporter);
+        itemFactory = new ItemFactory(exporter);
+        fluidFactory = new FluidFactory(exporter);
     }
 
     public Task getTask(int questId, int index, ITask task) {
@@ -86,7 +86,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
 
         } else {
             // TODO add any additional task types that we need to handle here.
-            Logger.QUEST.warn("Unhandled task type: " + task);
+            logger.warn("Unhandled task type: " + task);
             taskEntity =
                     new Task(
                             id, name, TaskType.UNHANDLED, new ArrayList<>(), new ArrayList<>(),

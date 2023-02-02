@@ -1,25 +1,22 @@
 package com.github.dcysteine.nesql.exporter.plugin.quest;
 
-import com.github.dcysteine.nesql.exporter.plugin.Database;
+import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
-import com.github.dcysteine.nesql.exporter.plugin.quest.postprocessor.QuestPostProcessor;
-import com.github.dcysteine.nesql.exporter.plugin.quest.processor.QuestProcessor;
+import com.github.dcysteine.nesql.sql.Plugin;
 
 /** Plugin which exports BetterQuesting quests. */
-public class QuestPluginExporter implements PluginExporter {
-    private final Database database;
-
-    public QuestPluginExporter(Database database) {
-        this.database = database;
+public class QuestPluginExporter extends PluginExporter {
+    public QuestPluginExporter(Plugin plugin, ExporterState exporterState) {
+        super(plugin, exporterState);
     }
 
     @Override
     public void process() {
-        new QuestProcessor(database).process();
+        new QuestProcessor(this).process();
     }
 
     @Override
     public void postProcess() {
-        new QuestPostProcessor(database).postProcess();
+        new QuestPostProcessor(this).postProcess();
     }
 }

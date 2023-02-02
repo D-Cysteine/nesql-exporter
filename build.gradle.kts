@@ -50,7 +50,7 @@ minecraft.version = "$minecraftVersion-$forgeVersion-$minecraftVersion"
 configure<UserExtension> {
     replacements.putAll(
         mapOf(
-            Pair("@version@", version)
+            Pair("@version@", project.version)
         )
     )
     runDir = "run"
