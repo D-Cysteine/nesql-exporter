@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
 import java.util.Map;
 
 @Entity
@@ -85,5 +86,16 @@ public class Recipe implements Identifiable<String> {
 
     public Map<Integer, FluidStackWithProbability> getFluidOutputs() {
         return fluidOutputs;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof Recipe) {
+            return Comparator.comparing(Recipe::getRecipeType)
+                    .thenComparing(Recipe::getId)
+                    .compare(this, (Recipe) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }

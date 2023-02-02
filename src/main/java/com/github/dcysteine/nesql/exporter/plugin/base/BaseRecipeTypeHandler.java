@@ -12,6 +12,7 @@ import net.minecraft.init.Blocks;
 import java.util.EnumMap;
 
 public class BaseRecipeTypeHandler extends PluginHelper {
+    public static final String RECIPE_ID = "base";
     public static final String RECIPE_CATEGORY = "minecraft";
 
     public enum BaseRecipeType {
@@ -23,12 +24,12 @@ public class BaseRecipeTypeHandler extends PluginHelper {
 
     private final EnumMap<BaseRecipeType, RecipeType> recipeTypeMap;
 
-    BaseRecipeTypeHandler(PluginExporter exporter) {
+    public BaseRecipeTypeHandler(PluginExporter exporter) {
         super(exporter);
         recipeTypeMap = new EnumMap<>(BaseRecipeType.class);
     }
 
-    void initialize() {
+    public void initialize() {
         ItemFactory itemFactory = new ItemFactory(exporter);
         RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(exporter);
 
@@ -36,7 +37,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
         recipeTypeMap.put(
                 BaseRecipeType.SHAPED_CRAFTING,
                 recipeTypeFactory.newBuilder()
-                        .setId("base", "crafting", "shaped")
+                        .setId(RECIPE_ID, "crafting", "shaped")
                         .setCategory(RECIPE_CATEGORY)
                         .setType("Crafting (Shaped)")
                         .setIcon(craftingTable)
@@ -47,7 +48,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
         recipeTypeMap.put(
                 BaseRecipeType.SHAPELESS_CRAFTING,
                 recipeTypeFactory.newBuilder()
-                        .setId("base", "crafting", "shapeless")
+                        .setId(RECIPE_ID, "crafting", "shapeless")
                         .setCategory(RECIPE_CATEGORY)
                         .setType("Crafting (Shapeless)")
                         .setIcon(craftingTable)
@@ -60,7 +61,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
         recipeTypeMap.put(
                 BaseRecipeType.FURNACE,
                 recipeTypeFactory.newBuilder()
-                        .setId("base", "furnace")
+                        .setId(RECIPE_ID, "furnace")
                         .setCategory(RECIPE_CATEGORY)
                         .setType("Furnace")
                         .setIcon(furnace)

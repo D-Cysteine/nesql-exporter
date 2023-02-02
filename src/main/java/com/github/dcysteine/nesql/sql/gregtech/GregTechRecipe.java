@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.sql.gregtech;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -8,11 +9,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -31,20 +34,25 @@ public class GregTechRecipe implements Identifiable<String> {
     @OneToOne(fetch = FetchType.LAZY)
     private Recipe recipe;
 
-    @ElementCollection
-    @OrderColumn
-    private List<String> modOwners;
-
-    private int duration;
-
-    private int euPerTick;
-
     @Column(nullable = false)
     private String voltageTier;
+
+    private int voltage;
+
+    private int amperage;
+
+    private int duration;
 
     private boolean requiresCleanroom;
 
     private boolean requiresLowGravity;
+
+    @ManyToMany
+    private List<Item> specialItems;
+
+    @ElementCollection
+    @OrderColumn
+    private List<String> modOwners;
 
     @Lob
     @Column(nullable = false)
@@ -56,21 +64,25 @@ public class GregTechRecipe implements Identifiable<String> {
     public GregTechRecipe(
             String id,
             Recipe recipe,
-            List<String> modOwners,
-            int duration,
-            int euPerTick,
             String voltageTier,
+            int voltage,
+            int amperage,
+            int duration,
             boolean requiresCleanroom,
             boolean requiresLowGravity,
+            List<Item> specialItems,
+            List<String> modOwners,
             String additionalInfo) {
         this.id = id;
         this.recipe = recipe;
-        this.modOwners = modOwners;
-        this.duration = duration;
-        this.euPerTick = euPerTick;
         this.voltageTier = voltageTier;
+        this.voltage = voltage;
+        this.amperage = amperage;
+        this.duration = duration;
         this.requiresCleanroom = requiresCleanroom;
         this.requiresLowGravity = requiresLowGravity;
+        this.specialItems = specialItems;
+        this.modOwners = modOwners;
         this.additionalInfo = additionalInfo;
     }
 
@@ -83,20 +95,20 @@ public class GregTechRecipe implements Identifiable<String> {
         return recipe;
     }
 
-    public List<String> getModOwners() {
-        return modOwners;
+    public String getVoltageTier() {
+        return voltageTier;
+    }
+
+    public int getVoltage() {
+        return voltage;
+    }
+
+    public int getAmperage() {
+        return amperage;
     }
 
     public int getDuration() {
         return duration;
-    }
-
-    public int getEuPerTick() {
-        return euPerTick;
-    }
-
-    public String getVoltageTier() {
-        return voltageTier;
     }
 
     public boolean isRequiresCleanroom() {
@@ -107,7 +119,26 @@ public class GregTechRecipe implements Identifiable<String> {
         return requiresLowGravity;
     }
 
+    public List<Item> getSpecialItems() {
+        return specialItems;
+    }
+
+    public List<String> getModOwners() {
+        return modOwners;
+    }
+
     public String getAdditionalInfo() {
         return additionalInfo;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof GregTechRecipe) {
+            return Comparator.comparing(GregTechRecipe::getRecipe)
+                    .thenComparing(GregTechRecipe::getId)
+                    .compare(this, (GregTechRecipe) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }

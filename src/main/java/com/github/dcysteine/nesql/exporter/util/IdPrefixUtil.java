@@ -11,6 +11,7 @@ public enum IdPrefixUtil {
     RECIPE("r"),
     RECIPE_TYPE("rt"),
 
+    GREGTECH_RECIPE("gtr"),
     ASPECT("tca"),
     ASPECT_ENTRY("tcae"),
     QUEST("q"),

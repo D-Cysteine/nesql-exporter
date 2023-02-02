@@ -1,48 +1,92 @@
 package com.github.dcysteine.nesql.exporter.plugin.gregtech;
 
-import codechicken.nei.ItemList;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
-import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
+import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeTypeHandler;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechUtil;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.RecipeMap;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.Voltage;
+import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
+import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
+import gregtech.api.util.GT_Recipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class GregTechRecipeProcessor extends PluginHelper {
-    public GregTechRecipeProcessor(PluginExporter exporter) {
+    private final GregTechRecipeTypeHandler recipeTypeHandler;
+
+    public GregTechRecipeProcessor(
+            PluginExporter exporter, GregTechRecipeTypeHandler recipeTypeHandler) {
         super(exporter);
+        this.recipeTypeHandler = recipeTypeHandler;
     }
 
     public void process() {
-        int total = ItemList.items.size();
-        logger.info("Processing {} NEI items...", total);
+        int recipeMapTotal = RecipeMap.values().length;
+        logger.info("Processing {} GregTech recipe maps...", recipeMapTotal);
 
-        if (total == 0) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED + "NEI item list is empty; did you forget to load it?");
-        }
+        GregTechRecipeFactory gregTechRecipeFactory = new GregTechRecipeFactory(exporter);
+        int recipeMapCount = 0;
+        for (RecipeMap recipeMap : RecipeMap.values()) {
+            logger.info("Processing recipe map: " + recipeMap.getName());
+            recipeMapCount++;
 
-        ItemFactory itemFactory = new ItemFactory(exporter);
-        int count = 0;
-        for (ItemStack itemStack : ItemList.items) {
-            count++;
-            try {
-                itemFactory.getItem(itemStack);
-            } catch (Exception e) {
-                // GTNH has some bad items, so we have to do this =(
-                // For whatever reason, the exceptions thrown by those items don't even have stack
-                // traces!
-                logger.info("Found a bad item: " + itemStack.getDisplayName());
-                e.printStackTrace();
+            Collection<GT_Recipe> recipes = recipeMap.getRecipeMap().mRecipeList;
+            int total = recipes.size();
+            logger.info("Processing {} GregTech recipes...", total);
+
+            int count = 0;
+            for (GT_Recipe recipe : recipes) {
+                count++;
+
+                int voltage = recipe.mEUt / recipeMap.getAmperage();
+                Voltage voltageTier = Voltage.convertVoltage(voltage);
+                RecipeType recipeType = recipeTypeHandler.getRecipeType(recipeMap, voltageTier);
+                RecipeBuilder builder = new RecipeBuilder(exporter, recipeType);
+                // TODO do we need null checks for any of the below, to avoid skipping slots?
+                for (ItemStack input : recipe.mInputs) {
+                    builder.addAllItemInput(GregTechUtil.reverseUnify(input), true);
+                }
+                for (FluidStack input : recipe.mFluidInputs) {
+                    builder.addFluidInput(input);
+                }
+                for (int i = 0; i < recipe.mOutputs.length; i++) {
+                    ItemStack output = recipe.mOutputs[i];
+                    int chance = recipe.getOutputChance(i);
+                    if (chance == 100_00) {
+                        builder.addItemOutput(output);
+                    } else {
+                        builder.addItemOutput(output, chance / 100_00d);
+                    }
+                }
+                for (FluidStack output : recipe.mFluidOutputs) {
+                    builder.addFluidOutput(output);
+                }
+
+                List<ItemStack> specialItems = new ArrayList<>();
+                if (recipe.mSpecialItems != null) {
+                    specialItems = GregTechUtil.reverseUnify(recipe.mSpecialItems);
+                }
+
+                Recipe recipeEntity = builder.build();
+                gregTechRecipeFactory.getGregTechRecipe(
+                        recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
+
+                if (Logger.intermittentLog(count)) {
+                    logger.info("Processed GregTech recipe {} of {}", count, total);
+                }
             }
 
-            if (Logger.intermittentLog(count)) {
-                logger.info("Processed NEI item {} of {}", count, total);
-                logger.info("Most recent item: {}", itemStack.getDisplayName());
-            }
+            logger.info("Processed GregTech recipe map {} of {}", recipeMapCount, recipeMapTotal);
         }
 
-        logger.info("Finished processing NEI items!");
+        logger.info("Finished processing GregTech recipe maps!");
     }
 
 }

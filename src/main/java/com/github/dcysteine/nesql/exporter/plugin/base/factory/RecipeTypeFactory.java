@@ -19,14 +19,15 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
 
     /** {@code idParts} will be joined with {@link IdUtil#ID_SEPARATOR} to form the ID. */
     public RecipeType getRecipeType(
-            String[] idParts, String category, String type, Item icon, boolean shapeless,
+            String[] idParts, String category, String type, Item icon, String iconInfo,
+            boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
         String id =
                 IdPrefixUtil.RECIPE_TYPE.applyPrefix(Joiner.on(IdUtil.ID_SEPARATOR).join(idParts));
         RecipeType recipeType =
                 new RecipeType(
-                        id, category, type, icon, shapeless,
+                        id, category, type, icon, iconInfo, shapeless,
                         itemInputDimension, fluidInputDimension,
                         itemOutputDimension, fluidOutputDimension);
         return findOrPersist(RecipeType.class, recipeType);
@@ -41,6 +42,7 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
         private String category = null;
         private String type = null;
         private Item icon = null;
+        private String iconInfo = "";
         private Boolean shapeless = false;
         private Dimension itemInputDimension = new Dimension(0, 0);
         private Dimension fluidInputDimension = new Dimension(0, 0);
@@ -69,6 +71,11 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
             return this;
         }
 
+        public Builder setIconInfo(String iconInfo) {
+            this.iconInfo = iconInfo;
+            return this;
+        }
+
         public Builder setShapeless(boolean shapeless) {
             this.shapeless = shapeless;
             return this;
@@ -79,8 +86,18 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
             return this;
         }
 
+        public Builder setItemInputDimension(Dimension dimension) {
+            this.itemInputDimension = dimension;
+            return this;
+        }
+
         public Builder setFluidInputDimension(int width, int height) {
             this.fluidInputDimension = new Dimension(width, height);
+            return this;
+        }
+
+        public Builder setFluidInputDimension(Dimension dimension) {
+            this.fluidInputDimension = dimension;
             return this;
         }
 
@@ -89,14 +106,24 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
             return this;
         }
 
+        public Builder setItemOutputDimension(Dimension dimension) {
+            this.itemOutputDimension = dimension;
+            return this;
+        }
+
         public Builder setFluidOutputDimension(int width, int height) {
             this.fluidInputDimension = new Dimension(width, height);
             return this;
         }
 
+        public Builder setFluidOutputDimension(Dimension dimension) {
+            this.fluidOutputDimension = dimension;
+            return this;
+        }
+
         public RecipeType build() {
             return getRecipeType(
-                    idParts, category, type, icon, shapeless,
+                    idParts, category, type, icon, iconInfo, shapeless,
                     itemInputDimension, fluidInputDimension,
                     itemOutputDimension, fluidOutputDimension);
         }
@@ -115,6 +142,9 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
             }
             if (icon == null) {
                 missingFields.add("icon");
+            }
+            if (iconInfo == null) {
+                missingFields.add("iconInfo");
             }
             if (shapeless == null) {
                 missingFields.add("shapeless");

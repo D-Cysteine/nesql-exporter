@@ -40,6 +40,10 @@ public class RecipeType implements Identifiable<String> {
     @ManyToOne(fetch = FetchType.LAZY)
     private Item icon;
 
+    /** Additional info to show on the icon. */
+    @Column(nullable = false)
+    private String iconInfo;
+
     private boolean shapeless;
 
     @Embedded
@@ -62,13 +66,14 @@ public class RecipeType implements Identifiable<String> {
      * make sure that their combination is unique!
      */
     public RecipeType(
-            String id, String category, String type, Item icon, boolean shapeless,
+            String id, String category, String type, Item icon, String iconInfo, boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
         this.id = id;
         this.category = category;
         this.type = type;
         this.icon = icon;
+        this.iconInfo = iconInfo;
         this.shapeless = shapeless;
         this.itemInputDimension = itemInputDimension;
         this.fluidInputDimension = fluidInputDimension;
@@ -91,6 +96,10 @@ public class RecipeType implements Identifiable<String> {
 
     public Item getIcon() {
         return icon;
+    }
+
+    public String getIconInfo() {
+        return iconInfo;
     }
 
     public boolean isShapeless() {
