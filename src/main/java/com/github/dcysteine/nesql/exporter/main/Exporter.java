@@ -146,9 +146,16 @@ public final class Exporter {
         Logger.chatMessage(
                 EnumChatFormatting.AQUA + "(This may take several minutes, and lag a lot)");
         transaction.commit();
+
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete! Compacting database...");
+        transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
+        // No need to commit the transaction; SHUTDOWN closes everything already.
+
         entityManager.close();
         entityManagerFactory.close();
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete!");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Compaction complete!");
 
         if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");

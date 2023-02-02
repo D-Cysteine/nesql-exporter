@@ -6,7 +6,9 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -14,6 +16,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 @Entity
+@Table(indexes = {@Index(columnList = "itemId")})
 @EqualsAndHashCode
 @ToString
 public class Item implements Identifiable<String> {
