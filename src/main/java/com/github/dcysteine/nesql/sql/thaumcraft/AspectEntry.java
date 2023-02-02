@@ -4,7 +4,6 @@ import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
@@ -21,10 +20,10 @@ public class AspectEntry implements Identifiable<String> {
     @Column(nullable = false)
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Aspect aspect;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Item item;
 
     private int amount;

@@ -2,6 +2,9 @@ package com.github.dcysteine.nesql.exporter.util;
 
 import com.google.common.base.Joiner;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /** Helper class for applying a unique prefix to all persisted entity IDs. */
 public enum IdPrefixUtil {
     ITEM("i"),
@@ -11,9 +14,16 @@ public enum IdPrefixUtil {
     RECIPE("r"),
     RECIPE_TYPE("rt"),
 
-    GREGTECH_RECIPE("gtr"),
+    ORE_DICTIONARY("od"),
+    FLUID_BLOCK("fb"),
+    FLUID_CONTAINER("fc"),
+    EMPTY_CONTAINER("ec"),
+
+    GREG_TECH_RECIPE("gtr"),
+
     ASPECT("tca"),
     ASPECT_ENTRY("tcae"),
+
     QUEST("q"),
     QUEST_TASK("qt"),
     QUEST_REWARD("qr"),
@@ -31,5 +41,14 @@ public enum IdPrefixUtil {
 
     public String applyPrefix(String id) {
         return prefix + id;
+    }
+
+    static {
+        Set<String> prefixes = new HashSet<>();
+        for (IdPrefixUtil prefix : IdPrefixUtil.values()) {
+            if (!prefixes.add(prefix.getPrefix())) {
+                throw new IllegalStateException("Duplicate prefix: " + prefix);
+            }
+        }
     }
 }

@@ -4,7 +4,6 @@ import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
@@ -14,7 +13,6 @@ import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +27,7 @@ public class Quest implements Identifiable<String> {
     /** The quest ID in the BetterQuesting database. */
     private int questId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Item icon;
 
     @Column(nullable = false)

@@ -6,7 +6,6 @@ import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
@@ -31,7 +30,7 @@ public class GregTechRecipe implements Identifiable<String> {
     @Column(nullable = false)
     private String id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     private Recipe recipe;
 
     @Column(nullable = false)

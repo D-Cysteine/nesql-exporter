@@ -28,7 +28,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
     public GregTechRecipe getGregTechRecipe(
             Recipe recipe, RecipeMap recipeMap, GT_Recipe gregTechRecipe,
             Voltage voltageTier, int voltage, List<ItemStack> specialItems) {
-        String id = IdPrefixUtil.GREGTECH_RECIPE.applyPrefix(recipe.getId());
+        String id = IdPrefixUtil.GREG_TECH_RECIPE.applyPrefix(recipe.getId());
 
         boolean requiresCleanroom =
                 gregTechRecipe.mSpecialValue == -200 || gregTechRecipe.mSpecialValue == -300;

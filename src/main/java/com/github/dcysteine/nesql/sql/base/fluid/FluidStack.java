@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.fluid;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,7 +15,7 @@ import java.util.Comparator;
 @EqualsAndHashCode
 @ToString
 public class FluidStack implements Comparable<FluidStack> {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Fluid fluid;
 
     private int amount;
