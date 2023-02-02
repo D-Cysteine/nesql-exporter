@@ -30,7 +30,7 @@ directly with the H2 client.
     paused. Doing this can make things a little bit faster.
  8. Wait for the export process to finish. It can take a very long time depending
     on how many mods you have installed. For reference, exporting GTNH can take
-    10-30 minutes, and the resulting repository is ~2GB, and contains ~83k image
+    30-60 minutes; the resulting repository is ~400MB, and contains ~225k image
     files.
  9. Depending on your computer's specs, rendering may end up taking a lot longer
     to finish than exporting the database. Check your logs to see how many render

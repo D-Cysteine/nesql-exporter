@@ -144,12 +144,9 @@ public final class Exporter {
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Data exported! Committing to database...");
         Logger.chatMessage(
-                EnumChatFormatting.AQUA + "(This may take several minutes, and lag a lot)");
-        transaction.commit();
-
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete! Compacting database...");
-        transaction = entityManager.getTransaction();
-        transaction.begin();
+                EnumChatFormatting.AQUA + "This may take ~30-60 min; please be patient!");
+        // As of the time of this writing, performing this compaction reduces the final DB size
+        // from 23 GB to 250 MB O_O
         entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
         // No need to commit the transaction; SHUTDOWN closes everything already.
 

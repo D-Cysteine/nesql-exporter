@@ -317,6 +317,16 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(0, 0)),
 
+    COMPLEX_FUSION(
+            GT_Recipe.GT_Recipe_Map.sComplexFusionRecipes,
+            "complexfusion",
+            ItemList.FusionComputer_UV,
+            true,
+            new Dimension(2, 2),
+            new Dimension(0, 0),
+            new Dimension(2, 1),
+            new Dimension(0, 0)),
+
     CENTRIFUGE(
             GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes,
             "centrifuge",
@@ -346,6 +356,16 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(3, 2),
             new Dimension(1, 1)),
+
+    PLASMA_FORGE(
+            GT_Recipe.GT_Recipe_Map.sPlasmaForgeRecipes,
+            "plasmaforge",
+            ItemList.Machine_Multi_PlasmaForge,
+            true,
+            new Dimension(3, 3),
+            new Dimension(3, 3),
+            new Dimension(3, 3),
+            new Dimension(3, 3)),
 
     PRIMITIVE_BLAST(
             GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes,
@@ -556,6 +576,56 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(0, 0),
             new Dimension(1, 1)),
+
+    MULTIBLOCK_ELECTROLYZER(
+            GT_Recipe.GT_Recipe_Map.sMultiblockElectrolyzerRecipes,
+            "multiblockelectrolyzer",
+            ItemList.Machine_IV_Electrolyzer,
+            true,
+            new Dimension(3, 2),
+            new Dimension(3, 2),
+            new Dimension(3, 2),
+            new Dimension(3, 2)),
+
+    MULTIBLOCK_CENTRIFUGE(
+            GT_Recipe.GT_Recipe_Map.sMultiblockCentrifugeRecipes,
+            "multiblockcentrifuge",
+            ItemList.Machine_IV_Centrifuge,
+            true,
+            new Dimension(3, 2),
+            new Dimension(3, 2),
+            new Dimension(3, 2),
+            new Dimension(3, 2)),
+
+    MULTIBLOCK_MIXER(
+            GT_Recipe.GT_Recipe_Map.sMultiblockMixerRecipes,
+            "multiblockmixer",
+            ItemList.Machine_IV_Mixer,
+            true,
+            new Dimension(3, 3),
+            new Dimension(3, 2),
+            new Dimension(3, 3),
+            new Dimension(3, 2)),
+
+    NANO_FORGE(
+            GT_Recipe.GT_Recipe_Map.sNanoForge,
+            "nanoforge",
+            ItemList.NanoForge,
+            true,
+            new Dimension(3, 2),
+            new Dimension(3, 1),
+            new Dimension(2, 1),
+            new Dimension(0, 0)),
+
+    PCB_FACTORY(
+            GT_Recipe.GT_Recipe_Map.sPCBFactory,
+            "pcbfactory",
+            ItemList.PCBFactory,
+            true,
+            new Dimension(3, 2),
+            new Dimension(3, 1),
+            new Dimension(3, 3),
+            new Dimension(0, 0)),
     ;
 
     private final GT_Recipe.GT_Recipe_Map recipeMap;
