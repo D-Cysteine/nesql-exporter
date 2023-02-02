@@ -61,6 +61,10 @@ public class RecipeBuilder extends PluginHelper {
     }
 
     public RecipeBuilder addItemInput(net.minecraft.item.ItemStack input, boolean handleWildcard) {
+        if (input == null) {
+            return skipItemInput();
+        }
+
         if (handleWildcard && ItemUtil.isWildcardItem(input)) {
             itemInputs.put(
                     itemInputsIndex++,
@@ -94,6 +98,10 @@ public class RecipeBuilder extends PluginHelper {
         SortedSet<ItemStack> itemStacks = new TreeSet<>();
         SortedSet<WildcardItemStack> wildcardItemStacks = new TreeSet<>();
         for (net.minecraft.item.ItemStack input : inputs) {
+            if (input == null) {
+                continue;
+            }
+
             if (handleWildcard && ItemUtil.isWildcardItem(input)) {
                 wildcardItemStacks.add(buildWildcardItemStack(input));
             } else {
@@ -122,6 +130,10 @@ public class RecipeBuilder extends PluginHelper {
     }
 
     public RecipeBuilder addFluidInput(net.minecraftforge.fluids.FluidStack input) {
+        if (input == null) {
+            return skipFluidInput();
+        }
+
         fluidInputs.put(
                 fluidInputsIndex++, fluidGroupFactory.getFluidGroup(buildFluidStack(input)));
         return this;
@@ -139,7 +151,7 @@ public class RecipeBuilder extends PluginHelper {
         return this;
     }
 
-    /** Adds all fluids in {@code inputs} into a single input slot, as an fluid group. */
+    /** Adds all fluids in {@code inputs} into a single input slot, as a fluid group. */
     public RecipeBuilder addFluidGroupInput(Iterable<net.minecraftforge.fluids.FluidStack> inputs) {
         SortedSet<FluidStack> fluidStacks =
                 StreamSupport.stream(inputs.spliterator(), false)
@@ -150,7 +162,7 @@ public class RecipeBuilder extends PluginHelper {
         return this;
     }
 
-    /** Adds all fluids in {@code inputs} into a single input slot, as an fluid group. */
+    /** Adds all fluids in {@code inputs} into a single input slot, as a fluid group. */
     public RecipeBuilder addFluidGroupInput(net.minecraftforge.fluids.FluidStack[] inputs) {
         return addFluidGroupInput(Arrays.asList(inputs));
     }
@@ -198,6 +210,10 @@ public class RecipeBuilder extends PluginHelper {
 
     public RecipeBuilder addFluidOutput(
             net.minecraftforge.fluids.FluidStack output, double probability) {
+        if (output == null) {
+            return skipFluidOutput();
+        }
+
         fluidOutputs.put(fluidOutputsIndex++, buildFluidStackWithProbability(output, probability));
         return this;
     }

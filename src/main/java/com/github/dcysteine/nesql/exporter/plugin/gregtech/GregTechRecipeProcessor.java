@@ -45,38 +45,44 @@ public class GregTechRecipeProcessor extends PluginHelper {
             for (GT_Recipe recipe : recipes) {
                 count++;
 
-                int voltage = recipe.mEUt / recipeMap.getAmperage();
-                Voltage voltageTier = Voltage.convertVoltage(voltage);
-                RecipeType recipeType = recipeTypeHandler.getRecipeType(recipeMap, voltageTier);
-                RecipeBuilder builder = new RecipeBuilder(exporter, recipeType);
-                // TODO do we need null checks for any of the below, to avoid skipping slots?
-                for (ItemStack input : recipe.mInputs) {
-                    builder.addAllItemInput(GregTechUtil.reverseUnify(input), true);
-                }
-                for (FluidStack input : recipe.mFluidInputs) {
-                    builder.addFluidInput(input);
-                }
-                for (int i = 0; i < recipe.mOutputs.length; i++) {
-                    ItemStack output = recipe.mOutputs[i];
-                    int chance = recipe.getOutputChance(i);
-                    if (chance == 100_00) {
-                        builder.addItemOutput(output);
-                    } else {
-                        builder.addItemOutput(output, chance / 100_00d);
+                try {
+                    int voltage = recipe.mEUt / recipeMap.getAmperage();
+                    Voltage voltageTier = Voltage.convertVoltage(voltage);
+                    RecipeType recipeType = recipeTypeHandler.getRecipeType(recipeMap, voltageTier);
+                    RecipeBuilder builder = new RecipeBuilder(exporter, recipeType);
+                    // TODO if we want to avoid skipping slots, esp. output slots, add null checks.
+                    for (ItemStack input : recipe.mInputs) {
+                        builder.addAllItemInput(GregTechUtil.reverseUnify(input), true);
                     }
-                }
-                for (FluidStack output : recipe.mFluidOutputs) {
-                    builder.addFluidOutput(output);
-                }
+                    for (FluidStack input : recipe.mFluidInputs) {
+                        builder.addFluidInput(input);
+                    }
+                    for (int i = 0; i < recipe.mOutputs.length; i++) {
+                        ItemStack output = recipe.mOutputs[i];
+                        int chance = recipe.getOutputChance(i);
+                        if (chance == 100_00) {
+                            builder.addItemOutput(output);
+                        } else {
+                            builder.addItemOutput(output, chance / 100_00d);
+                        }
+                    }
+                    for (FluidStack output : recipe.mFluidOutputs) {
+                        builder.addFluidOutput(output);
+                    }
 
-                List<ItemStack> specialItems = new ArrayList<>();
-                if (recipe.mSpecialItems != null) {
-                    specialItems = GregTechUtil.reverseUnify(recipe.mSpecialItems);
-                }
+                    List<ItemStack> specialItems = new ArrayList<>();
+                    if (recipe.mSpecialItems != null) {
+                        specialItems = GregTechUtil.reverseUnify(recipe.mSpecialItems);
+                    }
 
-                Recipe recipeEntity = builder.build();
-                gregTechRecipeFactory.getGregTechRecipe(
-                        recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
+                    Recipe recipeEntity = builder.build();
+                    gregTechRecipeFactory.getGregTechRecipe(
+                            recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
+                } catch (Exception e) {
+                    // This try-catch is sadly necessary. There's a few weird exceptions that get
+                    // thrown. There's even some that lack a stack trace!
+                    logger.error("Caught exception processing GregTech recipe!", e);
+                }
 
                 if (Logger.intermittentLog(count)) {
                     logger.info("Processed GregTech recipe {} of {}", count, total);
