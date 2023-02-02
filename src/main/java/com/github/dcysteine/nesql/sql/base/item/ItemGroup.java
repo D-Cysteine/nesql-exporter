@@ -7,9 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.SortNatural;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 /** A group of {@link ItemStack}s, all fitting into a single input slot in a recipe. */
 @Entity
@@ -21,20 +20,18 @@ public class ItemGroup implements Identifiable<String> {
     private String id;
 
     @ElementCollection
-    @SortNatural
-    private SortedSet<ItemStack> itemStacks;
+    private Set<ItemStack> itemStacks;
 
     @ElementCollection
-    @SortNatural
-    private SortedSet<WildcardItemStack> wildcardItemStacks;
+    private Set<WildcardItemStack> wildcardItemStacks;
 
     /** Needed by Hibernate. */
     protected ItemGroup() {}
 
     public ItemGroup(
             String id,
-            SortedSet<ItemStack> itemStacks,
-            SortedSet<WildcardItemStack> wildcardItemStacks) {
+            Set<ItemStack> itemStacks,
+            Set<WildcardItemStack> wildcardItemStacks) {
         this.id = id;
         this.itemStacks = itemStacks;
         this.wildcardItemStacks = wildcardItemStacks;
@@ -45,11 +42,11 @@ public class ItemGroup implements Identifiable<String> {
         return id;
     }
 
-    public SortedSet<ItemStack> getItemStacks() {
+    public Set<ItemStack> getItemStacks() {
         return itemStacks;
     }
 
-    public SortedSet<WildcardItemStack> getWildcardItemStacks() {
+    public Set<WildcardItemStack> getWildcardItemStacks() {
         return wildcardItemStacks;
     }
 }

@@ -2,10 +2,12 @@ package com.github.dcysteine.nesql.exporter.util;
 
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Longs;
+import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Message;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
@@ -51,6 +53,19 @@ public final class StringUtil {
     }
 
     public static String encodeProto(Message proto) {
-        return encodeBytes(proto.toByteArray());
+        byte[] bytes = new byte[proto.getSerializedSize()];
+        CodedOutputStream outputStream = CodedOutputStream.newInstance(bytes);
+        // Necessary to ensure that maps are serialized in deterministic order.
+        // See: https://gist.github.com/kchristidis/39c8b310fd9da43d515c4394c3cd9510
+        outputStream.useDeterministicSerialization();
+
+        try {
+            outputStream.writeMessageNoTag(proto);
+            outputStream.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return encodeBytes(bytes);
     }
 }

@@ -2,28 +2,19 @@ package com.github.dcysteine.nesql.exporter.plugin.base.factory;
 
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
-import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
-import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
-import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /** Helper class that builds {@link Recipe} instances. */
 public class RecipeBuilder extends PluginHelper {
@@ -65,16 +56,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipItemInput();
         }
 
-        if (handleWildcard && ItemUtil.isWildcardItem(input)) {
-            itemInputs.put(
-                    itemInputsIndex++,
-                    itemGroupFactory.getItemGroup(buildWildcardItemStack(input)));
-        } else {
-            itemInputs.put(
-                    itemInputsIndex++,
-                    itemGroupFactory.getItemGroup(buildItemStack(input)));
-        }
-
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.getItemGroup(input, handleWildcard));
         return this;
     }
 
@@ -95,22 +77,11 @@ public class RecipeBuilder extends PluginHelper {
     /** Adds all items in {@code inputs} into a single input slot, as an item group. */
     public RecipeBuilder addItemGroupInput(
             Collection<net.minecraft.item.ItemStack> inputs, boolean handleWildcard) {
-        SortedSet<ItemStack> itemStacks = new TreeSet<>();
-        SortedSet<WildcardItemStack> wildcardItemStacks = new TreeSet<>();
-        for (net.minecraft.item.ItemStack input : inputs) {
-            if (input == null) {
-                continue;
-            }
-
-            if (handleWildcard && ItemUtil.isWildcardItem(input)) {
-                wildcardItemStacks.add(buildWildcardItemStack(input));
-            } else {
-                itemStacks.add(buildItemStack(input));
-            }
+        if (inputs.stream().allMatch(Objects::isNull)) {
+            return skipItemInput();
         }
 
-        itemInputs.put(
-                itemInputsIndex++, itemGroupFactory.getItemGroup(itemStacks, wildcardItemStacks));
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.getItemGroup(inputs, handleWildcard));
         return this;
     }
 
@@ -134,8 +105,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipFluidInput();
         }
 
-        fluidInputs.put(
-                fluidInputsIndex++, fluidGroupFactory.getFluidGroup(buildFluidStack(input)));
+        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(input));
         return this;
     }
 
@@ -152,13 +122,13 @@ public class RecipeBuilder extends PluginHelper {
     }
 
     /** Adds all fluids in {@code inputs} into a single input slot, as a fluid group. */
-    public RecipeBuilder addFluidGroupInput(Iterable<net.minecraftforge.fluids.FluidStack> inputs) {
-        SortedSet<FluidStack> fluidStacks =
-                StreamSupport.stream(inputs.spliterator(), false)
-                        .filter(Objects::nonNull)
-                        .map(this::buildFluidStack)
-                        .collect(Collectors.toCollection(TreeSet::new));
-        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(fluidStacks));
+    public RecipeBuilder addFluidGroupInput(
+            Collection<net.minecraftforge.fluids.FluidStack> inputs) {
+        if (inputs.stream().allMatch(Objects::isNull)) {
+            return skipFluidInput();
+        }
+
+        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(inputs));
         return this;
     }
 
@@ -246,25 +216,10 @@ public class RecipeBuilder extends PluginHelper {
                 recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
     }
 
-    private ItemStack buildItemStack(net.minecraft.item.ItemStack itemStack) {
-        return new ItemStack(itemFactory.getItem(itemStack), itemStack.stackSize);
-    }
-
     private ItemStackWithProbability buildItemStackWithProbability(
             net.minecraft.item.ItemStack itemStack, double probability) {
         return new ItemStackWithProbability(
                 itemFactory.getItem(itemStack), itemStack.stackSize, probability);
-    }
-
-    private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {
-        GameRegistry.UniqueIdentifier uniqueId =
-                GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
-        return new WildcardItemStack(
-                uniqueId.modId, uniqueId.name, ItemUtil.getItemId(itemStack), itemStack.stackSize);
-    }
-
-    private FluidStack buildFluidStack(net.minecraftforge.fluids.FluidStack fluidStack) {
-        return new FluidStack(fluidFactory.getFluid(fluidStack), fluidStack.amount);
     }
 
     private FluidStackWithProbability buildFluidStackWithProbability(

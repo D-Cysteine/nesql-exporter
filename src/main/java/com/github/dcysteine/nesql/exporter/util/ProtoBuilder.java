@@ -21,7 +21,7 @@ import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 
 import java.util.Map;
-import java.util.SortedSet;
+import java.util.Set;
 
 /** Contains shared methods for building protos. */
 public final class ProtoBuilder {
@@ -54,36 +54,45 @@ public final class ProtoBuilder {
     }
 
     public static ItemGroupPb buildItemGroupPb(
-            SortedSet<ItemStack> itemStacks, SortedSet<WildcardItemStack> wildcardItemStacks) {
+            Set<ItemStack> itemStacks, Set<WildcardItemStack> wildcardItemStacks) {
         ItemGroupPb.Builder builder = ItemGroupPb.newBuilder();
-        itemStacks.forEach(itemStack -> builder.addItemStack(buildItemStackPb(itemStack)));
-        wildcardItemStacks.forEach(
-                wildcardItemStack ->
-                        builder.addWildcardItemStack(
-                                buildWildcardItemStackPb(wildcardItemStack)));
+        itemStacks.stream()
+                .sorted()
+                .forEach(itemStack -> builder.addItemStack(buildItemStackPb(itemStack)));
+        wildcardItemStacks.stream()
+                .sorted()
+                .forEach(
+                        wildcardItemStack ->
+                                builder.addWildcardItemStack(
+                                        buildWildcardItemStackPb(wildcardItemStack)));
         return builder.build();
     }
 
     public static ItemGroupPb buildItemGroupPb(ItemGroup itemGroup) {
         ItemGroupPb.Builder builder = ItemGroupPb.newBuilder();
         itemGroup.getItemStacks().stream()
+                .sorted()
                 .map(ProtoBuilder::buildItemStackPb)
                 .forEach(builder::addItemStack);
         itemGroup.getWildcardItemStacks().stream()
+                .sorted()
                 .map(ProtoBuilder::buildWildcardItemStackPb)
                 .forEach(builder::addWildcardItemStack);
         return builder.build();
     }
 
-    public static FluidGroupPb buildFluidGroupPb(SortedSet<FluidStack> fluidStacks) {
+    public static FluidGroupPb buildFluidGroupPb(Set<FluidStack> fluidStacks) {
         FluidGroupPb.Builder builder = FluidGroupPb.newBuilder();
-        fluidStacks.forEach(fluidStack -> builder.addFluidStack(buildFluidStackPb(fluidStack)));
+        fluidStacks.stream()
+                .sorted()
+                .forEach(fluidStack -> builder.addFluidStack(buildFluidStackPb(fluidStack)));
         return builder.build();
     }
 
     public static FluidGroupPb buildFluidGroupPb(FluidGroup fluidGroup) {
         FluidGroupPb.Builder builder = FluidGroupPb.newBuilder();
         fluidGroup.getFluidStacks().stream()
+                .sorted()
                 .map(ProtoBuilder::buildFluidStackPb)
                 .forEach(builder::addFluidStack);
         return builder.build();

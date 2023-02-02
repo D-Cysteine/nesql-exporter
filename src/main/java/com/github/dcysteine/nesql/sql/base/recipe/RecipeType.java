@@ -11,8 +11,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.SortedSet;
-
 /** Contains information about a type of recipe. */
 @Entity
 @EqualsAndHashCode

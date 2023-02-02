@@ -7,9 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.SortNatural;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 /** A group of {@link FluidStack}s, all fitting into a single input slot in a recipe. */
 @Entity
@@ -21,13 +20,12 @@ public class FluidGroup implements Identifiable<String> {
     private String id;
 
     @ElementCollection
-    @SortNatural
-    private SortedSet<FluidStack> fluidStacks;
+    private Set<FluidStack> fluidStacks;
 
     /** Needed by Hibernate. */
     protected FluidGroup() {}
 
-    public FluidGroup(String id, SortedSet<FluidStack> fluidStacks) {
+    public FluidGroup(String id, Set<FluidStack> fluidStacks) {
         this.id = id;
         this.fluidStacks = fluidStacks;
     }
@@ -37,7 +35,7 @@ public class FluidGroup implements Identifiable<String> {
         return id;
     }
 
-    public SortedSet<FluidStack> getFluidStacks() {
+    public Set<FluidStack> getFluidStacks() {
         return fluidStacks;
     }
 }
