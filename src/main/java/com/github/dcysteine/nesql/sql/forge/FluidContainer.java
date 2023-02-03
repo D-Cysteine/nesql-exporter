@@ -4,9 +4,9 @@ import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -26,7 +26,7 @@ public class FluidContainer implements Identifiable<String> {
     private Fluid fluid;
 
     /** Map of fluid container to container capacity. */
-    @OneToMany
+    @ElementCollection
     private Map<Item, Integer> containers;
 
     /** Needed by Hibernate. */

@@ -6,6 +6,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Message;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -53,8 +54,8 @@ public final class StringUtil {
     }
 
     public static String encodeProto(Message proto) {
-        byte[] bytes = new byte[proto.getSerializedSize()];
-        CodedOutputStream outputStream = CodedOutputStream.newInstance(bytes);
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        CodedOutputStream outputStream = CodedOutputStream.newInstance(byteStream);
         // Necessary to ensure that maps are serialized in deterministic order.
         // See: https://gist.github.com/kchristidis/39c8b310fd9da43d515c4394c3cd9510
         outputStream.useDeterministicSerialization();
@@ -66,6 +67,6 @@ public final class StringUtil {
             throw new RuntimeException(e);
         }
 
-        return encodeBytes(bytes);
+        return encodeBytes(byteStream.toByteArray());
     }
 }

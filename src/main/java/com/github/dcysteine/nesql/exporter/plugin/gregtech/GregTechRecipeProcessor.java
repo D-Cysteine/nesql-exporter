@@ -85,7 +85,9 @@ public class GregTechRecipeProcessor extends PluginHelper {
                 }
 
                 if (Logger.intermittentLog(count)) {
-                    logger.info("Processed GregTech recipe {} of {}", count, total);
+                    logger.info(
+                            "Processed GregTech {} recipe {} of {}",
+                            recipeMap.getName(), count, total);
                 }
             }
 

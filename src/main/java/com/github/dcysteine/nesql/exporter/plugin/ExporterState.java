@@ -21,6 +21,10 @@ public class ExporterState {
     // TODO do we want to provide some sort of RecipeType registry here?
     // If so, something like: Map<Class<T>, T> where T is a plugin-custom recipe repository class.
 
+    // We can do something similar for factories, if it ever becomes an issue that we just construct
+    // new ones where they are needed. We can add Map<Class<T>, Factory<T>> to hold singletons.
+    // Must add them to map in PluginExporter.initialize() though, to avoid mod dependency issues.
+
     private final List<ItemListener> itemListeners;
 
     // TODO do we want to add listeners on iteration through the vanilla crafting recipe list?
