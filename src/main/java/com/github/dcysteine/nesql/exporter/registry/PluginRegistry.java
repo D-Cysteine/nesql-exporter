@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.exporter.registry;
 import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.forge.ForgePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.GregTechPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
@@ -24,6 +25,7 @@ public class PluginRegistry {
         // Add new plugins here!
         builder.add(RegistryEntry.create(Plugin.BASE, BasePluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
+        builder.add(RegistryEntry.create(Plugin.FORGE, ForgePluginExporter::new));
 
         builder.add(
                 RegistryEntry.create(
