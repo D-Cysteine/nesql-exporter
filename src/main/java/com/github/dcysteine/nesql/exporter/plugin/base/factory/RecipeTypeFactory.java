@@ -7,7 +7,6 @@ import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.Dimension;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +17,12 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
     }
 
     /** {@code idParts} will be joined with {@link IdUtil#ID_SEPARATOR} to form the ID. */
-    public RecipeType getRecipeType(
+    public RecipeType get(
             String[] idParts, String category, String type, Item icon, String iconInfo,
             boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
-        String id =
-                IdPrefixUtil.RECIPE_TYPE.applyPrefix(Joiner.on(IdUtil.ID_SEPARATOR).join(idParts));
+        String id = IdPrefixUtil.RECIPE_TYPE.applyPrefix(idParts);
         RecipeType recipeType =
                 new RecipeType(
                         id, category, type, icon, iconInfo, shapeless,
@@ -122,7 +120,7 @@ public class RecipeTypeFactory extends EntityFactory<RecipeType, String> {
         }
 
         public RecipeType build() {
-            return getRecipeType(
+            return get(
                     idParts, category, type, icon, iconInfo, shapeless,
                     itemInputDimension, fluidInputDimension,
                     itemOutputDimension, fluidOutputDimension);

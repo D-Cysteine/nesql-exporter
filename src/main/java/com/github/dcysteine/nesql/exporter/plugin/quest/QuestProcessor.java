@@ -25,7 +25,7 @@ public class QuestProcessor extends PluginHelper {
         int count = 0;
         for (DBEntry<IQuest> entry : questEntries) {
             count++;
-            Quest quest = questFactory.getQuest(entry.getID(), entry.getValue());
+            Quest quest = questFactory.get(entry.getID(), entry.getValue());
 
             if (Logger.intermittentLog(count)) {
                 logger.info("Processed quest {} of {}", count, total);

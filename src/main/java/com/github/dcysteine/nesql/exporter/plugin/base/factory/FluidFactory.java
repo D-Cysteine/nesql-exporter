@@ -19,7 +19,11 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
         super(exporter);
     }
 
-    public Fluid getFluid(FluidStack fluidStack) {
+    public Fluid get(net.minecraftforge.fluids.Fluid fluid) {
+        return get(new FluidStack(fluid, 1));
+    }
+
+    public Fluid get(FluidStack fluidStack) {
         String id = IdPrefixUtil.FLUID.applyPrefix(IdUtil.fluidId(fluidStack));
         Fluid fluid = entityManager.find(Fluid.class, id);
         if (fluid != null) {

@@ -33,7 +33,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
         ItemFactory itemFactory = new ItemFactory(exporter);
         RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(exporter);
 
-        Item craftingTable = itemFactory.getItem(ItemUtil.getItemStack(Blocks.crafting_table));
+        Item craftingTable = itemFactory.get(ItemUtil.getItemStack(Blocks.crafting_table));
         recipeTypeMap.put(
                 BaseRecipeType.SHAPED_CRAFTING,
                 recipeTypeFactory.newBuilder()
@@ -57,7 +57,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
                         .setItemOutputDimension(1, 1)
                         .build());
 
-        Item furnace = itemFactory.getItem(ItemUtil.getItemStack(Blocks.furnace));
+        Item furnace = itemFactory.get(ItemUtil.getItemStack(Blocks.furnace));
         recipeTypeMap.put(
                 BaseRecipeType.FURNACE,
                 recipeTypeFactory.newBuilder()

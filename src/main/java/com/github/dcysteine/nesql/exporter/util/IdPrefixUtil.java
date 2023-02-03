@@ -39,8 +39,8 @@ public enum IdPrefixUtil {
         return prefix;
     }
 
-    public String applyPrefix(String id) {
-        return prefix + id;
+    public String applyPrefix(String... idParts) {
+        return prefix + Joiner.on(IdUtil.ID_SEPARATOR).join(idParts);
     }
 
     static {

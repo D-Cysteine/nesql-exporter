@@ -7,13 +7,11 @@ import bq_standard.rewards.RewardCommand;
 import bq_standard.rewards.RewardItem;
 import bq_standard.rewards.RewardQuestCompletion;
 import bq_standard.rewards.RewardXP;
-import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
-import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.quest.Reward;
 import com.github.dcysteine.nesql.sql.quest.RewardType;
@@ -29,8 +27,10 @@ public class RewardFactory extends EntityFactory<Reward, String> {
         itemFactory = new ItemFactory(exporter);
     }
 
-    public Reward getReward(int questId, int index, IReward reward) {
-        String id = IdPrefixUtil.QUEST_REWARD.applyPrefix(questId + IdUtil.ID_SEPARATOR + index);
+    public Reward get(int questId, int index, IReward reward) {
+        String id =
+                IdPrefixUtil.QUEST_REWARD.applyPrefix(
+                        Integer.toString(questId), Integer.toString(index));
         String name = QuestTranslation.translate(reward.getUnlocalisedName());
 
         Reward rewardEntity;

@@ -21,7 +21,7 @@ public class QuestUtil {
                 .map(
                         bigItemStack ->
                                 new ItemStack(
-                                        itemFactory.getItem(bigItemStack.getBaseStack()),
+                                        itemFactory.get(bigItemStack.getBaseStack()),
                                         bigItemStack.stackSize))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -32,7 +32,7 @@ public class QuestUtil {
                 .map(
                         fluidStack ->
                                 new FluidStack(
-                                        fluidFactory.getFluid(fluidStack), fluidStack.amount))
+                                        fluidFactory.get(fluidStack), fluidStack.amount))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

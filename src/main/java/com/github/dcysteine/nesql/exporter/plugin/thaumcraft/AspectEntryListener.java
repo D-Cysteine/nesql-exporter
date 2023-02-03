@@ -36,8 +36,8 @@ public class AspectEntryListener extends PluginHelper implements ExporterState.I
                     continue;
                 }
 
-                Aspect aspectEntity = aspectFactory.getAspect(aspect);
-                aspectEntryFactory.getAspectEntry(aspectEntity, item, amount);
+                Aspect aspectEntity = aspectFactory.get(aspect);
+                aspectEntryFactory.get(aspectEntity, item, amount);
             }
         } catch (StackOverflowError e) {
             // Thaumcraft why you do this T_T

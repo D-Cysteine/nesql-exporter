@@ -24,11 +24,11 @@ public class FluidGroupFactory extends EntityFactory<FluidGroup, String> {
         fluidFactory = new FluidFactory(exporter);
     }
 
-    public FluidGroup getFluidGroup(net.minecraftforge.fluids.FluidStack fluidStack) {
-        return getFluidGroup(ImmutableList.of(fluidStack));
+    public FluidGroup get(net.minecraftforge.fluids.FluidStack fluidStack) {
+        return get(ImmutableList.of(fluidStack));
     }
 
-    public FluidGroup getFluidGroup(Collection<net.minecraftforge.fluids.FluidStack> fluidStacks) {
+    public FluidGroup get(Collection<net.minecraftforge.fluids.FluidStack> fluidStacks) {
         Set<FluidStack> fluidStackEntities =
                 fluidStacks.stream()
                         .filter(Objects::nonNull)
@@ -42,6 +42,6 @@ public class FluidGroupFactory extends EntityFactory<FluidGroup, String> {
     }
 
     private FluidStack buildFluidStack(net.minecraftforge.fluids.FluidStack fluidStack) {
-        return new FluidStack(fluidFactory.getFluid(fluidStack), fluidStack.amount);
+        return new FluidStack(fluidFactory.get(fluidStack), fluidStack.amount);
     }
 }

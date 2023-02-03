@@ -25,11 +25,11 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
         itemFactory = new ItemFactory(exporter);
     }
 
-    public ItemGroup getItemGroup(net.minecraft.item.ItemStack itemStack, boolean handleWildcard) {
-        return getItemGroup(ImmutableList.of(itemStack), handleWildcard);
+    public ItemGroup get(net.minecraft.item.ItemStack itemStack, boolean handleWildcard) {
+        return get(ImmutableList.of(itemStack), handleWildcard);
     }
 
-    public ItemGroup getItemGroup(
+    public ItemGroup get(
             Collection<net.minecraft.item.ItemStack> itemStacks, boolean handleWildcard) {
         Set<ItemStack> directItemStacks = new HashSet<>();
         Set<WildcardItemStack> wildcardItemStacks = new HashSet<>();
@@ -53,7 +53,7 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
     }
 
     private ItemStack buildItemStack(net.minecraft.item.ItemStack itemStack) {
-        return new ItemStack(itemFactory.getItem(itemStack), itemStack.stackSize);
+        return new ItemStack(itemFactory.get(itemStack), itemStack.stackSize);
     }
 
     private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {

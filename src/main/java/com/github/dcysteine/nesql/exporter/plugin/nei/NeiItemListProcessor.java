@@ -28,7 +28,7 @@ public class NeiItemListProcessor extends PluginHelper {
         for (ItemStack itemStack : ItemList.items) {
             count++;
             try {
-                itemFactory.getItem(itemStack);
+                itemFactory.get(itemStack);
             } catch (Exception e) {
                 // GTNH has some bad items, so we have to do this =(
                 // For whatever reason, the exceptions thrown by those items don't even have stack

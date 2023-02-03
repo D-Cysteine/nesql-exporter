@@ -76,7 +76,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
                     }
 
                     Recipe recipeEntity = builder.build();
-                    gregTechRecipeFactory.getGregTechRecipe(
+                    gregTechRecipeFactory.get(
                             recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
                 } catch (Exception e) {
                     // This try-catch is sadly necessary. There's a few weird exceptions that get

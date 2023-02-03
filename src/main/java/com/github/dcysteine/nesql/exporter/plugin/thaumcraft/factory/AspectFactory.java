@@ -24,7 +24,7 @@ public class AspectFactory extends EntityFactory<Aspect, String> {
         itemFactory = new ItemFactory(exporter);
     }
 
-    public Aspect getAspect(thaumcraft.api.aspects.Aspect aspect) {
+    public Aspect get(thaumcraft.api.aspects.Aspect aspect) {
         String id = IdPrefixUtil.ASPECT.applyPrefix(aspect.getName());
         Aspect aspectEntity = entityManager.find(Aspect.class, id);
         if (aspectEntity != null) {
@@ -33,7 +33,7 @@ public class AspectFactory extends EntityFactory<Aspect, String> {
 
         ItemStack iconItemStack = new ItemStack(ModItems.itemAspect, 1, 0);
         ItemAspect.setAspects(iconItemStack, new AspectList().add(aspect, 2));
-        Item icon = itemFactory.getItem(iconItemStack);
+        Item icon = itemFactory.get(iconItemStack);
 
         aspectEntity =
                 new Aspect(

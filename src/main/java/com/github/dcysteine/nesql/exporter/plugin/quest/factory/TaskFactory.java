@@ -8,14 +8,12 @@ import bq_standard.tasks.TaskFluid;
 import bq_standard.tasks.TaskHunt;
 import bq_standard.tasks.TaskLocation;
 import bq_standard.tasks.TaskRetrieval;
-import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
-import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.quest.Task;
@@ -34,8 +32,10 @@ public class TaskFactory extends EntityFactory<Task, String> {
         fluidFactory = new FluidFactory(exporter);
     }
 
-    public Task getTask(int questId, int index, ITask task) {
-        String id = IdPrefixUtil.QUEST_TASK.applyPrefix(questId + IdUtil.ID_SEPARATOR + index);
+    public Task get(int questId, int index, ITask task) {
+        String id =
+                IdPrefixUtil.QUEST_TASK.applyPrefix(
+                        Integer.toString(questId), Integer.toString(index));
         String name = QuestTranslation.translate(task.getUnlocalisedName());
 
         Task taskEntity;

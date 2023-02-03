@@ -29,7 +29,7 @@ public class GregTechRecipeTypeHandler extends PluginHelper {
         RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(exporter);
 
         for (RecipeMap recipeMap : RecipeMap.values()) {
-            Item icon = itemFactory.getItem(recipeMap.getIcon().get(1L));
+            Item icon = itemFactory.get(recipeMap.getIcon().get(1L));
             for (Voltage voltage : Voltage.values()) {
                 recipeTypeTable.put(
                         recipeMap, voltage,

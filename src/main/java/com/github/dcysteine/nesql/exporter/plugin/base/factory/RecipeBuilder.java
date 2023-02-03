@@ -56,7 +56,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipItemInput();
         }
 
-        itemInputs.put(itemInputsIndex++, itemGroupFactory.getItemGroup(input, handleWildcard));
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(input, handleWildcard));
         return this;
     }
 
@@ -81,7 +81,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipItemInput();
         }
 
-        itemInputs.put(itemInputsIndex++, itemGroupFactory.getItemGroup(inputs, handleWildcard));
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(inputs, handleWildcard));
         return this;
     }
 
@@ -105,7 +105,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipFluidInput();
         }
 
-        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(input));
+        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.get(input));
         return this;
     }
 
@@ -128,7 +128,7 @@ public class RecipeBuilder extends PluginHelper {
             return skipFluidInput();
         }
 
-        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.getFluidGroup(inputs));
+        fluidInputs.put(fluidInputsIndex++, fluidGroupFactory.get(inputs));
         return this;
     }
 
@@ -212,19 +212,19 @@ public class RecipeBuilder extends PluginHelper {
     }
 
     public Recipe build() {
-        return recipeFactory.getRecipe(
+        return recipeFactory.get(
                 recipeType, itemInputs, fluidInputs, itemOutputs, fluidOutputs);
     }
 
     private ItemStackWithProbability buildItemStackWithProbability(
             net.minecraft.item.ItemStack itemStack, double probability) {
         return new ItemStackWithProbability(
-                itemFactory.getItem(itemStack), itemStack.stackSize, probability);
+                itemFactory.get(itemStack), itemStack.stackSize, probability);
     }
 
     private FluidStackWithProbability buildFluidStackWithProbability(
             net.minecraftforge.fluids.FluidStack fluidStack, double probability) {
         return new FluidStackWithProbability(
-                fluidFactory.getFluid(fluidStack), fluidStack.amount, probability);
+                fluidFactory.get(fluidStack), fluidStack.amount, probability);
     }
 }

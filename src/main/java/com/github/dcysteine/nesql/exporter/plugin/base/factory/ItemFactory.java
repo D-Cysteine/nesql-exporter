@@ -26,7 +26,11 @@ public class ItemFactory extends EntityFactory<Item, String> {
         super(exporter);
     }
 
-    public Item getItem(ItemStack itemStack) {
+    public Item get(net.minecraft.item.Item item) {
+        return get(new ItemStack(item, 1));
+    }
+
+    public Item get(ItemStack itemStack) {
         String id = IdPrefixUtil.ITEM.applyPrefix(IdUtil.itemId(itemStack));
         Item item = entityManager.find(Item.class, id);
         if (item != null) {

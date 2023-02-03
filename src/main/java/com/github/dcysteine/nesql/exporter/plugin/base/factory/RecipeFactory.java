@@ -20,7 +20,7 @@ public class RecipeFactory extends EntityFactory<Recipe, String> {
         super(exporter);
     }
 
-    public Recipe getRecipe(
+    public Recipe get(
             RecipeType recipeType,
             Map<Integer, ItemGroup> itemInputs,
             Map<Integer, FluidGroup> fluidInputs,

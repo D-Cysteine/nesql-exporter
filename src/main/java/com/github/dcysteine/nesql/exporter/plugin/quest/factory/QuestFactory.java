@@ -35,9 +35,9 @@ public class QuestFactory extends EntityFactory<Quest, String> {
         rewardFactory = new RewardFactory(exporter);
     }
 
-    public Quest getQuest(int questId, IQuest quest) {
+    public Quest get(int questId, IQuest quest) {
         String id = IdPrefixUtil.QUEST.applyPrefix(Integer.toString(questId));
-        Item icon = itemFactory.getItem(quest.getProperty(NativeProps.ICON).getBaseStack());
+        Item icon = itemFactory.get(quest.getProperty(NativeProps.ICON).getBaseStack());
 
         String name =
                 StringUtil.stripFormatting(
@@ -55,13 +55,13 @@ public class QuestFactory extends EntityFactory<Quest, String> {
         int taskIndex = 0;
         List<Task> tasks = new ArrayList<>();
         for (DBEntry<ITask> entry : quest.getTasks().getEntries()) {
-            tasks.add(taskFactory.getTask(questId, taskIndex++, entry.getValue()));
+            tasks.add(taskFactory.get(questId, taskIndex++, entry.getValue()));
         }
 
         int rewardIndex = 0;
         List<Reward> rewards = new ArrayList<>();
         for (DBEntry<IReward> entry : quest.getRewards().getEntries()) {
-            rewards.add(rewardFactory.getReward(questId, rewardIndex++, entry.getValue()));
+            rewards.add(rewardFactory.get(questId, rewardIndex++, entry.getValue()));
         }
 
         Quest questEntity =

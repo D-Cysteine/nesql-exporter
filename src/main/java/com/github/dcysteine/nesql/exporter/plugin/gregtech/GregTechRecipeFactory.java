@@ -25,7 +25,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
         this.itemFactory = new ItemFactory(exporter);
     }
 
-    public GregTechRecipe getGregTechRecipe(
+    public GregTechRecipe get(
             Recipe recipe, RecipeMap recipeMap, GT_Recipe gregTechRecipe,
             Voltage voltageTier, int voltage, List<ItemStack> specialItems) {
         String id = IdPrefixUtil.GREG_TECH_RECIPE.applyPrefix(recipe.getId());
@@ -37,7 +37,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
 
         List<Item> specialItemEntities =
                 specialItems.stream()
-                        .map(itemFactory::getItem)
+                        .map(itemFactory::get)
                         .collect(Collectors.toCollection(ArrayList::new));
 
         List<String> modOwners =

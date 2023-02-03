@@ -23,7 +23,7 @@ public class AspectProcessor extends PluginHelper {
         int count = 0;
         for (Aspect aspect : aspects) {
             count++;
-            aspectFactory.getAspect(aspect);
+            aspectFactory.get(aspect);
 
             if (Logger.intermittentLog(count)) {
                 logger.info("Processed aspect {} of {}", count, total);
