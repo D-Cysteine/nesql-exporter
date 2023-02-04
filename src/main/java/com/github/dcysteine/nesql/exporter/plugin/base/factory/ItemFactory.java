@@ -42,10 +42,8 @@ public class ItemFactory extends EntityFactory<Item, String> {
         String modId = uniqueId.modId;
         String internalName = uniqueId.name;
 
-        // We're just exporting data, not actually doing recipe matching, so I think we can just
-        // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
         String nbt = "";
-        if (itemStack.hasTagCompound() && !ItemUtil.isWildcardNbt(itemStack.getTagCompound())) {
+        if (itemStack.hasTagCompound()) {
             nbt = itemStack.getTagCompound().toString();
         }
 

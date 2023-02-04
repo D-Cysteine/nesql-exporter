@@ -38,11 +38,28 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
                 continue;
             }
 
-            if (handleWildcard && ItemUtil.isWildcardItem(itemStack)) {
-                wildcardItemStacks.add(buildWildcardItemStack(itemStack));
-            } else {
-                directItemStacks.add(buildItemStack(itemStack));
+            if (handleWildcard) {
+                boolean wildcardItemDamage = ItemUtil.hasWildcardItemDamage(itemStack);
+                boolean wildcardNbt = ItemUtil.hasWildcardNbt(itemStack);
+
+                if (wildcardItemDamage || wildcardNbt) {
+                    GameRegistry.UniqueIdentifier uniqueId =
+                            GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
+                    int itemDamage = wildcardItemDamage ? 0 : itemStack.getItemDamage();
+                    String nbt = wildcardNbt || !itemStack.hasTagCompound()
+                            ? "" : itemStack.getTagCompound().toString();
+
+                    wildcardItemStacks.add(
+                            new WildcardItemStack(
+                                    uniqueId.modId, uniqueId.name, ItemUtil.getItemId(itemStack),
+                                    wildcardItemDamage, itemDamage, wildcardNbt, nbt,
+                                    itemStack.stackSize));
+                    continue;
+                }
             }
+
+            directItemStacks.add(
+                    new ItemStack(itemFactory.get(itemStack), itemStack.stackSize));
         }
 
         ItemGroupPb itemGroupPb =
@@ -50,16 +67,5 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
         String id = IdPrefixUtil.ITEM_GROUP.applyPrefix(StringUtil.encodeProto(itemGroupPb));
         ItemGroup itemGroup = new ItemGroup(id, directItemStacks, wildcardItemStacks);
         return findOrPersist(ItemGroup.class, itemGroup);
-    }
-
-    private ItemStack buildItemStack(net.minecraft.item.ItemStack itemStack) {
-        return new ItemStack(itemFactory.get(itemStack), itemStack.stackSize);
-    }
-
-    private WildcardItemStack buildWildcardItemStack(net.minecraft.item.ItemStack itemStack) {
-        GameRegistry.UniqueIdentifier uniqueId =
-                GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
-        return new WildcardItemStack(
-                uniqueId.modId, uniqueId.name, ItemUtil.getItemId(itemStack), itemStack.stackSize);
     }
 }

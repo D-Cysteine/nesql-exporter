@@ -24,7 +24,7 @@ public final class IdUtil {
         id += ID_SEPARATOR + itemStack.getItemDamage();
 
         NBTTagCompound nbt = itemStack.getTagCompound();
-        if (nbt != null && !ItemUtil.isWildcardNbt(nbt)) {
+        if (nbt != null) {
             id += ID_SEPARATOR + StringUtil.encodeNbt(nbt);
         }
 
@@ -50,7 +50,7 @@ public final class IdUtil {
         String id = fluidId(fluidStack.getFluid());
 
         NBTTagCompound nbt = fluidStack.tag;
-        if (nbt != null && !ItemUtil.isWildcardNbt(nbt)) {
+        if (nbt != null) {
             id += ID_SEPARATOR + StringUtil.encodeNbt(nbt);
         }
 

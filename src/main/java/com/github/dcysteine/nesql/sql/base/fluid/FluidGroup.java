@@ -1,10 +1,12 @@
 package com.github.dcysteine.nesql.sql.base.fluid;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -20,6 +22,7 @@ public class FluidGroup implements Identifiable<String> {
     private String id;
 
     @ElementCollection
+    @CollectionTable(indexes = {@Index(columnList = "FLUID_STACKS_FLUID_ID")})
     private Set<FluidStack> fluidStacks;
 
     /** Needed by Hibernate. */

@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import jakarta.persistence.EntityManager;
 
 import java.util.Optional;
 
@@ -14,11 +13,8 @@ import java.util.Optional;
  */
 public abstract class EntityFactory<T extends Identifiable<K>, K extends Comparable<K>>
         extends PluginHelper {
-    protected final EntityManager entityManager;
-
     protected EntityFactory(PluginExporter exporter) {
         super(exporter);
-        this.entityManager = exporterState.getEntityManager();
     }
 
     /**

@@ -13,6 +13,7 @@ import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -86,6 +87,7 @@ public class Quest implements Identifiable<String> {
         this.repeatTime = repeatTime;
         this.questLogic = questLogic;
         this.taskLogic = taskLogic;
+        this.requiredQuests = new HashSet<>();
         this.tasks = tasks;
         this.rewards = rewards;
     }
@@ -123,12 +125,12 @@ public class Quest implements Identifiable<String> {
         return questLogic;
     }
 
-    public void setRequiredQuests(Set<Quest> requiredQuests) {
-        this.requiredQuests = requiredQuests;
-    }
-
     public Set<Quest> getRequiredQuests() {
         return requiredQuests;
+    }
+
+    public void setRequiredQuests(Set<Quest> requiredQuests) {
+        this.requiredQuests = requiredQuests;
     }
 
     public Set<Quest> getRequiredByQuests() {

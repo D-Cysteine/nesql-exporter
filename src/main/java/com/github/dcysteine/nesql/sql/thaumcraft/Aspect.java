@@ -10,6 +10,7 @@ import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /** Holds basic information about Thaumcraft aspects. */
@@ -55,6 +56,7 @@ public class Aspect implements Identifiable<String> {
         this.name = name;
         this.description = description;
         this.primal = primal;
+        this.components = new HashSet<>();
     }
 
     @Override
@@ -78,12 +80,12 @@ public class Aspect implements Identifiable<String> {
         return primal;
     }
 
-    public void setComponents(Set<Aspect> components) {
-        this.components = components;
-    }
-
     public Set<Aspect> getComponents() {
         return components;
+    }
+
+    public void setComponents(Set<Aspect> components) {
+        this.components = components;
     }
 
     public Set<Aspect> getComponentOf() {

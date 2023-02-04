@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.sql.base.item;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Lob;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -29,15 +30,41 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
      */
     private int itemId;
 
+    /**
+     * Whether this wildcard item stack has wildcard item damage. If this field is true, then
+     * {@link #itemDamage} will be unset.
+     */
+    private boolean wildcardItemDamage;
+
+    /** The item damage, if this wildcard item stack does not have wildcard item damage. */
+    private int itemDamage;
+
+    /**
+     * Whether this wildcard item stack has wildcard NBT. If this field is true, then {@link #nbt}
+     * will be unset.
+     */
+    private boolean wildcardNbt;
+
+    /** The item damage, if this wildcard item stack does not have wildcard item damage. */
+    @Lob
+    private String nbt;
+
     private int stackSize;
 
     /** Needed by Hibernate. */
     protected WildcardItemStack() {}
 
-    public WildcardItemStack(String modId, String internalName, int itemId, int stackSize) {
+    public WildcardItemStack(
+            String modId, String internalName, int itemId,
+            boolean wildcardItemDamage, int itemDamage, boolean wildcardNbt, String nbt,
+            int stackSize) {
         this.modId = modId;
-        this.itemId = itemId;
         this.internalName = internalName;
+        this.itemId = itemId;
+        this.wildcardItemDamage = wildcardItemDamage;
+        this.itemDamage = itemDamage;
+        this.wildcardNbt = wildcardNbt;
+        this.nbt = nbt;
         this.stackSize = stackSize;
     }
 
@@ -59,6 +86,22 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
         return itemId;
     }
 
+    public boolean isWildcardItemDamage() {
+        return wildcardItemDamage;
+    }
+
+    public int getItemDamage() {
+        return itemDamage;
+    }
+
+    public boolean isWildcardNbt() {
+        return wildcardNbt;
+    }
+
+    public String getNbt() {
+        return nbt;
+    }
+
     public int getStackSize() {
         return stackSize;
     }
@@ -67,6 +110,10 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
     public int compareTo(WildcardItemStack other) {
         return Comparator.comparing(WildcardItemStack::getModId)
                 .thenComparing(WildcardItemStack::getInternalName)
+                .thenComparing(WildcardItemStack::isWildcardItemDamage)
+                .thenComparing(WildcardItemStack::getItemDamage)
+                .thenComparing(WildcardItemStack::isWildcardNbt)
+                .thenComparing(WildcardItemStack::getNbt)
                 .thenComparing(WildcardItemStack::getStackSize)
                 .compare(this, other);
     }

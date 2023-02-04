@@ -6,7 +6,6 @@ import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
-import com.github.dcysteine.nesql.exporter.util.ItemUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
@@ -35,11 +34,13 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
         String modId = uniqueName.substring(0, separator);
         String internalName = uniqueName.substring(separator + 1);
 
-        // We're just exporting data, not actually doing recipe matching, so I think we can just
-        // ignore wildcard NBT. It probably isn't handled by most recipe types, anyway.
+        // We don't handle fluid stacks with wildcard NBT.
+        // I don't think I've ever seen a fluid stack with NBT, so I doubt this ever comes up.
         String nbt = "";
-        if (fluidStack.tag != null && !ItemUtil.isWildcardNbt(fluidStack.tag)) {
+        if (fluidStack.tag != null) {
             nbt = fluidStack.tag.toString();
+            logger.warn("Found fluid stack with NBT: {}", fluidStack.getLocalizedName());
+            logger.warn("NBT: {}", nbt);
         }
 
         fluid = new Fluid(
