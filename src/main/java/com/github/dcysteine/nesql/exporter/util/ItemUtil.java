@@ -22,17 +22,13 @@ public final class ItemUtil {
         return Item.getIdFromItem(itemStack.getItem());
     }
 
-    public static ItemStack getItemStack(Block block) {
-        return new ItemStack(Item.getItemFromBlock(block), 1);
+    public static Optional<ItemStack> getItemStack(Block block) {
+        return Optional.ofNullable(Item.getItemFromBlock(block))
+                .map(item -> new ItemStack(Item.getItemFromBlock(block), 1));
     }
 
     public static Optional<ItemStack> getItemStack(Fluid fluid) {
-        Block block = fluid.getBlock();
-        if (block == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(getItemStack(block));
+        return Optional.ofNullable(fluid.getBlock()).flatMap(ItemUtil::getItemStack);
     }
 
     public static boolean hasWildcardItemDamage(ItemStack itemStack) {
