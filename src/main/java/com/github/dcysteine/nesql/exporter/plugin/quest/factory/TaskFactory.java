@@ -11,11 +11,11 @@ import bq_standard.tasks.TaskRetrieval;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
-import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
+import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemGroupFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.quest.Task;
 import com.github.dcysteine.nesql.sql.quest.TaskType;
 
@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskFactory extends EntityFactory<Task, String> {
-    private final ItemFactory itemFactory;
+    private final ItemGroupFactory itemGroupFactory;
     private final FluidFactory fluidFactory;
 
     public TaskFactory(PluginExporter exporter) {
         super(exporter);
-        itemFactory = new ItemFactory(exporter);
+        itemGroupFactory = new ItemGroupFactory(exporter);
         fluidFactory = new FluidFactory(exporter);
     }
 
@@ -41,26 +41,22 @@ public class TaskFactory extends EntityFactory<Task, String> {
         Task taskEntity;
         if (task instanceof TaskRetrieval) {
             TaskRetrieval typedTask = (TaskRetrieval) task;
-            List<ItemStack> itemStacks =
-                    QuestUtil.buildItemStacks(itemFactory, typedTask.requiredItems);
+            List<ItemGroup> items = QuestUtil.buildItems(itemGroupFactory, typedTask.requiredItems);
             taskEntity =
-                    new Task(
-                            id, name, TaskType.RETRIEVAL, itemStacks, new ArrayList<>(), "", 0, "");
+                    new Task(id, name, TaskType.RETRIEVAL, items, new ArrayList<>(), "", 0, "");
 
         } else if (task instanceof TaskCrafting) {
             TaskCrafting typedTask = (TaskCrafting) task;
-            List<ItemStack> itemStacks =
-                    QuestUtil.buildItemStacks(itemFactory, typedTask.requiredItems);
+            List<ItemGroup> items = QuestUtil.buildItems(itemGroupFactory, typedTask.requiredItems);
             taskEntity =
-                    new Task(id, name, TaskType.CRAFTING, itemStacks, new ArrayList<>(), "", 0, "");
+                    new Task(id, name, TaskType.CRAFTING, items, new ArrayList<>(), "", 0, "");
 
         } else if (task instanceof TaskFluid) {
             TaskFluid typedTask = (TaskFluid) task;
-            List<FluidStack> fluidStacks =
-                    QuestUtil.buildFluidStacks(fluidFactory, typedTask.requiredFluids);
+            List<FluidStack> fluids = QuestUtil.buildFluids(fluidFactory, typedTask.requiredFluids);
             taskEntity =
                     new Task(
-                            id, name, TaskType.CRAFTING, new ArrayList<>(), fluidStacks, "", 0, "");
+                            id, name, TaskType.CRAFTING, new ArrayList<>(), fluids, "", 0, "");
 
         } else if (task instanceof TaskCheckbox) {
             taskEntity =

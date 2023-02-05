@@ -2,13 +2,14 @@ package com.github.dcysteine.nesql.sql.quest;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,13 +36,13 @@ public class Task implements Identifiable<String> {
     @Enumerated(EnumType.STRING)
     private TaskType type;
 
-    @ElementCollection
+    @ManyToMany
     @OrderColumn
-    private List<ItemStack> itemStacks;
+    private List<ItemGroup> items;
 
     @ElementCollection
     @OrderColumn
-    private List<FluidStack> fluidStacks;
+    private List<FluidStack> fluids;
 
     @Column(nullable = false)
     private String entityId;
@@ -56,13 +57,13 @@ public class Task implements Identifiable<String> {
 
     public Task(
             String id, String name, TaskType type,
-            List<ItemStack> itemStacks, List<FluidStack> fluidStacks,
+            List<ItemGroup> items, List<FluidStack> fluids,
             String entityId, int numberRequired, String dimensionName) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.itemStacks = itemStacks;
-        this.fluidStacks = fluidStacks;
+        this.items = items;
+        this.fluids = fluids;
         this.entityId = entityId;
         this.numberRequired = numberRequired;
         this.dimensionName = dimensionName;
@@ -81,12 +82,12 @@ public class Task implements Identifiable<String> {
         return type;
     }
 
-    public List<ItemStack> getItemStacks() {
-        return itemStacks;
+    public List<ItemGroup> getItems() {
+        return items;
     }
 
-    public List<FluidStack> getFluidStacks() {
-        return fluidStacks;
+    public List<FluidStack> getFluids() {
+        return fluids;
     }
 
     public String getEntityId() {

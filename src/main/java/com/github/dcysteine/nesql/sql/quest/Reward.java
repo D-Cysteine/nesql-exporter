@@ -1,13 +1,13 @@
 package com.github.dcysteine.nesql.sql.quest;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,9 +34,9 @@ public class Reward implements Identifiable<String> {
     @Enumerated(EnumType.STRING)
     private RewardType type;
 
-    @ElementCollection
+    @ManyToMany
     @OrderColumn
-    private List<ItemStack> itemStacks;
+    private List<ItemGroup> items;
 
     @Column(nullable = false)
     private String command;
@@ -51,12 +51,12 @@ public class Reward implements Identifiable<String> {
     protected Reward() {}
 
     public Reward(
-            String id, String name, RewardType type, List<ItemStack> itemStacks,
+            String id, String name, RewardType type, List<ItemGroup> items,
             String command, int xp, boolean levels, int completeQuestId) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.itemStacks = itemStacks;
+        this.items = items;
         this.command = command;
         this.xp = xp;
         this.levels = levels;
@@ -76,8 +76,8 @@ public class Reward implements Identifiable<String> {
         return type;
     }
 
-    public List<ItemStack> getItemStacks() {
-        return itemStacks;
+    public List<ItemGroup> getItems() {
+        return items;
     }
 
     public String getCommand() {

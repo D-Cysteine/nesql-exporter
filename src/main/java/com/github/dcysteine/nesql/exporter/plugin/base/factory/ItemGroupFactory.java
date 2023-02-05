@@ -15,6 +15,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
@@ -29,8 +30,32 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
         return get(ImmutableList.of(itemStack), handleWildcard);
     }
 
+    /**
+     * {@code itemStack.stackSize} will be overridden with {@code overrideStackSize}. This is needed
+     * by things like BetterQuesting's {@code BigItemStack}, which has stack size larger than is
+     * supported by Minecraft's {@code ItemStack}.
+     */
+    public ItemGroup get(
+            net.minecraft.item.ItemStack itemStack, int overrideStackSize, boolean handleWildcard) {
+        return get(ImmutableList.of(itemStack), Optional.of(overrideStackSize), handleWildcard);
+    }
+
     public ItemGroup get(
             Collection<net.minecraft.item.ItemStack> itemStacks, boolean handleWildcard) {
+        return get(itemStacks, Optional.empty(), handleWildcard);
+    }
+
+    /**
+     * Pass in a non-empty optional for {@code overrideStackSize} to override all stack sizes to the
+     * given value.
+     *
+     * Overriding the stack size is needed to support things like BetterQuesting's
+     * {@code BigItemStack}, which has stack size larger than is supported by Minecraft's
+     * {@code ItemStack}.
+     */
+    public ItemGroup get(
+            Collection<net.minecraft.item.ItemStack> itemStacks,
+            Optional<Integer> overrideStackSize, boolean handleWildcard) {
         Set<ItemStack> directItemStacks = new HashSet<>();
         Set<WildcardItemStack> wildcardItemStacks = new HashSet<>();
         for (net.minecraft.item.ItemStack itemStack : itemStacks) {
@@ -38,6 +63,7 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
                 continue;
             }
 
+            int stackSize = overrideStackSize.orElse(itemStack.stackSize);
             if (handleWildcard) {
                 boolean wildcardItemDamage = ItemUtil.hasWildcardItemDamage(itemStack);
                 boolean wildcardNbt = ItemUtil.hasWildcardNbt(itemStack);
@@ -52,14 +78,12 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
                     wildcardItemStacks.add(
                             new WildcardItemStack(
                                     uniqueId.modId, uniqueId.name, ItemUtil.getItemId(itemStack),
-                                    wildcardItemDamage, itemDamage, wildcardNbt, nbt,
-                                    itemStack.stackSize));
+                                    wildcardItemDamage, itemDamage, wildcardNbt, nbt, stackSize));
                     continue;
                 }
             }
 
-            directItemStacks.add(
-                    new ItemStack(itemFactory.get(itemStack), itemStack.stackSize));
+            directItemStacks.add(new ItemStack(itemFactory.get(itemStack), stackSize));
         }
 
         ItemGroupPb itemGroupPb =
