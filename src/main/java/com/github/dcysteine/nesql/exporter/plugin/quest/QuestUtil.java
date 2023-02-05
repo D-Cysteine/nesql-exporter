@@ -5,6 +5,8 @@ import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemGroupFactory;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +22,19 @@ public class QuestUtil {
                 .map(
                         bigItemStack ->
                                 itemGroupFactory.get(
-                                        bigItemStack.getBaseStack(), bigItemStack.stackSize, true))
+                                        getItemStacks(bigItemStack), bigItemStack.stackSize, true))
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static List<ItemStack> getItemStacks(BigItemStack bigItemStack) {
+        List<ItemStack> itemStacks = new ArrayList<>();
+        itemStacks.add(bigItemStack.getBaseStack());
+
+        if (bigItemStack.hasOreDict()) {
+            itemStacks.addAll(OreDictionary.getOres(bigItemStack.getOreDict(), false));
+        }
+
+        return itemStacks;
     }
 
     public static List<FluidStack> buildFluids(

@@ -30,19 +30,20 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
         return get(ImmutableList.of(itemStack), handleWildcard);
     }
 
+    public ItemGroup get(
+            Collection<net.minecraft.item.ItemStack> itemStacks, boolean handleWildcard) {
+        return get(itemStacks, Optional.empty(), handleWildcard);
+    }
+
     /**
      * {@code itemStack.stackSize} will be overridden with {@code overrideStackSize}. This is needed
      * by things like BetterQuesting's {@code BigItemStack}, which has stack size larger than is
      * supported by Minecraft's {@code ItemStack}.
      */
     public ItemGroup get(
-            net.minecraft.item.ItemStack itemStack, int overrideStackSize, boolean handleWildcard) {
-        return get(ImmutableList.of(itemStack), Optional.of(overrideStackSize), handleWildcard);
-    }
-
-    public ItemGroup get(
-            Collection<net.minecraft.item.ItemStack> itemStacks, boolean handleWildcard) {
-        return get(itemStacks, Optional.empty(), handleWildcard);
+            Collection<net.minecraft.item.ItemStack> itemStack,
+            int overrideStackSize, boolean handleWildcard) {
+        return get(itemStack, Optional.of(overrideStackSize), handleWildcard);
     }
 
     /**
