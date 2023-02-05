@@ -31,6 +31,7 @@ public class AspectProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing aspects!");
     }
 }

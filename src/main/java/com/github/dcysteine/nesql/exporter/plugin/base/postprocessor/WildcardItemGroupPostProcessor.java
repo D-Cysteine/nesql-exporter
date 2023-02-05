@@ -35,6 +35,7 @@ public class WildcardItemGroupPostProcessor extends PluginHelper {
                     }
                 });
 
+        exporterState.flushEntityManager();
         logger.info("Finished post-processing wildcard item groups!");
     }
 }

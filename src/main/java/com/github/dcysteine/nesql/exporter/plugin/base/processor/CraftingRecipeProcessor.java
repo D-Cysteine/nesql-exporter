@@ -66,6 +66,7 @@ public class CraftingRecipeProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing crafting recipes!");
     }
 

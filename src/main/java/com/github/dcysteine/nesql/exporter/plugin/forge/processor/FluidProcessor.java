@@ -45,6 +45,7 @@ public class FluidProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing Forge fluids!");
     }
 

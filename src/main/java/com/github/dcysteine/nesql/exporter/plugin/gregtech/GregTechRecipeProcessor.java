@@ -91,6 +91,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
                 }
             }
 
+            exporterState.flushEntityManager();
             logger.info("Processed GregTech recipe map {} of {}", recipeMapCount, recipeMapTotal);
         }
 

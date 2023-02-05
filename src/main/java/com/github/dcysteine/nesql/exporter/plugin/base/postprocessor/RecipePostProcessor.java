@@ -52,6 +52,7 @@ public class RecipePostProcessor extends PluginHelper {
                     }
                 });
 
+        exporterState.flushEntityManager();
         logger.info("Finished post-processing recipes!");
     }
 }

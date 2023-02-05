@@ -35,6 +35,7 @@ public class QuestPostProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished post-processing quests!");
     }
 }

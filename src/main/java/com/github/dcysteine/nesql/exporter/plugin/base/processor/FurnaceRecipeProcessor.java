@@ -50,6 +50,7 @@ public class FurnaceRecipeProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing furnace recipes!");
     }
 }

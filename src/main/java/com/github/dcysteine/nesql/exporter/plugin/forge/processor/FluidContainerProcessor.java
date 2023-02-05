@@ -56,6 +56,7 @@ public class FluidContainerProcessor extends PluginHelper {
             emptyContainerFactory.get(emptyContainer, emptyContainers.row(emptyContainer));
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing Forge fluid containers!");
     }
 

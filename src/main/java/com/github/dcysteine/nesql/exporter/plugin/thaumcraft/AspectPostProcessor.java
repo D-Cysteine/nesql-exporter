@@ -30,6 +30,7 @@ public class AspectPostProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished post-processing aspects!");
     }
 }

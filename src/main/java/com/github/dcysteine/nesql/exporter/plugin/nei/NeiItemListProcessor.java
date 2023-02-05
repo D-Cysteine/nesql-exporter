@@ -43,6 +43,7 @@ public class NeiItemListProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing NEI items!");
     }
 

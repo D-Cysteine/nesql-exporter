@@ -34,6 +34,7 @@ public class OreDictionaryProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing ore dictionary!");
     }
 

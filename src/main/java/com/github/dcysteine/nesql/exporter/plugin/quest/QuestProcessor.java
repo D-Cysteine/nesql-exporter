@@ -33,6 +33,7 @@ public class QuestProcessor extends PluginHelper {
             }
         }
 
+        exporterState.flushEntityManager();
         logger.info("Finished processing quests!");
     }
 }
