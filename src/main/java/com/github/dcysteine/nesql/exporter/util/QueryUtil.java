@@ -6,11 +6,10 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility class containing methods for querying the database.
@@ -21,14 +20,20 @@ public final class QueryUtil {
     // Static class.
     private QueryUtil() {}
 
-    public static List<ItemGroup> getWildcardItemGroups(EntityManager entityManager) {
+    public static long countWildcardItemGroups(EntityManager entityManager) {
+        Query query = entityManager.createQuery(
+                "SELECT COUNT(*) FROM ItemGroup ig WHERE ig.wildcardItemStacks IS NOT EMPTY");
+        return (long) query.getSingleResult();
+    }
+
+    public static Stream<ItemGroup> getWildcardItemGroups(EntityManager entityManager) {
         TypedQuery<ItemGroup> query = entityManager.createQuery(
                 "SELECT ig FROM ItemGroup ig WHERE ig.wildcardItemStacks IS NOT EMPTY",
                 ItemGroup.class);
-        return query.getResultList();
+        return query.getResultStream();
     }
 
-    public static List<ItemStack> resolveWildcardItemStack(
+    public static Stream<ItemStack> resolveWildcardItemStack(
             EntityManager entityManager, WildcardItemStack wildcardItemStack) {
         StringBuilder queryBuilder = new StringBuilder("SELECT i FROM Item i");
         queryBuilder.append(" WHERE i.itemId = ").append(wildcardItemStack.getItemId());
@@ -40,17 +45,20 @@ public final class QueryUtil {
         }
 
         TypedQuery<Item> query = entityManager.createQuery(queryBuilder.toString(), Item.class);
-        List<Item> items = query.getResultList();
+        Stream<Item> items = query.getResultStream();
 
         int stackSize = wildcardItemStack.getStackSize();
-        return items.stream()
-                .map(item -> new ItemStack(item, stackSize))
-                .collect(Collectors.toCollection(ArrayList::new));
+        return items.map(item -> new ItemStack(item, stackSize));
     }
 
-    public static List<Recipe> getRecipes(EntityManager entityManager) {
+    public static long countRecipes(EntityManager entityManager) {
+        Query query = entityManager.createQuery("SELECT COUNT(*) FROM Recipe r");
+        return (long) query.getSingleResult();
+    }
+
+    public static Stream<Recipe> getRecipes(EntityManager entityManager) {
         TypedQuery<Recipe> query =
                 entityManager.createQuery("SELECT r FROM Recipe r", Recipe.class);
-        return query.getResultList();
+        return query.getResultStream();
     }
 }

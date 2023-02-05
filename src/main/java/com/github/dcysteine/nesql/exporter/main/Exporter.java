@@ -152,7 +152,7 @@ public final class Exporter {
 
         entityManager.close();
         entityManagerFactory.close();
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Compaction complete!");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Commit complete!");
 
         if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Waiting for rendering to finish...");

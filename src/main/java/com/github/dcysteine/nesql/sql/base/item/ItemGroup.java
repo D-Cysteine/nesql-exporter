@@ -10,7 +10,6 @@ import jakarta.persistence.Index;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,7 +64,7 @@ public class ItemGroup implements Identifiable<String> {
         return resolvedWildcardItemStacks;
     }
 
-    public void addAllResolvedWildcardItemStacks(Collection<ItemStack> itemStacks) {
-        this.resolvedWildcardItemStacks.addAll(itemStacks);
+    public void addResolvedWildcardItemStack(ItemStack itemStack) {
+        this.resolvedWildcardItemStacks.add(itemStack);
     }
 }
