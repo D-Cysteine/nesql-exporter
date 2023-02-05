@@ -233,9 +233,7 @@ val devJar by tasks.creating(Jar::class) {
 
 // Export SQL Schema for NESQL Server.
 val sqlJar by tasks.creating(Jar::class) {
-    from(sourceSets.main.get().allSource)
     from(sourceSets.main.get().output)
-    from("$projectDir/LICENSE.md")
     exclude("com/github/dcysteine/nesql/exporter")
     exclude("*.proto")
     exclude("META-INF")
