@@ -46,7 +46,6 @@ public class WildcardItemStack implements Comparable<WildcardItemStack> {
     private boolean wildcardNbt;
 
     /** The item damage, if this wildcard item stack does not have wildcard item damage. */
-    @Lob
     private String nbt;
 
     private int stackSize;

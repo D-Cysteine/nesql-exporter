@@ -119,8 +119,8 @@ dependencies {
     shadowImplementation("org.hibernate:hibernate-core-jakarta:$hibernateVersion")
     annotationProcessor("org.hibernate:hibernate-jpamodelgen-jakarta:$hibernateVersion")
 
-    val h2Version: String by project
-    shadowRuntime("com.h2database:h2:$h2Version")
+    val hsqldbVersion: String by project
+    shadowRuntime("org.hsqldb:hsqldb:$hsqldbVersion:jdk8")
 
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")

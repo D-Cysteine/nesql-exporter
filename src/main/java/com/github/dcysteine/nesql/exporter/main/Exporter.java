@@ -23,9 +23,8 @@ import java.util.Map;
 
 /** Exports recipes and other data to a file. */
 public final class Exporter {
-    private static final String DATABASE_FILE_EXTENSION = ".mv.db";
     private static final String REPOSITORY_PATH_FORMAT_STRING = "nesql" + File.separator + "%s";
-    private static final String DATABASE_FILE_PATH = "nesql-db" + DATABASE_FILE_EXTENSION;
+    private static final String DATABASE_FILE_PATH = "nesql-db";
     private static final String IMAGE_DIRECTORY_PATH = "image";
 
     private final String repositoryName;
@@ -94,14 +93,15 @@ public final class Exporter {
         ImmutableMap<String, String> properties =
                 ImmutableMap.of(
                         "hibernate.connection.url",
-                        "jdbc:h2:file:"
-                                + databaseFile.getAbsolutePath()
-                                .replace(DATABASE_FILE_EXTENSION, ""));
+                        "jdbc:hsqldb:file:" + databaseFile.getAbsolutePath());
+        // Append this to the path if we need cached tables:
+        //+ ";hsqldb.default_table_type=CACHED"
+        // Append this if we need to use lobs (this will set min lob size to 1KB):
+        //+ ";hsqldb.lob_compressed=true;hsqldb.lob_file_scale=1"
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
-                        .createEntityManagerFactory("H2", properties);
+                        .createEntityManagerFactory("DB", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        ExporterState exporterState = new ExporterState(entityManager);
 
         boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
         if (renderingImages) {
@@ -126,6 +126,7 @@ public final class Exporter {
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
+        ExporterState exporterState = new ExporterState(entityManager);
         PluginRegistry registry = new PluginRegistry();
         Map<Plugin, PluginExporter> activePlugins = registry.initialize(exporterState);
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
@@ -147,11 +148,7 @@ public final class Exporter {
         transaction.commit();
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Compacting database...");
-        Logger.chatMessage(
-                EnumChatFormatting.AQUA + "This may take ~30-60 min; please be patient!");
         entityManager.getTransaction().begin();
-        // As of the time of this writing, performing this compaction reduces the final DB size
-        // from 23 GB to 250 MB O_O
         entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
         // No need to commit the transaction; SHUTDOWN closes everything already.
 

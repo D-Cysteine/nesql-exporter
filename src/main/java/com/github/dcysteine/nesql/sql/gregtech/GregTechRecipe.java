@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.sql.gregtech;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.Column;
@@ -53,8 +54,7 @@ public class GregTechRecipe implements Identifiable<String> {
     @OrderColumn
     private List<String> modOwners;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)
     private String additionalInfo;
 
     /** Needed by Hibernate. */

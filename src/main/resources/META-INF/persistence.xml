@@ -5,14 +5,14 @@
         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
         version="2.2">
 
-    <persistence-unit name="H2" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="DB" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbc.JDBCDriver"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <!-- Generate nicer table and column names. -->
             <property name="hibernate.physical_naming_strategy"

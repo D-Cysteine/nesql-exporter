@@ -27,6 +27,9 @@ public class Metadata implements Identifiable<Integer> {
      */
     public static final String VERSION = "@version@";
 
+    /** The maximum length for long string fields. Increase this if needed. */
+    public static final int MAX_STRING_LENGTH = Short.MAX_VALUE;
+
     /** There will only ever be one metadata entry, and it will have ID {@link #ID}. */
     @Id
     private int id;

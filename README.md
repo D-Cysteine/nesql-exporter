@@ -4,8 +4,8 @@ The exporter module for NESQL. The server module can be found
 [here](https://github.com/D-Cysteine/nesql-server). Still WIP.
 
 The exported database is an
-[H2 database](http://www.h2database.com/html/main.html), and can also be queried
-directly with the H2 client.
+[HSQLDB database](http://hsqldb.org/), and can also be queried directly with the
+HSQLDB client.
 
 Currently supported exported data:
 
@@ -18,9 +18,8 @@ Currently supported exported data:
 * Thaumcraft aspects for items
 
 For GTNH, the exported database file is ~500 MB, and the export process takes my
-computer ~100 min. There are ~227k exported images, which take up a total of
-~170 MB. Note that you will need ~30-40 GB free disk space to do the export, as
-the database needs to be written to disk before we can compact it.
+computer ~1 hour. There are ~227k exported images, which take up a total of
+~170 MB raw; more on disk due to file overhead.
 
 ### Instructions
 

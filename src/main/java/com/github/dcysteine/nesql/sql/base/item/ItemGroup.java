@@ -1,6 +1,9 @@
 package com.github.dcysteine.nesql.sql.base.item;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.Metadata;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -27,6 +30,13 @@ public class ItemGroup implements Identifiable<String> {
     private Set<ItemStack> itemStacks;
 
     @ElementCollection
+    @AttributeOverrides({
+            @AttributeOverride(name = "modId", column = @Column(nullable = false)),
+            @AttributeOverride(name = "internalName", column = @Column(nullable = false)),
+            @AttributeOverride(
+                    name = "nbt",
+                    column = @Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)),
+    })
     private Set<WildcardItemStack> wildcardItemStacks;
 
     /** We resolve wildcard item groups, to speed up queries. */

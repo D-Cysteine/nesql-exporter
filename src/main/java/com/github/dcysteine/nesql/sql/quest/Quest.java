@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.sql.quest;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,8 +35,7 @@ public class Quest implements Identifiable<String> {
     @Column(nullable = false)
     private String name;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)
     private String description;
 
     @Column(nullable = false)
