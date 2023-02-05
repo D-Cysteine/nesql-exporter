@@ -1,42 +1,55 @@
 ## Not Enough SQL Exporter
 
 The exporter module for NESQL. The server module can be found
-[here](https://github.com/D-Cysteine/nesql-server). Still very WIP.
+[here](https://github.com/D-Cysteine/nesql-server). Still WIP.
 
-Currently only supports exporting items, fluids, and vanilla crafting and
-furnace recipes. The exported database is an
+The exported database is an
 [H2 database](http://www.h2database.com/html/main.html), and can also be queried
 directly with the H2 client.
 
+Currently supported exported data:
+
+* NEI item list
+* Forge ore dictionary
+* Forge fluids and fluid container data
+* Minecraft crafting table and furnace recipes
+* GTNH GT5 recipe maps
+* BetterQuesting quests
+* Thaumcraft aspects for items
+
+For GTNH, the exported database file is ~500 MB, and the export process takes my
+computer ~100 min. There are ~227k exported images, which take up a total of
+~170 MB. Note that you will need ~30-40 GB free disk space to do the export, as
+the database needs to be written to disk before we can compact it.
+
 ### Instructions
 
- 1. Place `NESQL-Exporter-*.jar` and `NESQL-Exporter-*-deps.jar` into your
-    `mods/` folder. `NotEnoughItems` is the only required dependency.
- 2. If you have `bugtorch-1.7.10-*.jar` in your `mods/` folder, move it somewhere
-    else temporarily, as it conflicts with rendering enchanted items. See below.
- 3. Start Minecraft and join a world. It is recommended that you use a new
-    creative, single-player world for this. It is recommended to use a new world
-    because the exporter uses your current player state, so e.g. if you have
-    `Spice of Life` installed, tooltips will reflect which foods you have eaten.
- 4. If you're using the GTNH version of `NotEnoughItems`, open your inventory and
-    view the NEI item list so that it gets loaded. If you forget to do this, some
-    items might not be exported.
- 5. If you are exporting `Thaumcraft` data, it is recommended that you acquire
-    all `Thaumcraft` knowledge, as missing knowledge may cause some data not to
-    be exported properly. See below for detailed instructions.
- 6. Run the command `/nesql`. You may optionally specify a repository name with
-    `/nesql your_repository_name`.
- 7. You can now pause the game, and the export will continue while the game is
-    paused. Doing this can make things a little bit faster.
- 8. Wait for the export process to finish. It can take a very long time depending
-    on how many mods you have installed. For reference, exporting GTNH can take
-    30-60 minutes; the resulting repository is ~400MB, and contains ~225k image
-    files.
- 9. Depending on your computer's specs, rendering may end up taking a lot longer
-    to finish than exporting the database. Check your logs to see how many render
-    jobs are left.
-10. Once the export is finished, you can delete the two mod jars. Remember to
-    replace `bugtorch-1.7.10-*.jar` if you moved it earlier.
+1. Place `NESQL-Exporter-*.jar` and `NESQL-Exporter-*-deps.jar` into your
+   `mods/` folder. `NotEnoughItems` is the only required dependency.
+2. If you have `bugtorch-1.7.10-*.jar` in your `mods/` folder, move it somewhere
+   else temporarily, as it conflicts with rendering enchanted items. See below.
+3. Start Minecraft and join a world. It is recommended that you use a new
+   creative, single-player world for this. It is recommended to use a new world
+   because the exporter uses your current player state, so e.g. if you have
+   `Spice of Life` installed, tooltips will reflect which foods you have eaten.
+4. If you're using the GTNH version of `NotEnoughItems`, open your inventory and
+   view the NEI item list so that it gets loaded. If you forget to do this, some
+   items might not be exported.
+5. If you are exporting `Thaumcraft` data, it is recommended that you acquire
+   all `Thaumcraft` knowledge, as missing knowledge may cause some data not to
+   be exported properly. See below for detailed instructions.
+6. Run the command `/nesql`. You may optionally specify a repository name with
+   `/nesql your_repository_name`.
+7. You can now pause the game, and the export will continue while the game is
+   paused. Doing this can make things a little bit faster.
+8. Wait for the export process to finish. It can take a very long time depending
+   on how many mods you have installed.
+9. Once the export is finished, you can delete the two mod jars. Remember to
+   replace `bugtorch-1.7.10-*.jar` if you moved it earlier.
+
+You may see Forge complaining about a call to `System.exit()` in the logs.
+Please disregard it; this is due to one of Hibernate's libraries containing a
+call to `System.exit()`.
 
 ### Enchanted item rendering issue
 

@@ -142,9 +142,14 @@ public final class Exporter {
         registry.processPlugins();
         registry.postProcessPlugins();
 
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Data exported! Committing to database...");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Data exported!");
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Committing database...");
+        transaction.commit();
+
+        Logger.chatMessage(EnumChatFormatting.AQUA + "Compacting database...");
         Logger.chatMessage(
                 EnumChatFormatting.AQUA + "This may take ~30-60 min; please be patient!");
+        entityManager.getTransaction().begin();
         // As of the time of this writing, performing this compaction reduces the final DB size
         // from 23 GB to 250 MB O_O
         entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
