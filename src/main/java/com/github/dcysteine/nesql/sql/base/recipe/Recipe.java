@@ -48,17 +48,20 @@ public class Recipe implements Identifiable<String> {
      * have duplicate entries in order to have both.
      */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "UNIQUE_ITEM_INPUTS_ID")})
+    @JoinTable(
+            name = "RECIPE_UNIQUE_ITEM_INPUTS",
+            indexes = {@Index(columnList = "UNIQUE_ITEM_INPUTS_ID")})
     private Set<ItemGroup> uniqueItemInputs;
 
     /** We directly include item inputs to this recipe, to speed up queries. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "ITEM_INPUTS_ITEMS_ID")})
+    @JoinTable(
+            name = "RECIPE_ITEM_INPUTS_ITEMS",
+            indexes = {@Index(columnList = "ITEM_INPUTS_ITEMS_ID")})
     private Set<Item> itemInputsItems;
 
     /** Map of input index to fluid group. May be sparse for shaped recipes. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "FLUID_INPUTS_ID")})
     private Map<Integer, FluidGroup> fluidInputs;
 
     /**
@@ -69,12 +72,16 @@ public class Recipe implements Identifiable<String> {
      * have duplicate entries in order to have both.
      */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "UNIQUE_FLUID_INPUTS_ID")})
+    @JoinTable(
+            name = "RECIPE_UNIQUE_FLUID_INPUTS",
+            indexes = {@Index(columnList = "UNIQUE_FLUID_INPUTS_ID")})
     private Set<FluidGroup> uniqueFluidInputs;
 
     /** We directly include fluid inputs to this recipe, to speed up queries. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "FLUID_INPUTS_FLUIDS_ID")})
+    @JoinTable(
+            name = "RECIPE_FLUID_INPUTS_FLUIDS",
+            indexes = {@Index(columnList = "FLUID_INPUTS_FLUIDS_ID")})
     private Set<Fluid> fluidInputsFluids;
 
     /** Map of output index to item stack with probability. May be sparse for shaped recipes. */
@@ -89,7 +96,9 @@ public class Recipe implements Identifiable<String> {
      * have duplicate entries in order to have both.
      */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "UNIQUE_ITEM_OUTPUTS_ID")})
+    @JoinTable(
+            name = "RECIPE_UNIQUE_ITEM_OUTPUTS",
+            indexes = {@Index(columnList = "UNIQUE_ITEM_OUTPUTS_ID")})
     private Set<Item> uniqueItemOutputs;
 
     /** Map of output index to fluid stack with probability. May be sparse for shaped recipes. */
@@ -104,7 +113,9 @@ public class Recipe implements Identifiable<String> {
      * have duplicate entries in order to have both.
      */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "UNIQUE_FLUID_OUTPUTS_ID")})
+    @JoinTable(
+            name = "RECIPE_UNIQUE_FLUID_OUTPUTS",
+            indexes = {@Index(columnList = "UNIQUE_FLUID_OUTPUTS_ID")})
     private Set<Fluid> uniqueFluidOutputs;
 
     /** Needed by Hibernate. */

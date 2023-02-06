@@ -94,9 +94,11 @@ public final class Exporter {
                 ImmutableMap.of(
                         "hibernate.connection.url",
                         "jdbc:hsqldb:file:" + databaseFile.getAbsolutePath());
-        // Append this to the path if we need cached tables:
+        // Append this to the path if we need cached tables.
+        // Note: this seems to 3x or 4x the time needed to export. It should drastically decrease
+        // server start-up time, at the cost of slightly increasing query time.
         //+ ";hsqldb.default_table_type=CACHED"
-        // Append this if we need to use lobs (this will set min lob size to 1KB):
+        // Append this if we need to use lobs (this will set min lob size to 1KB).
         //+ ";hsqldb.lob_compressed=true;hsqldb.lob_file_scale=1"
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()

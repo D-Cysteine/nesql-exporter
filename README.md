@@ -17,8 +17,8 @@ Currently supported exported data:
 * BetterQuesting quests
 * Thaumcraft aspects for items
 
-For GTNH, the exported database file is ~500 MB, and the export process takes my
-computer ~1 hour. There are ~227k exported images, which take up a total of
+For GTNH, the exported database file is ~650 MB, and the export process takes my
+computer ~75 min. There are ~227k exported images, which take up a total of
 ~170 MB raw; more on disk due to file overhead.
 
 ### Instructions
