@@ -39,10 +39,15 @@ public class ItemGroup implements Identifiable<String> {
     })
     private Set<WildcardItemStack> wildcardItemStacks;
 
-    /** We resolve wildcard item groups, to speed up queries. */
+    /** We resolve wildcard item stacks, to speed up queries. */
     @ElementCollection
     @CollectionTable(indexes = {@Index(columnList = "RESOLVED_WILDCARD_ITEM_STACKS_ITEM_ID")})
     private Set<ItemStack> resolvedWildcardItemStacks;
+
+    /** We find all item stacks, to speed up queries. */
+    @ElementCollection
+    @CollectionTable(indexes = {@Index(columnList = "ALL_ITEM_STACKS_ITEM_ID")})
+    private Set<ItemStack> allItemStacks;
 
     /** Needed by Hibernate. */
     protected ItemGroup() {}
@@ -55,6 +60,9 @@ public class ItemGroup implements Identifiable<String> {
         this.itemStacks = itemStacks;
         this.wildcardItemStacks = wildcardItemStacks;
         this.resolvedWildcardItemStacks = new HashSet<>();
+
+        allItemStacks = new HashSet<>();
+        allItemStacks.addAll(itemStacks);
     }
 
     @Override
@@ -75,6 +83,14 @@ public class ItemGroup implements Identifiable<String> {
     }
 
     public void addResolvedWildcardItemStack(ItemStack itemStack) {
-        this.resolvedWildcardItemStacks.add(itemStack);
+        resolvedWildcardItemStacks.add(itemStack);
+    }
+
+    public Set<ItemStack> getAllItemStacks() {
+        return allItemStacks;
+    }
+
+    public void addAllItemStack(ItemStack itemStack) {
+        allItemStacks.add(itemStack);
     }
 }

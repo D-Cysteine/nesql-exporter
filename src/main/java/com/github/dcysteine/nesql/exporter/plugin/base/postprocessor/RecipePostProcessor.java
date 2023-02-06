@@ -31,14 +31,11 @@ public class RecipePostProcessor extends PluginHelper {
         AtomicInteger count = new AtomicInteger();
         QueryUtil.getRecipes(entityManager).forEach(
                 recipe -> {
-                    for (ItemGroup itemGroup : recipe.getItemInputs().values()) {
-                        itemGroup.getItemStacks().stream()
-                                .map(ItemStack::getItem)
-                                .forEach(recipe::addItemInputIndex);
-                        itemGroup.getResolvedWildcardItemStacks().stream()
-                                .map(ItemStack::getItem)
-                                .forEach(recipe::addItemInputIndex);
-                    }
+                    recipe.getItemInputs().values().stream()
+                            .map(ItemGroup::getAllItemStacks)
+                            .flatMap(Set::stream)
+                            .map(ItemStack::getItem)
+                            .forEach(recipe::addItemInputIndex);
 
                     recipe.getFluidInputs().values().stream()
                             .map(FluidGroup::getFluidStacks)

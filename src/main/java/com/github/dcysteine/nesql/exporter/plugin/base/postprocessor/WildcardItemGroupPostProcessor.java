@@ -26,7 +26,11 @@ public class WildcardItemGroupPostProcessor extends PluginHelper {
                                     wildcardItemStack ->
                                             QueryUtil.resolveWildcardItemStack(
                                                     entityManager, wildcardItemStack))
-                            .forEach(itemGroup::addResolvedWildcardItemStack);
+                            .forEach(
+                                    itemStack -> {
+                                        itemGroup.addResolvedWildcardItemStack(itemStack);
+                                        itemGroup.addAllItemStack(itemStack);
+                                    });
 
                     if (Logger.intermittentLog(count.incrementAndGet())) {
                         logger.info(
