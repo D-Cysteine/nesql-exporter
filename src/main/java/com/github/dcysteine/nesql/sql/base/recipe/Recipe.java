@@ -7,7 +7,6 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -39,33 +38,74 @@ public class Recipe implements Identifiable<String> {
 
     /** Map of input index to item group. May be sparse for shaped recipes. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "ITEM_INPUTS_ID")})
     private Map<Integer, ItemGroup> itemInputs;
+
+    /**
+     * Set of unique input item groups.
+     *
+     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
+     * distinct results and sorting, so we must include a copy of {@link #itemInputs} that doesn't
+     * have duplicate entries in order to have both.
+     */
+    @ManyToMany
+    @JoinTable(indexes = {@Index(columnList = "UNIQUE_ITEM_INPUTS_ID")})
+    private Set<ItemGroup> uniqueItemInputs;
 
     /** We directly include item inputs to this recipe, to speed up queries. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "ITEM_INPUTS_INDEX_ID")})
-    private Set<Item> itemInputsIndex;
+    @JoinTable(indexes = {@Index(columnList = "ITEM_INPUTS_ITEMS_ID")})
+    private Set<Item> itemInputsItems;
 
     /** Map of input index to fluid group. May be sparse for shaped recipes. */
     @ManyToMany
     @JoinTable(indexes = {@Index(columnList = "FLUID_INPUTS_ID")})
     private Map<Integer, FluidGroup> fluidInputs;
 
+    /**
+     * Set of unique input fluid groups.
+     *
+     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
+     * distinct results and sorting, so we must include a copy of {@link #fluidInputs} that doesn't
+     * have duplicate entries in order to have both.
+     */
+    @ManyToMany
+    @JoinTable(indexes = {@Index(columnList = "UNIQUE_FLUID_INPUTS_ID")})
+    private Set<FluidGroup> uniqueFluidInputs;
+
     /** We directly include fluid inputs to this recipe, to speed up queries. */
     @ManyToMany
-    @JoinTable(indexes = {@Index(columnList = "FLUID_INPUTS_INDEX_ID")})
-    private Set<Fluid> fluidInputsIndex;
+    @JoinTable(indexes = {@Index(columnList = "FLUID_INPUTS_FLUIDS_ID")})
+    private Set<Fluid> fluidInputsFluids;
 
-    /** Map of output index to item stack. May be sparse for shaped recipes. */
+    /** Map of output index to item stack with probability. May be sparse for shaped recipes. */
     @ElementCollection
-    @CollectionTable(indexes = {@Index(columnList = "ITEM_OUTPUTS_VALUE_ITEM_ID")})
     private Map<Integer, ItemStackWithProbability> itemOutputs;
 
-    /** Map of output index to fluid stack. May be sparse for shaped recipes. */
+    /**
+     * Set of unique output items.
+     *
+     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
+     * distinct results and sorting, so we must include a copy of {@link #itemOutputs} that doesn't
+     * have duplicate entries in order to have both.
+     */
+    @ManyToMany
+    @JoinTable(indexes = {@Index(columnList = "UNIQUE_ITEM_OUTPUTS_ID")})
+    private Set<Item> uniqueItemOutputs;
+
+    /** Map of output index to fluid stack with probability. May be sparse for shaped recipes. */
     @ElementCollection
-    @CollectionTable(indexes = {@Index(columnList = "FLUID_OUTPUTS_VALUE_FLUID_ID")})
     private Map<Integer, FluidStackWithProbability> fluidOutputs;
+
+    /**
+     * Set of unique output fluids.
+     *
+     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
+     * distinct results and sorting, so we must include a copy of {@link #fluidOutputs} that doesn't
+     * have duplicate entries in order to have both.
+     */
+    @ManyToMany
+    @JoinTable(indexes = {@Index(columnList = "UNIQUE_FLUID_OUTPUTS_ID")})
+    private Set<Fluid> uniqueFluidOutputs;
 
     /** Needed by Hibernate. */
     protected Recipe() {}
@@ -80,11 +120,25 @@ public class Recipe implements Identifiable<String> {
         this.id = id;
         this.recipeType = recipeType;
         this.itemInputs = itemInputs;
-        this.itemInputsIndex = new HashSet<>();
         this.fluidInputs = fluidInputs;
-        this.fluidInputsIndex = new HashSet<>();
         this.itemOutputs = itemOutputs;
         this.fluidOutputs = fluidOutputs;
+
+        uniqueItemInputs = new HashSet<>();
+        uniqueItemInputs.addAll(itemInputs.values());
+        itemInputsItems = new HashSet<>();
+        uniqueFluidInputs = new HashSet<>();
+        uniqueFluidInputs.addAll(fluidInputs.values());
+        fluidInputsFluids = new HashSet<>();
+
+        uniqueItemOutputs = new HashSet<>();
+        itemOutputs.values().stream()
+                .map(ItemStackWithProbability::getItem)
+                .forEach(uniqueItemOutputs::add);
+        uniqueFluidOutputs = new HashSet<>();
+        fluidOutputs.values().stream()
+                .map(FluidStackWithProbability::getFluid)
+                .forEach(uniqueFluidOutputs::add);
     }
 
     @Override
@@ -100,32 +154,48 @@ public class Recipe implements Identifiable<String> {
         return itemInputs;
     }
 
-    public Set<Item> getItemInputsIndex() {
-        return itemInputsIndex;
+    public Set<ItemGroup> getUniqueItemInputs() {
+        return uniqueItemInputs;
     }
 
-    public void addItemInputIndex(Item item) {
-        itemInputsIndex.add(item);
+    public Set<Item> getItemInputsItems() {
+        return itemInputsItems;
+    }
+
+    public void addItemInputsItem(Item item) {
+        itemInputsItems.add(item);
     }
 
     public Map<Integer, FluidGroup> getFluidInputs() {
         return fluidInputs;
     }
 
-    public Set<Fluid> getFluidInputsIndex() {
-        return fluidInputsIndex;
+    public Set<FluidGroup> getUniqueFluidInputs() {
+        return uniqueFluidInputs;
     }
 
-    public void addFluidInputIndex(Fluid fluid) {
-        fluidInputsIndex.add(fluid);
+    public Set<Fluid> getFluidInputsFluids() {
+        return fluidInputsFluids;
+    }
+
+    public void addFluidInputsFluid(Fluid fluid) {
+        fluidInputsFluids.add(fluid);
     }
 
     public Map<Integer, ItemStackWithProbability> getItemOutputs() {
         return itemOutputs;
     }
 
+    public Set<Item> getUniqueItemOutputs() {
+        return uniqueItemOutputs;
+    }
+
     public Map<Integer, FluidStackWithProbability> getFluidOutputs() {
         return fluidOutputs;
+    }
+
+    public Set<Fluid> getUniqueFluidOutputs() {
+        return uniqueFluidOutputs;
     }
 
     @Override

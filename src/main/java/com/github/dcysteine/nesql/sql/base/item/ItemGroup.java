@@ -26,7 +26,6 @@ public class ItemGroup implements Identifiable<String> {
     private String id;
 
     @ElementCollection
-    @CollectionTable(indexes = {@Index(columnList = "ITEM_STACKS_ITEM_ID")})
     private Set<ItemStack> itemStacks;
 
     @ElementCollection
@@ -41,7 +40,6 @@ public class ItemGroup implements Identifiable<String> {
 
     /** We resolve wildcard item stacks, to speed up queries. */
     @ElementCollection
-    @CollectionTable(indexes = {@Index(columnList = "RESOLVED_WILDCARD_ITEM_STACKS_ITEM_ID")})
     private Set<ItemStack> resolvedWildcardItemStacks;
 
     /** We find all item stacks, to speed up queries. */

@@ -35,13 +35,13 @@ public class RecipePostProcessor extends PluginHelper {
                             .map(ItemGroup::getAllItemStacks)
                             .flatMap(Set::stream)
                             .map(ItemStack::getItem)
-                            .forEach(recipe::addItemInputIndex);
+                            .forEach(recipe::addItemInputsItem);
 
                     recipe.getFluidInputs().values().stream()
                             .map(FluidGroup::getFluidStacks)
                             .flatMap(Set::stream)
                             .map(FluidStack::getFluid)
-                            .forEach(recipe::addFluidInputIndex);
+                            .forEach(recipe::addFluidInputsFluid);
 
                     if (Logger.intermittentLog(count.incrementAndGet())) {
                         logger.info("Post-processed recipe {} of {}", count.get(), total);
