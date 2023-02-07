@@ -8,8 +8,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.SortNatural;
 
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /** Contains metadata about the repository. */
 @Entity
@@ -41,10 +44,11 @@ public class Metadata implements Identifiable<Integer> {
     @Column(nullable = false)
     private long creationTimeMillis;
 
-    /** Set of active plugins. */
+    /** Sorted set of active plugins. */
     @Enumerated(EnumType.STRING)
     @ElementCollection
-    private Set<Plugin> activePlugins;
+    @SortNatural
+    private SortedSet<Plugin> activePlugins;
 
     /** Needed by Hibernate. */
     protected Metadata() {}
@@ -53,7 +57,7 @@ public class Metadata implements Identifiable<Integer> {
         this.id = ID;
         this.version = VERSION;
         this.creationTimeMillis = System.currentTimeMillis();
-        this.activePlugins = activePlugins;
+        this.activePlugins = new TreeSet<>(activePlugins);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class Metadata implements Identifiable<Integer> {
         return creationTimeMillis;
     }
 
-    public Set<Plugin> getActivePlugins() {
+    public SortedSet<Plugin> getActivePlugins() {
         return activePlugins;
     }
 }
