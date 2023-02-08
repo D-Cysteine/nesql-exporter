@@ -24,6 +24,7 @@ import java.util.List;
 @ToString
 public class Reward implements Identifiable<String> {
     @Id
+    @Column(nullable = false)
     private String id;
 
     /** This field is always set. */
@@ -32,6 +33,7 @@ public class Reward implements Identifiable<String> {
 
     /** This field is always set. */
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RewardType type;
 
     @ManyToMany

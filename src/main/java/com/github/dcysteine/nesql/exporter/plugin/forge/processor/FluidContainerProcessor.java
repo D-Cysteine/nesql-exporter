@@ -5,7 +5,6 @@ import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
-import com.github.dcysteine.nesql.exporter.plugin.forge.factory.EmptyContainerFactory;
 import com.github.dcysteine.nesql.exporter.plugin.forge.factory.FluidContainerFactory;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import com.github.dcysteine.nesql.sql.base.item.Item;
@@ -24,36 +23,16 @@ public class FluidContainerProcessor extends PluginHelper {
         int total = data.length;
         logger.info("Processing {} Forge fluid container data...", total);
 
-        FluidFactory fluidFactory = new FluidFactory(exporter);
-        ItemFactory itemFactory = new ItemFactory(exporter);
-        Table<Fluid, Item, Integer> fluidContainers = HashBasedTable.create();
-        Table<Item, Item, Integer> emptyContainers = HashBasedTable.create();
+        FluidContainerFactory fluidContainerFactory = new FluidContainerFactory(exporter);
         int count = 0;
         for (FluidContainerRegistry.FluidContainerData datum : data) {
             count++;
-
-            int capacity = datum.fluid.amount;
-            Fluid fluid = fluidFactory.get(datum.fluid);
-            Item filledContainer = itemFactory.get(datum.filledContainer);
-            Item emptyContainer = itemFactory.get(datum.emptyContainer);
-
-            fluidContainers.put(fluid, filledContainer, capacity);
-            emptyContainers.put(emptyContainer, filledContainer, capacity);
+            fluidContainerFactory.get(datum);
 
             if (Logger.intermittentLog(count)) {
                 logger.info("Processed Forge fluid container datum {} of {}", count, total);
-                logger.info("Most recent container: {}", filledContainer.getLocalizedName());
+                logger.info("Most recent container: {}", datum.filledContainer.getDisplayName());
             }
-        }
-
-        FluidContainerFactory fluidContainerFactory = new FluidContainerFactory(exporter);
-        for (Fluid fluid : fluidContainers.rowKeySet()) {
-            fluidContainerFactory.get(fluid, fluidContainers.row(fluid));
-        }
-
-        EmptyContainerFactory emptyContainerFactory = new EmptyContainerFactory(exporter);
-        for (Item emptyContainer : emptyContainers.rowKeySet()) {
-            emptyContainerFactory.get(emptyContainer, emptyContainers.row(emptyContainer));
         }
 
         exporterState.flushEntityManager();

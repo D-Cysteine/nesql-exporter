@@ -26,6 +26,7 @@ import java.util.List;
 @ToString
 public class Task implements Identifiable<String> {
     @Id
+    @Column(nullable = false)
     private String id;
 
     /** This field is always set. */
@@ -34,6 +35,7 @@ public class Task implements Identifiable<String> {
 
     /** This field is always set. */
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TaskType type;
 
     @ManyToMany
