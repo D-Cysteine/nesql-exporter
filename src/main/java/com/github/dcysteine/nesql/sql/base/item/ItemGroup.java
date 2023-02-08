@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -22,12 +23,21 @@ public class ItemGroup implements Identifiable<String> {
     @ElementCollection
     private Set<ItemStack> itemStacks;
 
+    /**
+     * The item group that has the same item stacks as this one, but with all stack sizes set to 1.
+     * May be the same item group as this one! Used to find ore dictionary associations.
+     */
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    private ItemGroup baseItemGroup;
+
     /** Needed by Hibernate. */
     protected ItemGroup() {}
 
     public ItemGroup(String id, Set<ItemStack> itemStacks) {
         this.id = id;
         this.itemStacks = itemStacks;
+        this.baseItemGroup = this;
     }
 
     @Override
@@ -37,5 +47,13 @@ public class ItemGroup implements Identifiable<String> {
 
     public Set<ItemStack> getItemStacks() {
         return itemStacks;
+    }
+
+    public ItemGroup getBaseItemGroup() {
+        return baseItemGroup;
+    }
+
+    public void setBaseItemGroup(ItemGroup baseItemGroup) {
+        this.baseItemGroup = baseItemGroup;
     }
 }

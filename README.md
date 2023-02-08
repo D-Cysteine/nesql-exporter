@@ -18,8 +18,8 @@ Currently supported exported data:
 * Thaumcraft aspects for items
 
 For GTNH, the exported database file is ~600 MB, and the export process takes my
-computer ~60 min. There are ~227k exported images, which take up a total of
-~170 MB raw; more on disk due to file overhead.
+computer ~60 min. There are ~150k exported images, which take up a total of
+~90 MB raw; more on disk due to file overhead.
 
 ### Instructions
 

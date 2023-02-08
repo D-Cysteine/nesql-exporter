@@ -80,9 +80,13 @@ public class ItemGroupFactory extends EntityFactory<ItemGroup, String> {
             }
         }
 
-        ItemGroupPb itemGroupPb = ProtoBuilder.buildItemGroupPb(itemStackEntities);
+        return get(itemStackEntities);
+    }
+
+    public ItemGroup get(Set<ItemStack> itemStacks) {
+        ItemGroupPb itemGroupPb = ProtoBuilder.buildItemGroupPb(itemStacks);
         String id = IdPrefixUtil.ITEM_GROUP.applyPrefix(StringUtil.encodeProto(itemGroupPb));
-        ItemGroup itemGroup = new ItemGroup(id, itemStackEntities);
+        ItemGroup itemGroup = new ItemGroup(id, itemStacks);
         return findOrPersist(ItemGroup.class, itemGroup);
     }
 }

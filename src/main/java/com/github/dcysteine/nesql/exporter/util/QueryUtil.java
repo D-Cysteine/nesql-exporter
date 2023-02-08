@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.util;
 
+import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -15,6 +16,17 @@ import java.util.stream.Stream;
 public final class QueryUtil {
     // Static class.
     private QueryUtil() {}
+
+    public static long countItemGroups(EntityManager entityManager) {
+        Query query = entityManager.createQuery("SELECT COUNT(*) FROM ItemGroup r");
+        return (long) query.getSingleResult();
+    }
+
+    public static Stream<ItemGroup> getItemGroups(EntityManager entityManager) {
+        TypedQuery<ItemGroup> query =
+                entityManager.createQuery("SELECT ig FROM ItemGroup ig", ItemGroup.class);
+        return query.getResultStream();
+    }
 
     public static long countRecipes(EntityManager entityManager) {
         Query query = entityManager.createQuery("SELECT COUNT(*) FROM Recipe r");
