@@ -6,20 +6,25 @@ import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.RecipeMap;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.Voltage;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
+import com.github.dcysteine.nesql.exporter.util.NumberUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.gregtech.GregTechRecipe;
 import com.google.common.base.Joiner;
 import cpw.mods.fml.common.ModContainer;
+import gregtech.api.enums.GT_Values;
+import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.util.GT_Recipe;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String> {
     private final ItemFactory itemFactory;
+
     public GregTechRecipeFactory(PluginExporter exporter) {
         super(exporter);
         this.itemFactory = new ItemFactory(exporter);
@@ -45,9 +50,65 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         .map(ModContainer::getModId)
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        String additionalInfo = "";
+        List<String> additionalInfo = new ArrayList<>();
+        switch (recipeMap) {
+            case FUSION:
+            case COMPLEX_FUSION: {
+                // Special handling for fusion recipes.
+                int euToStart = gregTechRecipe.mSpecialValue;
+
+                int euTier;
+                if (euToStart <= 160_000_000) {
+                    euTier = 1;
+                } else if (euToStart <= 320_000_000) {
+                    euTier = 2;
+                } else if (euToStart <= 640_000_000) {
+                    euTier = 3;
+                } else {
+                    euTier = 4;
+                }
+
+                int vTier;
+                if (voltage <= GT_Values.V[6]) {
+                    vTier = 1;
+                } else if (voltage <= GT_Values.V[7]) {
+                    vTier = 2;
+                } else if (voltage <= GT_Values.V[8]) {
+                    vTier = 3;
+                } else {
+                    vTier = 4;
+                }
+
+                additionalInfo.add(
+                        String.format(
+                                "To start: %s EU (MK %d)",
+                                NumberUtil.formatInteger(euToStart),
+                                Math.max(euTier, vTier)));
+                break;
+            }
+
+            case BLAST: {
+                // Special handling for EBF recipes.
+                int heat = gregTechRecipe.mSpecialValue;
+
+                String tier = HeatingCoilLevel.MAX.getName();
+                for (HeatingCoilLevel heatLevel : HeatingCoilLevel.values()) {
+                    if (heatLevel == HeatingCoilLevel.None || heatLevel == HeatingCoilLevel.ULV) {
+                        continue;
+                    }
+                    if (heat <= heatLevel.getHeat()) {
+                        tier = heatLevel.getName();
+                        break;
+                    }
+                }
+
+                additionalInfo.add(
+                        String.format("Heat: %sK (%s)", NumberUtil.formatInteger(heat), tier));
+                break;
+            }
+        }
         if (gregTechRecipe.getNeiDesc() != null) {
-            additionalInfo = Joiner.on('\n').join(gregTechRecipe.getNeiDesc());
+            additionalInfo.addAll(Arrays.asList(gregTechRecipe.getNeiDesc()));
         }
 
         GregTechRecipe gregTechRecipeEntity =
@@ -62,7 +123,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         requiresLowGravity,
                         specialItemEntities,
                         modOwners,
-                        additionalInfo);
+                        Joiner.on('\n').join(additionalInfo));
         return findOrPersist(GregTechRecipe.class, gregTechRecipeEntity);
     }
 }

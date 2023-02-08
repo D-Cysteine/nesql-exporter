@@ -312,20 +312,20 @@ public enum RecipeMap {
             "fusion",
             ItemList.FusionComputer_LuV,
             true,
+            new Dimension(0, 0),
             new Dimension(2, 1),
             new Dimension(0, 0),
-            new Dimension(1, 1),
-            new Dimension(0, 0)),
+            new Dimension(1, 1)),
 
     COMPLEX_FUSION(
             GT_Recipe.GT_Recipe_Map.sComplexFusionRecipes,
             "complexfusion",
             ItemList.FusionComputer_UV,
             true,
+            new Dimension(0, 0),
             new Dimension(2, 2),
             new Dimension(0, 0),
-            new Dimension(2, 1),
-            new Dimension(0, 0)),
+            new Dimension(2, 1)),
 
     CENTRIFUGE(
             GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes,
