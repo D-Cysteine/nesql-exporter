@@ -30,7 +30,7 @@ abstract class RegistryEntry {
         return getHardDependencies().stream().allMatch(ModDependency::isLoaded);
     }
 
-    public boolean isNotDisabled() {
-        return !ConfigOptions.DISABLED_PLUGINS.get().contains(getPlugin().getName());
+    public boolean isEnabled() {
+        return ConfigOptions.ENABLED_PLUGINS.get().contains(getPlugin().getName());
     }
 }

@@ -47,7 +47,7 @@ public class PluginRegistry {
     public Map<Plugin, PluginExporter> initialize(ExporterState exporterState) {
         entries.stream()
                 .filter(RegistryEntry::areDependenciesSatisfied)
-                .filter(RegistryEntry::isNotDisabled)
+                .filter(RegistryEntry::isEnabled)
                 .forEach(
                         entry ->
                                 activePlugins.put(

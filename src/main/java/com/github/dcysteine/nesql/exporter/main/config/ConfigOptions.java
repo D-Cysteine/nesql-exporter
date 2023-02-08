@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.main.config;
 
+import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.config.Property;
 
@@ -17,10 +18,10 @@ public final class ConfigOptions {
                     "The default name of the exported repository.")
                     .register();
 
-    public static final Option<List<String>> DISABLED_PLUGINS =
+    public static final Option<List<String>> ENABLED_PLUGINS =
             new StringListOption(
-                    Category.OPTIONS, "disabled_plugins", new ArrayList<>(),
-                    "The list of plugins to manually disable."
+                    Category.OPTIONS, "enabled_plugins", Plugin.NAMES,
+                    "The list of enabled plugins."
                             + " You should not normally need to modify this.")
                     .register();
 
