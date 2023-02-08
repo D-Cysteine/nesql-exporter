@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
+
 /** Contains information about a type of recipe. */
 @Entity
 @EqualsAndHashCode
@@ -117,5 +119,17 @@ public class RecipeType implements Identifiable<String> {
 
     public Dimension getFluidOutputDimension() {
         return fluidOutputDimension;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof RecipeType) {
+            return Comparator.comparing(RecipeType::getCategory)
+                    .thenComparing(RecipeType::getType)
+                    .thenComparing(RecipeType::getId)
+                    .compare(this, (RecipeType) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }
