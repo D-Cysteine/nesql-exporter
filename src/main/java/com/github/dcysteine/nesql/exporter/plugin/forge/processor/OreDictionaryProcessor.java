@@ -23,6 +23,9 @@ public class OreDictionaryProcessor extends PluginHelper {
         int count = 0;
         for (String name : names) {
             count++;
+            if (name.isEmpty()) {
+                continue;
+            }
 
             List<ItemStack> itemStacks =
                     net.minecraftforge.oredict.OreDictionary.getOres(name, false);
