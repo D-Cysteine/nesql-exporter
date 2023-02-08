@@ -52,7 +52,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
                     RecipeBuilder builder = new RecipeBuilder(exporter, recipeType);
                     // TODO if we want to avoid skipping slots, esp. output slots, add null checks.
                     for (ItemStack input : recipe.mInputs) {
-                        builder.addItemGroupInput(GregTechUtil.reverseUnify(input), true);
+                        builder.addItemGroupInput(GregTechUtil.reverseUnify(input));
                     }
                     for (FluidStack input : recipe.mFluidInputs) {
                         builder.addFluidInput(input);

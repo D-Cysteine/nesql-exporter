@@ -12,12 +12,7 @@ import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Post-processor which builds item and fluid input indices for recipes.
- *
- * <p>This post-processor must be run after {@link WildcardItemGroupPostProcessor}, as it needs
- * wildcard item groups to be resolved.
- */
+/** Post-processor which builds item and fluid input indices for recipes. */
 public class RecipePostProcessor extends PluginHelper {
     public RecipePostProcessor(PluginExporter exporter) {
         super(exporter);
@@ -32,7 +27,7 @@ public class RecipePostProcessor extends PluginHelper {
         QueryUtil.getRecipes(entityManager).forEach(
                 recipe -> {
                     recipe.getItemInputs().values().stream()
-                            .map(ItemGroup::getAllItemStacks)
+                            .map(ItemGroup::getItemStacks)
                             .flatMap(Set::stream)
                             .map(ItemStack::getItem)
                             .forEach(recipe::addItemInputsItem);

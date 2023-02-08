@@ -1,10 +1,8 @@
 package com.github.dcysteine.nesql.exporter.util;
 
-import com.github.dcysteine.nesql.exporter.main.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -33,23 +31,6 @@ public final class ItemUtil {
 
     public static boolean hasWildcardItemDamage(ItemStack itemStack) {
         return itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE;
-    }
-
-    public static boolean hasWildcardNbt(ItemStack itemStack) {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().getBoolean("*")) {
-            if (!itemStack.getTagCompound().toString().equals("{*:1b}")) {
-                Logger.MOD.error(
-                        "Found malformed wildcard NBT tag: {}", itemStack.getDisplayName());
-                Logger.MOD.error("NBT: {}", itemStack.getTagCompound().toString());
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isWildcardItem(ItemStack itemStack) {
-        return hasWildcardItemDamage(itemStack) || hasWildcardItemDamage(itemStack);
     }
 
     /** Returns a map of tool class to harvest level. */

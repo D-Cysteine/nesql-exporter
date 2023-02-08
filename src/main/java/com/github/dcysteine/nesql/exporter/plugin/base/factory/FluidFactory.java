@@ -34,8 +34,6 @@ public class FluidFactory extends EntityFactory<Fluid, String> {
         String modId = uniqueName.substring(0, separator);
         String internalName = uniqueName.substring(separator + 1);
 
-        // We don't handle fluid stacks with wildcard NBT.
-        // I don't think I've ever seen a fluid stack with NBT, so I doubt this ever comes up.
         String nbt = "";
         if (fluidStack.tag != null) {
             nbt = fluidStack.tag.toString();

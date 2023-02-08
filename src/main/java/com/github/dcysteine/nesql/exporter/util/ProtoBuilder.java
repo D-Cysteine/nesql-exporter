@@ -8,7 +8,6 @@ import com.github.dcysteine.nesql.exporter.proto.ItemStackPb;
 import com.github.dcysteine.nesql.exporter.proto.ItemStackWithProbabilityPb;
 import com.github.dcysteine.nesql.exporter.proto.RecipeTypePb;
 import com.github.dcysteine.nesql.exporter.proto.RecipePb;
-import com.github.dcysteine.nesql.exporter.proto.WildcardItemStackPb;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
@@ -17,7 +16,6 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
-import com.github.dcysteine.nesql.sql.base.item.WildcardItemStack;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 
 import java.util.Map;
@@ -53,18 +51,11 @@ public final class ProtoBuilder {
                 .build();
     }
 
-    public static ItemGroupPb buildItemGroupPb(
-            Set<ItemStack> itemStacks, Set<WildcardItemStack> wildcardItemStacks) {
+    public static ItemGroupPb buildItemGroupPb(Set<ItemStack> itemStacks) {
         ItemGroupPb.Builder builder = ItemGroupPb.newBuilder();
         itemStacks.stream()
                 .sorted()
                 .forEach(itemStack -> builder.addItemStack(buildItemStackPb(itemStack)));
-        wildcardItemStacks.stream()
-                .sorted()
-                .forEach(
-                        wildcardItemStack ->
-                                builder.addWildcardItemStack(
-                                        buildWildcardItemStackPb(wildcardItemStack)));
         return builder.build();
     }
 
@@ -74,10 +65,6 @@ public final class ProtoBuilder {
                 .sorted()
                 .map(ProtoBuilder::buildItemStackPb)
                 .forEach(builder::addItemStack);
-        itemGroup.getWildcardItemStacks().stream()
-                .sorted()
-                .map(ProtoBuilder::buildWildcardItemStackPb)
-                .forEach(builder::addWildcardItemStack);
         return builder.build();
     }
 
@@ -85,7 +72,8 @@ public final class ProtoBuilder {
         FluidGroupPb.Builder builder = FluidGroupPb.newBuilder();
         fluidStacks.stream()
                 .sorted()
-                .forEach(fluidStack -> builder.addFluidStack(buildFluidStackPb(fluidStack)));
+                .map(ProtoBuilder::buildFluidStackPb)
+                .forEach(builder::addFluidStack);
         return builder.build();
     }
 
@@ -124,15 +112,6 @@ public final class ProtoBuilder {
             builder.setNbt(item.getNbt());
         }
         return builder.build();
-    }
-
-    public static WildcardItemStackPb buildWildcardItemStackPb(
-            WildcardItemStack wildcardItemStack) {
-        return WildcardItemStackPb.newBuilder()
-                .setModId(wildcardItemStack.getModId())
-                .setInternalName(wildcardItemStack.getInternalName())
-                .setStackSize(wildcardItemStack.getStackSize())
-                .build();
     }
 
     public static FluidStackPb buildFluidStackPb(FluidStack fluidStack) {

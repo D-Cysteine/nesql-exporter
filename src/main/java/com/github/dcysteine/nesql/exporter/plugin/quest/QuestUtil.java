@@ -22,7 +22,7 @@ public class QuestUtil {
                 .map(
                         bigItemStack ->
                                 itemGroupFactory.get(
-                                        getItemStacks(bigItemStack), bigItemStack.stackSize, true))
+                                        getItemStacks(bigItemStack), bigItemStack.stackSize))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

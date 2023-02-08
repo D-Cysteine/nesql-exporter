@@ -51,44 +51,40 @@ public class RecipeBuilder extends PluginHelper {
         this.fluidOutputsIndex = 0;
     }
 
-    public RecipeBuilder addItemInput(net.minecraft.item.ItemStack input, boolean handleWildcard) {
+    public RecipeBuilder addItemInput(net.minecraft.item.ItemStack input) {
         if (input == null) {
             return skipItemInput();
         }
 
-        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(input, handleWildcard));
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(input));
         return this;
     }
 
     /** Adds each item in {@code inputs} into a separate input slot. */
-    public RecipeBuilder addAllItemInput(
-            Iterable<net.minecraft.item.ItemStack> inputs, boolean handleWildcard) {
-        inputs.forEach(input -> addItemInput(input, handleWildcard));
+    public RecipeBuilder addAllItemInput(Iterable<net.minecraft.item.ItemStack> inputs) {
+        inputs.forEach(this::addItemInput);
         return this;
     }
 
     /** Adds each item in {@code inputs} into a separate input slot. */
-    public RecipeBuilder addAllItemInput(
-            net.minecraft.item.ItemStack[] inputs, boolean handleWildcard) {
-        Stream.of(inputs).forEach(input -> addItemInput(input, handleWildcard));
+    public RecipeBuilder addAllItemInput(net.minecraft.item.ItemStack[] inputs) {
+        Stream.of(inputs).forEach(this::addItemInput);
         return this;
     }
 
     /** Adds all items in {@code inputs} into a single input slot, as an item group. */
-    public RecipeBuilder addItemGroupInput(
-            Collection<net.minecraft.item.ItemStack> inputs, boolean handleWildcard) {
+    public RecipeBuilder addItemGroupInput(Collection<net.minecraft.item.ItemStack> inputs) {
         if (inputs.stream().allMatch(Objects::isNull)) {
             return skipItemInput();
         }
 
-        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(inputs, handleWildcard));
+        itemInputs.put(itemInputsIndex++, itemGroupFactory.get(inputs));
         return this;
     }
 
     /** Adds all items in {@code inputs} into a single input slot, as an item group. */
-    public RecipeBuilder addItemGroupInput(
-            net.minecraft.item.ItemStack[] inputs, boolean handleWildcard) {
-        return addItemGroupInput(Arrays.asList(inputs), handleWildcard);
+    public RecipeBuilder addItemGroupInput(net.minecraft.item.ItemStack[] inputs) {
+        return addItemGroupInput(Arrays.asList(inputs));
     }
 
     public RecipeBuilder skipItemInput() {

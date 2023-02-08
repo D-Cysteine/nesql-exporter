@@ -146,6 +146,6 @@ public class CraftingRecipeProcessor extends PluginHelper {
             logger.warn("Crafting recipe with bad stack size: " + Arrays.toString(itemStacks));
         }
 
-        builder.addItemGroupInput(fixedItemStacks, true);
+        builder.addItemGroupInput(fixedItemStacks);
     }
 }

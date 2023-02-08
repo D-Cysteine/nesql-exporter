@@ -37,9 +37,9 @@ public class FurnaceRecipeProcessor extends PluginHelper {
             if (itemStacks == null || itemStacks.length == 0) {
                 builder.skipItemInput();
             } else if (itemStacks.length == 1) {
-                builder.addItemInput(itemStacks[0], true);
+                builder.addItemInput(itemStacks[0]);
             } else {
-                builder.addItemGroupInput(itemStacks, true);
+                builder.addItemGroupInput(itemStacks);
             }
 
             builder.addItemOutput(recipe.getValue()).build();

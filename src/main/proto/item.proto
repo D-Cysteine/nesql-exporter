@@ -6,7 +6,6 @@ option java_multiple_files = true;
 
 message ItemGroupPb {
   repeated ItemStackPb item_stack = 1;
-  repeated WildcardItemStackPb wildcard_item_stack = 2;
 }
 
 message ItemStackPb {
@@ -24,10 +23,4 @@ message ItemStackWithProbabilityPb {
   int32 stack_size = 4;
   string nbt = 5;
   double probability = 6;
-}
-
-message WildcardItemStackPb {
-  string mod_id = 1;
-  string internal_name = 2;
-  int32 stack_size = 3;
 }
