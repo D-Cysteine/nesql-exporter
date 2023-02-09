@@ -14,6 +14,7 @@ import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -147,5 +148,16 @@ public class Quest implements Identifiable<String> {
 
     public List<Reward> getRewards() {
         return rewards;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof Quest) {
+            return Comparator.comparing(Quest::getName)
+                    .thenComparing(Quest::getId)
+                    .compare(this, (Quest) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }

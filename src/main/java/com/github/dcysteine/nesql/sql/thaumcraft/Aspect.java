@@ -10,6 +10,7 @@ import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -90,5 +91,17 @@ public class Aspect implements Identifiable<String> {
 
     public Set<Aspect> getComponentOf() {
         return componentOf;
+    }
+
+    @Override
+    public int compareTo(Identifiable<String> other) {
+        if (other instanceof Aspect) {
+            return Comparator.comparing(Aspect::isPrimal)
+                    .thenComparing(Aspect::getName)
+                    .thenComparing(Aspect::getId)
+                    .compare(this, (Aspect) other);
+        } else {
+            return Identifiable.super.compareTo(other);
+        }
     }
 }
