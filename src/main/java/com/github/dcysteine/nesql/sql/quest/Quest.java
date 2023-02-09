@@ -6,7 +6,6 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -43,6 +42,11 @@ public class Quest implements Identifiable<String> {
     private String visibility;
 
     private int repeatTime;
+
+    /** Quest lines that this quest belongs to. */
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "quests")
+    private Set<QuestLine> questLines;
 
     @Column(nullable = false)
     private String questLogic;
@@ -120,6 +124,10 @@ public class Quest implements Identifiable<String> {
 
     public int getRepeatTime() {
         return repeatTime;
+    }
+
+    public Set<QuestLine> getQuestLines() {
+        return questLines;
     }
 
     public String getQuestLogic() {

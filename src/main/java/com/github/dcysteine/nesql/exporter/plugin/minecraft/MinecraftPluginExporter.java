@@ -2,8 +2,6 @@ package com.github.dcysteine.nesql.exporter.plugin.minecraft;
 
 import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
-import com.github.dcysteine.nesql.exporter.plugin.minecraft.processor.CraftingRecipeProcessor;
-import com.github.dcysteine.nesql.exporter.plugin.minecraft.processor.FurnaceRecipeProcessor;
 import com.github.dcysteine.nesql.sql.Plugin;
 
 /** Plugin which handles vanilla Minecraft recipes. */

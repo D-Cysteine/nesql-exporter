@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.plugin.minecraft.processor;
+package com.github.dcysteine.nesql.exporter.plugin.minecraft;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;

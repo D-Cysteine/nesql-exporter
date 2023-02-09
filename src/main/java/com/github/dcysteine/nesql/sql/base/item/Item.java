@@ -7,7 +7,6 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
