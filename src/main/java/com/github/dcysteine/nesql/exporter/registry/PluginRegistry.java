@@ -5,6 +5,7 @@ import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.forge.ForgePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.GregTechPluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.minecraft.MinecraftPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.ThaumcraftPluginExporter;
@@ -24,6 +25,7 @@ public class PluginRegistry {
 
         // Add new plugins here!
         builder.add(RegistryEntry.create(Plugin.BASE, BasePluginExporter::new));
+        builder.add(RegistryEntry.create(Plugin.MINECRAFT, MinecraftPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.FORGE, ForgePluginExporter::new));
 
@@ -53,6 +55,9 @@ public class PluginRegistry {
                                 activePlugins.put(
                                         entry.getPlugin(), entry.instantiate(exporterState)));
 
+        if (!activePlugins.containsKey(Plugin.BASE)) {
+            throw new IllegalStateException("base plugin must be enabled!");
+        }
         return activePlugins;
     }
 

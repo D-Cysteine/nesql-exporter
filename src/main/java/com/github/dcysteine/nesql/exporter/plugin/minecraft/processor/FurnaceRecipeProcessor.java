@@ -1,10 +1,10 @@
-package com.github.dcysteine.nesql.exporter.plugin.base.processor;
+package com.github.dcysteine.nesql.exporter.plugin.minecraft.processor;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
-import com.github.dcysteine.nesql.exporter.plugin.base.BaseRecipeTypeHandler;
+import com.github.dcysteine.nesql.exporter.plugin.minecraft.MinecraftRecipeTypeHandler;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import net.minecraft.item.ItemStack;
@@ -16,10 +16,11 @@ public class FurnaceRecipeProcessor extends PluginHelper {
     private final RecipeType furnace;
 
     public FurnaceRecipeProcessor(
-            PluginExporter exporter, BaseRecipeTypeHandler recipeTypeHandler) {
+            PluginExporter exporter, MinecraftRecipeTypeHandler recipeTypeHandler) {
         super(exporter);
         this.furnace =
-                recipeTypeHandler.getRecipeType(BaseRecipeTypeHandler.BaseRecipeType.FURNACE);
+                recipeTypeHandler.getRecipeType(
+                        MinecraftRecipeTypeHandler.MinecraftRecipeType.FURNACE);
     }
 
     public void process() {

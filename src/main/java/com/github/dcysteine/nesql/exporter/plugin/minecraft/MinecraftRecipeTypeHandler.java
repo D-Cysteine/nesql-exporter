@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.plugin.base;
+package com.github.dcysteine.nesql.exporter.plugin.minecraft;
 
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
@@ -11,22 +11,22 @@ import net.minecraft.init.Blocks;
 
 import java.util.EnumMap;
 
-public class BaseRecipeTypeHandler extends PluginHelper {
-    public static final String RECIPE_ID = "base";
+public class MinecraftRecipeTypeHandler extends PluginHelper {
+    public static final String RECIPE_ID = "minecraft";
     public static final String RECIPE_CATEGORY = "minecraft";
 
-    public enum BaseRecipeType {
+    public enum MinecraftRecipeType {
         SHAPED_CRAFTING,
         SHAPELESS_CRAFTING,
         FURNACE,
         ;
     }
 
-    private final EnumMap<BaseRecipeType, RecipeType> recipeTypeMap;
+    private final EnumMap<MinecraftRecipeType, RecipeType> recipeTypeMap;
 
-    public BaseRecipeTypeHandler(PluginExporter exporter) {
+    public MinecraftRecipeTypeHandler(PluginExporter exporter) {
         super(exporter);
-        recipeTypeMap = new EnumMap<>(BaseRecipeType.class);
+        recipeTypeMap = new EnumMap<>(MinecraftRecipeType.class);
     }
 
     public void initialize() {
@@ -35,7 +35,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
 
         Item craftingTable = itemFactory.get(ItemUtil.getItemStack(Blocks.crafting_table).get());
         recipeTypeMap.put(
-                BaseRecipeType.SHAPED_CRAFTING,
+                MinecraftRecipeType.SHAPED_CRAFTING,
                 recipeTypeFactory.newBuilder()
                         .setId(RECIPE_ID, "crafting", "shaped")
                         .setCategory(RECIPE_CATEGORY)
@@ -46,7 +46,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
                         .setItemOutputDimension(1, 1)
                         .build());
         recipeTypeMap.put(
-                BaseRecipeType.SHAPELESS_CRAFTING,
+                MinecraftRecipeType.SHAPELESS_CRAFTING,
                 recipeTypeFactory.newBuilder()
                         .setId(RECIPE_ID, "crafting", "shapeless")
                         .setCategory(RECIPE_CATEGORY)
@@ -59,7 +59,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
 
         Item furnace = itemFactory.get(ItemUtil.getItemStack(Blocks.furnace).get());
         recipeTypeMap.put(
-                BaseRecipeType.FURNACE,
+                MinecraftRecipeType.FURNACE,
                 recipeTypeFactory.newBuilder()
                         .setId(RECIPE_ID, "furnace")
                         .setCategory(RECIPE_CATEGORY)
@@ -71,7 +71,7 @@ public class BaseRecipeTypeHandler extends PluginHelper {
                         .build());
     }
 
-    public RecipeType getRecipeType(BaseRecipeType recipeType) {
+    public RecipeType getRecipeType(MinecraftRecipeType recipeType) {
         return recipeTypeMap.get(recipeType);
     }
 }

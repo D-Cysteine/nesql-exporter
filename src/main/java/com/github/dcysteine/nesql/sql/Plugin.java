@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 public enum Plugin {
     BASE("base"),
+    MINECRAFT("minecraft"),
     NEI("nei"),
     FORGE("forge"),
 
