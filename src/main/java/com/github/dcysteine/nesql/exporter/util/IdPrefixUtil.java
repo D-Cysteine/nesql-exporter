@@ -25,6 +25,7 @@ public enum IdPrefixUtil {
     ASPECT_ENTRY("tcae"),
 
     QUEST("q"),
+    QUEST_LINE("ql"),
     QUEST_TASK("qt"),
     QUEST_REWARD("qr"),
     ;

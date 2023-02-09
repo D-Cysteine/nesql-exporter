@@ -13,6 +13,7 @@ public class QuestPluginExporter extends PluginExporter {
     @Override
     public void process() {
         new QuestProcessor(this).process();
+        new QuestLineProcessor(this).process();
     }
 
     @Override
