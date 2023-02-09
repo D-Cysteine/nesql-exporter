@@ -56,7 +56,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
             List<FluidStack> fluids = QuestUtil.buildFluids(fluidFactory, typedTask.requiredFluids);
             taskEntity =
                     new Task(
-                            id, name, TaskType.CRAFTING, new ArrayList<>(), fluids, "", 0, "");
+                            id, name, TaskType.FLUID, new ArrayList<>(), fluids, "", 0, "");
 
         } else if (task instanceof TaskCheckbox) {
             taskEntity =
@@ -77,7 +77,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
             TaskLocation typedTask = (TaskLocation) task;
             taskEntity =
                     new Task(
-                            id, name, TaskType.UNHANDLED, new ArrayList<>(), new ArrayList<>(),
+                            id, name, TaskType.LOCATION, new ArrayList<>(), new ArrayList<>(),
                             "", 0, TaskLocation.getDimName(typedTask.dim));
 
         } else {
