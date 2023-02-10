@@ -42,7 +42,8 @@ computer ~60 min. There are ~150k exported images, which take up a total of
 7. You can now pause the game, and the export will continue while the game is
    paused. Doing this can make things a little bit faster.
 8. Wait for the export process to finish. It can take a very long time depending
-   on how many mods you have installed.
+   on how many mods you have installed. The exported database can be found in
+   `.minecraft/nesql`.
 9. Once the export is finished, you can delete the two mod jars. Remember to
    replace `bugtorch-1.7.10-*.jar` if you moved it earlier.
 
