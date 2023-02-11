@@ -46,6 +46,8 @@ public class Task implements Identifiable<String> {
     @OrderColumn
     private List<FluidStack> fluids;
 
+    private boolean consume;
+
     @Column(nullable = false)
     private String entityId;
 
@@ -60,12 +62,13 @@ public class Task implements Identifiable<String> {
     public Task(
             String id, String name, TaskType type,
             List<ItemGroup> items, List<FluidStack> fluids,
-            String entityId, int numberRequired, String dimensionName) {
+            boolean consume, String entityId, int numberRequired, String dimensionName) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.items = items;
         this.fluids = fluids;
+        this.consume = consume;
         this.entityId = entityId;
         this.numberRequired = numberRequired;
         this.dimensionName = dimensionName;
@@ -90,6 +93,10 @@ public class Task implements Identifiable<String> {
 
     public List<FluidStack> getFluids() {
         return fluids;
+    }
+
+    public boolean isConsume() {
+        return consume;
     }
 
     public String getEntityId() {
