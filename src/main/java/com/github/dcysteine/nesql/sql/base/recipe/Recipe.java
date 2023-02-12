@@ -40,19 +40,6 @@ public class Recipe implements Identifiable<String> {
     @ManyToMany
     private Map<Integer, ItemGroup> itemInputs;
 
-    /**
-     * Set of unique input item groups.
-     *
-     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
-     * distinct results and sorting, so we must include a copy of {@link #itemInputs} that doesn't
-     * have duplicate entries in order to have both.
-     */
-    @ManyToMany
-    @JoinTable(
-            name = "RECIPE_UNIQUE_ITEM_INPUTS",
-            indexes = {@Index(columnList = "UNIQUE_ITEM_INPUTS_ID")})
-    private Set<ItemGroup> uniqueItemInputs;
-
     /** We directly include item inputs to this recipe, to speed up queries. */
     @ManyToMany
     @JoinTable(
@@ -63,19 +50,6 @@ public class Recipe implements Identifiable<String> {
     /** Map of input index to fluid group. May be sparse for shaped recipes. */
     @ManyToMany
     private Map<Integer, FluidGroup> fluidInputs;
-
-    /**
-     * Set of unique input fluid groups.
-     *
-     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
-     * distinct results and sorting, so we must include a copy of {@link #fluidInputs} that doesn't
-     * have duplicate entries in order to have both.
-     */
-    @ManyToMany
-    @JoinTable(
-            name = "RECIPE_UNIQUE_FLUID_INPUTS",
-            indexes = {@Index(columnList = "UNIQUE_FLUID_INPUTS_ID")})
-    private Set<FluidGroup> uniqueFluidInputs;
 
     /** We directly include fluid inputs to this recipe, to speed up queries. */
     @ManyToMany
@@ -88,35 +62,9 @@ public class Recipe implements Identifiable<String> {
     @ElementCollection
     private Map<Integer, ItemStackWithProbability> itemOutputs;
 
-    /**
-     * Set of unique output items.
-     *
-     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
-     * distinct results and sorting, so we must include a copy of {@link #itemOutputs} that doesn't
-     * have duplicate entries in order to have both.
-     */
-    @ManyToMany
-    @JoinTable(
-            name = "RECIPE_UNIQUE_ITEM_OUTPUTS",
-            indexes = {@Index(columnList = "UNIQUE_ITEM_OUTPUTS_ID")})
-    private Set<Item> uniqueItemOutputs;
-
     /** Map of output index to fluid stack with probability. May be sparse for shaped recipes. */
     @ElementCollection
     private Map<Integer, FluidStackWithProbability> fluidOutputs;
-
-    /**
-     * Set of unique output fluids.
-     *
-     * <p>For whatever reason, it seems that JPA Specification does not support both retrieving
-     * distinct results and sorting, so we must include a copy of {@link #fluidOutputs} that doesn't
-     * have duplicate entries in order to have both.
-     */
-    @ManyToMany
-    @JoinTable(
-            name = "RECIPE_UNIQUE_FLUID_OUTPUTS",
-            indexes = {@Index(columnList = "UNIQUE_FLUID_OUTPUTS_ID")})
-    private Set<Fluid> uniqueFluidOutputs;
 
     /** Needed by Hibernate. */
     protected Recipe() {}
@@ -135,21 +83,8 @@ public class Recipe implements Identifiable<String> {
         this.itemOutputs = itemOutputs;
         this.fluidOutputs = fluidOutputs;
 
-        uniqueItemInputs = new HashSet<>();
-        uniqueItemInputs.addAll(itemInputs.values());
         itemInputsItems = new HashSet<>();
-        uniqueFluidInputs = new HashSet<>();
-        uniqueFluidInputs.addAll(fluidInputs.values());
         fluidInputsFluids = new HashSet<>();
-
-        uniqueItemOutputs = new HashSet<>();
-        itemOutputs.values().stream()
-                .map(ItemStackWithProbability::getItem)
-                .forEach(uniqueItemOutputs::add);
-        uniqueFluidOutputs = new HashSet<>();
-        fluidOutputs.values().stream()
-                .map(FluidStackWithProbability::getFluid)
-                .forEach(uniqueFluidOutputs::add);
     }
 
     @Override
@@ -165,10 +100,6 @@ public class Recipe implements Identifiable<String> {
         return itemInputs;
     }
 
-    public Set<ItemGroup> getUniqueItemInputs() {
-        return uniqueItemInputs;
-    }
-
     public Set<Item> getItemInputsItems() {
         return itemInputsItems;
     }
@@ -179,10 +110,6 @@ public class Recipe implements Identifiable<String> {
 
     public Map<Integer, FluidGroup> getFluidInputs() {
         return fluidInputs;
-    }
-
-    public Set<FluidGroup> getUniqueFluidInputs() {
-        return uniqueFluidInputs;
     }
 
     public Set<Fluid> getFluidInputsFluids() {
@@ -197,16 +124,8 @@ public class Recipe implements Identifiable<String> {
         return itemOutputs;
     }
 
-    public Set<Item> getUniqueItemOutputs() {
-        return uniqueItemOutputs;
-    }
-
     public Map<Integer, FluidStackWithProbability> getFluidOutputs() {
         return fluidOutputs;
-    }
-
-    public Set<Fluid> getUniqueFluidOutputs() {
-        return uniqueFluidOutputs;
     }
 
     @Override
