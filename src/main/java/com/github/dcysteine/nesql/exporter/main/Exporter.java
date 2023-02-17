@@ -102,7 +102,7 @@ public final class Exporter {
         //+ ";hsqldb.lob_compressed=true;hsqldb.lob_file_scale=1"
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
-                        .createEntityManagerFactory("DB", properties);
+                        .createEntityManagerFactory("NESQL", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
