@@ -11,7 +11,7 @@ public class GregTechUtil {
 
     /** Returns a list of item stacks that unify into the provided item stack. */
     public static List<ItemStack> reverseUnify(ItemStack itemStack) {
-        ItemStack unified = GT_OreDictUnificator.get_nocopy(itemStack);
+        ItemStack unified = GT_OreDictUnificator.get(itemStack);
         return GT_OreDictUnificator.getNonUnifiedStacks(unified);
     }
 
