@@ -13,6 +13,7 @@ import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.io.PrintWriter;
@@ -42,6 +43,10 @@ public class ItemFactory extends EntityFactory<Item, String> {
         String modId = uniqueId.modId;
         String internalName = uniqueId.name;
 
+        // We can't just call itemStack.getItemDamage(), because that may have been overridden
+        // to return something other than the raw ItemStack.itemDamage field.
+        int itemDamage = Items.feather.getDamage(itemStack);
+
         String nbt = "";
         if (itemStack.hasTagCompound()) {
             nbt = itemStack.getTagCompound().toString();
@@ -63,7 +68,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     itemStack.getUnlocalizedName(),
                     StringUtil.stripFormatting(itemStack.getDisplayName()),
                     ItemUtil.getItemId(itemStack),
-                    itemStack.getItemDamage(),
+                    itemDamage,
                     nbt,
                     tooltip,
                     itemStack.getMaxStackSize(),
@@ -84,7 +89,7 @@ public class ItemFactory extends EntityFactory<Item, String> {
                     "ERROR",
                     "ERROR",
                     ItemUtil.getItemId(itemStack),
-                    itemStack.getItemDamage(),
+                    itemDamage,
                     nbt,
                     stackTrace,
                     itemStack.getMaxStackSize(),
