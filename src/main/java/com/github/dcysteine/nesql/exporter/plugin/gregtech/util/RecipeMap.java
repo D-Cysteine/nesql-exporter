@@ -47,16 +47,6 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(0, 0)),
 
-    DISASSEMBLER(
-            GT_Recipe.GT_Recipe_Map.sDisassemblerRecipes,
-            "disassembler",
-            ItemList.Machine_HV_Disassembler,
-            true,
-            new Dimension(1, 1),
-            new Dimension(0, 0),
-            new Dimension(3, 3),
-            new Dimension(0, 0)),
-
     SCANNER(
             GT_Recipe.GT_Recipe_Map.sScannerFakeRecipes,
             "scanner",
