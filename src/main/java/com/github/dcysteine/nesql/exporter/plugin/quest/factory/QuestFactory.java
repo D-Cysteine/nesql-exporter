@@ -4,6 +4,7 @@ import betterquesting.api.properties.NativeProps;
 import betterquesting.api.questing.IQuest;
 import betterquesting.api.questing.rewards.IReward;
 import betterquesting.api.questing.tasks.ITask;
+import betterquesting.api.utils.UuidConverter;
 import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.QuestTranslation;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
@@ -17,10 +18,11 @@ import com.github.dcysteine.nesql.sql.quest.Reward;
 import com.github.dcysteine.nesql.sql.quest.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class QuestFactory extends EntityFactory<Quest, String> {
@@ -35,8 +37,9 @@ public class QuestFactory extends EntityFactory<Quest, String> {
         rewardFactory = new RewardFactory(exporter);
     }
 
-    public Quest get(int questId, IQuest quest) {
-        String id = IdPrefixUtil.QUEST.applyPrefix(Integer.toString(questId));
+    public Quest get(UUID questId, IQuest quest) {
+        String encodedQuestId = UuidConverter.encodeUuid(questId);
+        String id = IdPrefixUtil.QUEST.applyPrefix(encodedQuestId);
         Item icon = itemFactory.get(quest.getProperty(NativeProps.ICON).getBaseStack());
 
         String name =
@@ -55,24 +58,25 @@ public class QuestFactory extends EntityFactory<Quest, String> {
         int taskIndex = 0;
         List<Task> tasks = new ArrayList<>();
         for (DBEntry<ITask> entry : quest.getTasks().getEntries()) {
-            tasks.add(taskFactory.get(questId, taskIndex++, entry.getValue()));
+            tasks.add(taskFactory.get(encodedQuestId, taskIndex++, entry.getValue()));
         }
 
         int rewardIndex = 0;
         List<Reward> rewards = new ArrayList<>();
         for (DBEntry<IReward> entry : quest.getRewards().getEntries()) {
-            rewards.add(rewardFactory.get(questId, rewardIndex++, entry.getValue()));
+            rewards.add(rewardFactory.get(encodedQuestId, rewardIndex++, entry.getValue()));
         }
 
         Quest questEntity =
                 new Quest(
-                        id, questId, icon, name, description, visibility, repeatTime,
+                        id, encodedQuestId, icon, name, description, visibility, repeatTime,
                         questLogic, taskLogic, tasks, rewards);
         return findOrPersist(Quest.class, questEntity);
     }
 
-    public Quest findQuest(int questId) {
-        String id = IdPrefixUtil.QUEST.applyPrefix(Integer.toString(questId));
+    public Quest findQuest(UUID questId) {
+        String encodedQuestId = UuidConverter.encodeUuid(questId);
+        String id = IdPrefixUtil.QUEST.applyPrefix(encodedQuestId);
         Quest quest = entityManager.find(Quest.class, id);
         if (quest == null) {
             throw new IllegalStateException("Could not find quest: " + questId);
@@ -80,10 +84,10 @@ public class QuestFactory extends EntityFactory<Quest, String> {
         return quest;
     }
 
-    public void setRequiredQuests(Quest quest, int[] requiredQuestIds) {
+    public void setRequiredQuests(Quest quest, Collection<UUID> requiredQuestIds) {
         Set<Quest> requiredQuests =
-                Arrays.stream(requiredQuestIds)
-                        .mapToObj(this::findQuest)
+                requiredQuestIds.stream()
+                        .map(this::findQuest)
                         .collect(Collectors.toCollection(HashSet::new));
 
         quest.setRequiredQuests(requiredQuests);

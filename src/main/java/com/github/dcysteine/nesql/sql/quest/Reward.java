@@ -47,14 +47,15 @@ public class Reward implements Identifiable<String> {
 
     private boolean levels;
 
-    private int completeQuestId;
+    @Column(nullable = false)
+    private String completeQuestId;
 
     /** Needed by Hibernate. */
     protected Reward() {}
 
     public Reward(
             String id, String name, RewardType type, List<ItemGroup> items,
-            String command, int xp, boolean levels, int completeQuestId) {
+            String command, int xp, boolean levels, String completeQuestId) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -94,7 +95,7 @@ public class Reward implements Identifiable<String> {
         return levels;
     }
 
-    public int getCompleteQuestId() {
+    public String getCompleteQuestId() {
         return completeQuestId;
     }
 }

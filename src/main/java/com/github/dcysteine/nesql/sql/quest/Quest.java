@@ -27,7 +27,8 @@ public class Quest implements Identifiable<String> {
     private String id;
 
     /** The quest ID in the BetterQuesting database. */
-    private int questId;
+    @Column(nullable = false)
+    private String questId;
 
     @ManyToOne
     private Item icon;
@@ -80,7 +81,7 @@ public class Quest implements Identifiable<String> {
      * after all quests have been committed to the DB.
      */
     public Quest(
-            String id, int questId, Item icon, String name, String description,
+            String id, String questId, Item icon, String name, String description,
             String visibility, int repeatTime,
             String questLogic, String taskLogic, List<Task> tasks, List<Reward> rewards) {
         this.id = id;
@@ -102,7 +103,7 @@ public class Quest implements Identifiable<String> {
         return id;
     }
 
-    public int getQuestId() {
+    public String getQuestId() {
         return questId;
     }
 

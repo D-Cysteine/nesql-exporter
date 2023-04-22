@@ -32,10 +32,9 @@ public class TaskFactory extends EntityFactory<Task, String> {
         fluidFactory = new FluidFactory(exporter);
     }
 
-    public Task get(int questId, int index, ITask task) {
+    public Task get(String encodedQuestId, int index, ITask task) {
         String id =
-                IdPrefixUtil.QUEST_TASK.applyPrefix(
-                        Integer.toString(questId), Integer.toString(index));
+                IdPrefixUtil.QUEST_TASK.applyPrefix(encodedQuestId, Integer.toString(index));
         String name = QuestTranslation.translate(task.getUnlocalisedName());
 
         Task taskEntity;

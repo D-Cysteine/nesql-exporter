@@ -23,7 +23,8 @@ public class QuestLine implements Identifiable<String> {
     private String id;
 
     /** The quest line ID in the BetterQuesting database. */
-    private int questLineId;
+    @Column(nullable = false)
+    private String questLineId;
 
     @ManyToOne
     private Item icon;
@@ -46,7 +47,7 @@ public class QuestLine implements Identifiable<String> {
     protected QuestLine() {}
 
     public QuestLine(
-            String id, int questLineId, Item icon, String name, String description,
+            String id, String questLineId, Item icon, String name, String description,
             String visibility, Set<Quest> quests) {
         this.id = id;
         this.questLineId = questLineId;
@@ -62,7 +63,7 @@ public class QuestLine implements Identifiable<String> {
         return id;
     }
 
-    public int getQuestLineId() {
+    public String getQuestLineId() {
         return questLineId;
     }
 
