@@ -8,7 +8,6 @@ buildscript {
     }
     dependencies {
         classpath("net.minecraftforge.gradle:ForgeGradle:1.2.13")
-        classpath("com.google.protobuf:protobuf-gradle-plugin:0.9.1")
     }
 }
 
@@ -16,7 +15,7 @@ plugins {
     idea
     java
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("com.google.protobuf") version "0.9.1"
+    id("com.google.protobuf") version "0.9.3"
 }
 
 apply(plugin = "forge")
@@ -33,6 +32,12 @@ idea {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.0.0-rc-2"
+    }
 }
 
 tasks.withType<JavaCompile> {
