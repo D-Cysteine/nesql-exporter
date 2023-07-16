@@ -3,11 +3,7 @@ package com.github.dcysteine.nesql.sql.quest;
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.base.item.Item;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -38,24 +34,24 @@ public class QuestLine implements Identifiable<String> {
     @Column(nullable = false)
     private String visibility;
 
-    /** Quests that are part of this quest line. */
+    /** Quest line entries that are part of this quest line. */
     @EqualsAndHashCode.Exclude
-    @ManyToMany
-    private Set<Quest> quests;
+    @OneToMany(mappedBy = "questLine")
+    private Set<QuestLineEntry> questLineEntries;
 
     /** Needed by Hibernate. */
     protected QuestLine() {}
 
     public QuestLine(
             String id, String questLineId, Item icon, String name, String description,
-            String visibility, Set<Quest> quests) {
+            String visibility, Set<QuestLineEntry> questLineEntries) {
         this.id = id;
         this.questLineId = questLineId;
         this.icon = icon;
         this.name = name;
         this.description = description;
         this.visibility = visibility;
-        this.quests = quests;
+        this.questLineEntries = questLineEntries;
     }
 
     @Override
@@ -83,8 +79,8 @@ public class QuestLine implements Identifiable<String> {
         return visibility;
     }
 
-    public Set<Quest> getQuests() {
-        return quests;
+    public Set<QuestLineEntry> getQuestLineEntries() {
+        return questLineEntries;
     }
 
     @Override

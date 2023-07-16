@@ -26,6 +26,7 @@ public enum IdPrefixUtil {
 
     QUEST("q"),
     QUEST_LINE("ql"),
+    QUEST_LINE_ENTRY("qle"),
     QUEST_TASK("qt"),
     QUEST_REWARD("qr"),
     ;
