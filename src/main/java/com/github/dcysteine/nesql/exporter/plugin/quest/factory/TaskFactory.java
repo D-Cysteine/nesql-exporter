@@ -2,24 +2,13 @@ package com.github.dcysteine.nesql.exporter.plugin.quest.factory;
 
 import betterquesting.api.questing.tasks.ITask;
 import betterquesting.api2.utils.QuestTranslation;
-import bq_standard.tasks.TaskCheckbox;
-import bq_standard.tasks.TaskCrafting;
-import bq_standard.tasks.TaskFluid;
-import bq_standard.tasks.TaskHunt;
-import bq_standard.tasks.TaskLocation;
-import bq_standard.tasks.TaskRetrieval;
-import com.github.dcysteine.nesql.exporter.main.Logger;
-import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
+import bq_standard.tasks.*;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemGroupFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
-import com.github.dcysteine.nesql.exporter.util.IdUtil;
-import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
-import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
-import com.github.dcysteine.nesql.sql.base.entity.Entity;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
 import com.github.dcysteine.nesql.sql.quest.Task;
@@ -39,7 +28,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
         fluidFactory = new FluidFactory(exporter);
         entityFactory = new com.github.dcysteine.nesql.exporter.plugin.base.factory.EntityFactory(exporter);
     }
-    int doAll = 0;
+
     public Task get(String encodedQuestId, int index, ITask task) {
         String id =
                 IdPrefixUtil.QUEST_TASK.applyPrefix(encodedQuestId, Integer.toString(index));

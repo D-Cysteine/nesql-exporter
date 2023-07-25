@@ -10,10 +10,8 @@ import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.exporter.util.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.util.render.RenderJob;
 import com.github.dcysteine.nesql.sql.base.entity.Entity;
-import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityList;
-import net.minecraftforge.fluids.FluidStack;
 
 public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.EntityFactory<Entity, String> {
     public EntityFactory(PluginExporter exporter) {
