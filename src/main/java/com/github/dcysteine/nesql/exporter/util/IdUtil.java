@@ -2,9 +2,12 @@ package com.github.dcysteine.nesql.exporter.util;
 
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -72,6 +75,34 @@ public final class IdUtil {
         int firstIndex = fluidId.indexOf(ID_SEPARATOR);
         return "fluid" + File.separator + fluidId.substring(0, firstIndex) + File.separator
                 + fluidId.substring(firstIndex + ID_SEPARATOR.length())
+                + Renderer.IMAGE_FILE_EXTENSION;
+    }
+
+    public static String entityId(Entity entity) {
+        String id = entityId(EntityList.getEntityString(entity));
+
+        NBTTagCompound nbt = entity.getEntityData();
+        if (nbt != null) {
+            id += ID_SEPARATOR + StringUtil.encodeNbt(nbt);
+        }
+
+        return id;
+    }
+
+    public static String entityId(String entityId) {
+        int firstIndex = entityId.indexOf('.');
+        if (firstIndex > 0)
+            return sanitize(entityId.substring(0, firstIndex) + ID_SEPARATOR
+                    + entityId.substring(firstIndex + ID_SEPARATOR.length()));
+        else
+            return sanitize("minecraft" + ID_SEPARATOR + entityId);
+    }
+
+    public static String imageFilePath(Entity entity) {
+        String entityId = entityId(entity);
+        int firstIndex = entityId.indexOf(ID_SEPARATOR);
+        return "entity" + File.separator + entityId.substring(0, firstIndex) + File.separator
+                + entityId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
     }
 

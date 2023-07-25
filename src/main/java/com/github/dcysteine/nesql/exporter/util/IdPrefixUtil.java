@@ -9,6 +9,7 @@ import java.util.Set;
 public enum IdPrefixUtil {
     ITEM("i"),
     FLUID("f"),
+    ENTITY("e"),
     ITEM_GROUP("ig"),
     FLUID_GROUP("fg"),
     RECIPE("r"),

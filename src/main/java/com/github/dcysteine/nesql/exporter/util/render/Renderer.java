@@ -1,5 +1,11 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
+import betterquesting.api.utils.RenderUtils;
+import betterquesting.api2.client.gui.controls.io.ValueFuncIO;
+import betterquesting.api2.client.gui.misc.GuiAlign;
+import betterquesting.api2.client.gui.misc.GuiRectangle;
+import betterquesting.api2.client.gui.misc.GuiTransform;
+import betterquesting.api2.client.gui.misc.IGuiRect;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
@@ -7,11 +13,15 @@ import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -23,9 +33,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
-import java.util.Set;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {
@@ -175,6 +184,26 @@ public enum Renderer {
 
                 // Reset colour blending.
                 GL11.glColor4f(1f, 1f, 1f, 1f);
+                break;
+
+            case ENTITY:
+                if (job.getEntity() == null)
+                    return;
+
+
+                GL11.glColor4f(1F, 1F, 1F, 1F);
+
+                int sizeX = 16;
+                int sizeY = 16;
+                float scale = Math.min((sizeY/2F)/job.getEntity().height, (sizeX/2F)/job.getEntity().width);
+
+                if (job.getEntity().getClass().toString().contains("Wisp")) {
+                    RenderUtils.RenderEntity(sizeX / 2, sizeY / 2, (int) scale, 0F, 90F, job.getEntity());
+                } else {
+                    RenderUtils.RenderEntity(sizeX / 2,
+                            sizeY / 2 + MathHelper.ceiling_float_int(job.getEntity().height * scale / 2F),
+                            (int) scale, -30F, 15F, job.getEntity());
+                }
                 break;
 
             default:

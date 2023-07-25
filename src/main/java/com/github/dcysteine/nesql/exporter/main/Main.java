@@ -13,6 +13,11 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+
+import java.util.Iterator;
 
 /** Main entry point for Not Enough SQL Exporter. */
 @Mod(
@@ -39,6 +44,18 @@ public final class Main {
             return;
         }
         Logger.MOD.info("Mod initialization starting...");
+
+        int j = 0;
+        for (Iterator<String> i = EntityList.stringToClassMapping.keySet().iterator(); i.hasNext();) {
+            String item = i.next();
+            Logger.MOD.info("Entity " + j++ + ": " + item + ", = " + EntityList.stringToClassMapping.get(item));
+/*            Entity e = EntityList.createEntityByName(item, Minecraft.getMinecraft().theWorld);
+            if (e != null) {
+                Logger.MOD.info("Entity " + j++ + ": " + item + ", = " + EntityList.stringToClassMapping.get(item));
+            } else {
+                Logger.MOD.info("Entity " + j++ + ": " + item + " = null");
+            }*/
+        }
 
         ConfigGuiFactory.checkClassName();
         Config.initialize();

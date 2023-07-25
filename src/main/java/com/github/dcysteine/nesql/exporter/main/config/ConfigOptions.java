@@ -53,6 +53,12 @@ public final class ConfigOptions {
                     "Whether to render item and fluid icons when exporting.")
                     .register();
 
+    public static final Option<Boolean> RENDER_ENTITIES =
+            new BooleanOption(
+                    Category.OPTIONS, "render_entities", true,
+                    "Whether to render entities when exporting.")
+                    .register();
+
     public static final Option<Integer> RENDER_ICONS_PER_TICK =
             new IntegerOption(
                     Category.OPTIONS, "render_icons_per_tick", 256,
