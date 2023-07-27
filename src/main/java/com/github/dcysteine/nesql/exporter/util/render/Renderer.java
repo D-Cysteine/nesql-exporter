@@ -12,8 +12,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -178,23 +179,29 @@ public enum Renderer {
                 break;
 
             case ENTITY:
-                if (job.getEntity() == null)
-                    return;
-
-
                 GL11.glColor4f(1F, 1F, 1F, 1F);
 
-                int sizeX = 16;
-                int sizeY = 16;
-                float scale = Math.min((sizeY/2F)/job.getEntity().height, (sizeX/2F)/job.getEntity().width);
+                int rectSize = 16;
+                int half = rectSize / 2;
+                Entity mob = job.getEntity();
+                String mobName = EntityList.getEntityString(mob);
+                float scale = mob.width > mob.height ? half / mob.width : half / mob.height;
+                float rotation, pitch, offsetY;
 
-                if (job.getEntity().getClass().toString().contains("Wisp")) {
-                    RenderUtils.RenderEntity(sizeX / 2, sizeY / 2, (int) scale, 0F, 90F, job.getEntity());
+                if (mobName.contains("Wisp")) {
+                    rotation = offsetY = 0F;
+                    pitch = 90F;
+                } else if (mobName.contains("ChaosGuardian")) {
+                    rotation = 150F;
+                    pitch = 15F;
+                    offsetY = mob.height * scale / 2;
                 } else {
-                    RenderUtils.RenderEntity(sizeX / 2,
-                            sizeY / 2 + MathHelper.ceiling_float_int(job.getEntity().height * scale / 2F),
-                            (int) scale, -30F, 15F, job.getEntity());
+                    rotation = -30F;
+                    pitch = 15F;
+                    offsetY = mob.height * scale / 2;
                 }
+
+                RenderUtils.RenderEntity(half, (int) (half + offsetY), (int) (scale < 1 ? 1 : scale), rotation, pitch, mob);
                 break;
 
             default:

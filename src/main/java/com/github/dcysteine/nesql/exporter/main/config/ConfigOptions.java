@@ -42,7 +42,7 @@ public final class ConfigOptions {
 
     public static final Option<Integer> ICON_DIMENSION =
             new IntegerOption(
-                    Category.OPTIONS, "icon_dimension", 64,
+                    Category.OPTIONS, "icon_dimension", 128,
                     "The size of rendered icons, in pixels. Should probably be a multiple of 32."
                             + "\nHas no effect if render_icons is false.")
                     .register();
@@ -51,6 +51,13 @@ public final class ConfigOptions {
             new BooleanOption(
                     Category.OPTIONS, "render_icons", true,
                     "Whether to render item and fluid icons when exporting.")
+                    .register();
+
+    public static final Option<Integer> ENTITY_DIMENSION =
+            new IntegerOption(
+                    Category.OPTIONS, "entity_dimension", 128,
+                    "The size of rendered entities, in pixels. Should probably be a multiple of 32."
+                            + "\nHas no effect if render_entities is false.")
                     .register();
 
     public static final Option<Boolean> RENDER_ENTITIES =
