@@ -1,6 +1,5 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
-import betterquesting.api.utils.RenderUtils;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
@@ -10,6 +9,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import static java.lang.Math.*;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {
@@ -181,31 +182,107 @@ public enum Renderer {
             case ENTITY:
                 GL11.glColor4f(1F, 1F, 1F, 1F);
 
-                int rectSize = 16;
-                int half = rectSize / 2;
                 Entity mob = job.getEntity();
                 String mobName = EntityList.getEntityString(mob);
-                float scale = mob.width > mob.height ? half / mob.width : half / mob.height;
-                float rotation, pitch, offsetY;
+                int rectSize = 15;      // why is it limited to 16 for a model to be centered?
+                int center = 8;
+                float width, height, scale, posX, posY, rotation, pitch;
 
-                if (mobName.contains("Wisp")) {
-                    rotation = offsetY = 0F;
-                    pitch = 90F;
-                } else if (mobName.contains("ChaosGuardian")) {
-                    rotation = 150F;
-                    pitch = 15F;
-                    offsetY = mob.height * scale / 2;
-                } else {
-                    rotation = -30F;
-                    pitch = 15F;
-                    offsetY = mob.height * scale / 2;
+                switch (mobName) {
+                    case "Automagy.WispNether":
+                    case "Thaumcraft.Wisp":
+                        rotation= 0F;
+                        pitch = 90F;
+                        scale = rectSize / mob.width;
+                        posX = posY = center;
+                        break;
+                    case "BiomesOPlenty.Wasp":
+                        rotation = -30F;
+                        pitch = 15F;
+                        width = (float) (abs(sin(rotation)) + abs(cos(rotation))) * mob.width;
+                        scale = rectSize / width;
+                        posX = center + 3;
+                        posY = rectSize;
+                        break;
+                    case "DraconicEvolution.ChaosGuardian":
+                        rotation = 150F;
+                        pitch = 15F;
+                        width = (float) (abs(sin(rotation)) + abs(cos(rotation))) * mob.width;
+                        scale = rectSize * 2 / width;
+                        posX = center;
+                        posY = center + 3;
+                        break;
+                    case "Squid":
+                    case "Ghast":
+                    case "GalacticraftCore.EvolvedBossGhast":
+                    case "HardcoreEnderExpansion.HauntedMiner":
+                    case "HardcoreEnderExpansion.EnderEye":
+                    case "HardcoreEnderExpansion.FireFiend":
+                    case "HardcoreEnderExpansion.Louse":
+                        rotation = -30F;
+                        pitch = 15F;
+                        width = (float) (abs(sin(rotation)) + abs(cos(rotation))) * mob.width;
+                        height = (float) (abs(sin(pitch)) * mob.width + mob.height);
+                        scale = width > height ? rectSize / width : rectSize / height;
+                        posX = center;
+                        posY = center + 3;
+                        break;
+                    case "Chicken":
+                    case "Silverfish":
+                    case "witchery.babayaga":
+                    case "witchery.lordoftorment":
+                        rotation = -30F;
+                        pitch = 15F;
+                        width = (float) (abs(sin(rotation)) + abs(cos(rotation))) * mob.width;
+                        height = (float) (abs(sin(pitch)) * mob.width + mob.height);
+                        scale = width > height ? (rectSize - 2) / width : (rectSize - 2) / height;
+                        posX = center;
+                        posY = rectSize;
+                        break;
+                    default:
+                        rotation = -30F;
+                        pitch = 15F;
+                        width = (float) (abs(sin(rotation)) + abs(cos(rotation))) * mob.width;
+                        height = (float) (abs(sin(pitch)) * mob.width + mob.height);
+                        scale = width > height ? rectSize / width : rectSize / height;
+                        posX = center;
+                        posY = rectSize;
                 }
 
-                RenderUtils.RenderEntity(half, (int) (half + offsetY), (int) (scale < 1 ? 1 : scale), rotation, pitch, mob);
+                renderEntity(posX, posY, 0F, scale, rotation, pitch, mob);
                 break;
 
             default:
                 throw new IllegalArgumentException("Unrecognized job type: " + job);
+        }
+    }
+    public void renderEntity(float posX, float posY, float posZ, float scale, float rotation, float pitch, Entity entity)  {
+        try {
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glTranslatef(posX, posY, posZ);
+            GL11.glScalef(-scale, scale, scale); // Not entirely sure why mobs are flipped but this is how vanilla GUIs fix it so...
+            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(pitch, 1F, 0F, 0F);
+            GL11.glRotatef(rotation, 0F, 1F, 0F);
+            float f3 = entity.rotationYaw;
+            float f4 = entity.rotationPitch;
+            RenderHelper.enableStandardItemLighting();
+            RenderManager.instance.playerViewY = 180.0F;
+            RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+            entity.rotationYaw = f3;
+            entity.rotationPitch = f4;
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glPopMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+            GL11.glEnable(GL11.GL_TEXTURE_2D); // Breaks subsequent text rendering if not included
+        } catch(Exception e) {
+            // Hides rendering errors with entities which are common for invalid/technical entities
         }
     }
 

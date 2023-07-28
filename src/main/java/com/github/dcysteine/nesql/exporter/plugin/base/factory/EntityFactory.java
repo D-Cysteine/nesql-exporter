@@ -23,6 +23,7 @@ public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.En
         if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
             target = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
             if (target != null) target.readFromNBT(taskHunt.targetTags);
+//            if (target != null && !taskHunt.targetTags.hasNoTags()) target.readFromNBT(taskHunt.targetTags);
         }
         return get(target);
     }

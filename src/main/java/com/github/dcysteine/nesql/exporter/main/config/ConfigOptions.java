@@ -42,7 +42,7 @@ public final class ConfigOptions {
 
     public static final Option<Integer> ICON_DIMENSION =
             new IntegerOption(
-                    Category.OPTIONS, "icon_dimension", 128,
+                    Category.OPTIONS, "icon_dimension", 64,
                     "The size of rendered icons, in pixels. Should probably be a multiple of 32."
                             + "\nHas no effect if render_icons is false.")
                     .register();
