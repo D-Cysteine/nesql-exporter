@@ -19,22 +19,13 @@ public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.En
     }
 
     public Entity get(TaskHunt taskHunt) {
-        net.minecraft.entity.Entity target = null;
-        if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
-            target = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
-            if (target != null) target.readFromNBT(taskHunt.targetTags);
-//            if (target != null && !taskHunt.targetTags.hasNoTags()) target.readFromNBT(taskHunt.targetTags);
-        }
-        return get(target);
-    }
-    public Entity get(net.minecraft.entity.Entity entity) {
-        String id = IdPrefixUtil.ENTITY.applyPrefix(IdUtil.entityId(entity));
+        String id = IdPrefixUtil.ENTITY.applyPrefix(IdUtil.entityId(taskHunt));
         Entity sqlEntity = entityManager.find(Entity.class, id);
         if (sqlEntity != null) {
             return sqlEntity;
         }
 
-        String entityId = EntityList.getEntityString(entity);
+        String entityId = taskHunt.idName;
         int firstIndex = entityId.indexOf('.');
         String modId, internalName;
         if (firstIndex > 0) {
@@ -46,25 +37,31 @@ public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.En
         }
 
         String nbt = "";
-        if (!entity.getEntityData().hasNoTags())
-            nbt = entity.getEntityData().toString();
+        if (!taskHunt.targetTags.hasNoTags())
+            nbt = taskHunt.targetTags.toString();
+
+        net.minecraft.entity.Entity target = null;
+        if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
+            target = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
+            if (target != null) target.readFromNBT(taskHunt.targetTags);
+        }
 
         sqlEntity = new Entity(
                 id,
-                StringUtil.formatFilePath(IdUtil.imageFilePath(entity)),
+                StringUtil.formatFilePath(IdUtil.imageFilePath(taskHunt)),
                 modId,
                 internalName,
                 entityId,
-                StringUtil.stripFormatting(entity.getCommandSenderName()),
-                entity.getEntityId(),
+                StringUtil.stripFormatting(target.getCommandSenderName()),
+                target.getEntityId(),
                 nbt);
 
         if (ConfigOptions.RENDER_ENTITIES.get()) {
             Logger.intermittentLog(
                     logger,
-                    "Enqueueing render of entity #{}: " + entity.getCommandSenderName(),
+                    "Enqueueing render of entity #{}: " + target.getCommandSenderName(),
                     exporterState.incrementEntityCount());
-            RenderDispatcher.INSTANCE.addJob(RenderJob.ofEntity(entity));
+            RenderDispatcher.INSTANCE.addJob(RenderJob.ofEntity(taskHunt));
         }
 
         entityManager.persist(sqlEntity);

@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
+import bq_standard.tasks.TaskHunt;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
@@ -7,6 +8,7 @@ import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -182,7 +184,12 @@ public enum Renderer {
             case ENTITY:
                 GL11.glColor4f(1F, 1F, 1F, 1F);
 
-                Entity mob = job.getEntity();
+                TaskHunt taskHunt = job.getEntity();
+                Entity mob = null;
+                if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
+                    mob = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
+                    if (mob != null) mob.readFromNBT(taskHunt.targetTags);
+                }
                 String mobName = EntityList.getEntityString(mob);
                 int rectSize = 15;      // why is it limited to 16 for a model to be centered?
                 int center = 8;

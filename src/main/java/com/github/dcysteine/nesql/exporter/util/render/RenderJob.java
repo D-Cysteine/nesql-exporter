@@ -1,8 +1,8 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
+import bq_standard.tasks.TaskHunt;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.google.auto.value.AutoOneOf;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,14 +26,14 @@ public abstract class RenderJob {
         return AutoOneOf_RenderJob.fluid(fluidStack);
     }
 
-    public static RenderJob ofEntity(Entity entity) {
-        return AutoOneOf_RenderJob.entity(entity);
+    public static RenderJob ofEntity(TaskHunt taskHunt) {
+        return AutoOneOf_RenderJob.entity(taskHunt);
     }
 
     public abstract JobType getType();
     public abstract ItemStack getItem();
     public abstract FluidStack getFluid();
-    public abstract Entity getEntity();
+    public abstract TaskHunt getEntity();
 
     public String getImageFilePath() {
         switch (getType()) {
