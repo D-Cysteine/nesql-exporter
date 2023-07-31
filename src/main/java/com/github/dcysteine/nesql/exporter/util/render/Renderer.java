@@ -1,6 +1,5 @@
 package com.github.dcysteine.nesql.exporter.util.render;
 
-import bq_standard.tasks.TaskHunt;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.github.dcysteine.nesql.exporter.main.Logger;
@@ -29,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+
 import static java.lang.Math.*;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
@@ -120,7 +120,7 @@ public enum Renderer {
                 RenderJob job = jobOptional.get();
                 clearBuffer();
                 render(job);
-                BufferedImage image = readImage(job);
+                BufferedImage image = readImage();
 
                 File outputFile = new File(imageDirectory, job.getImageFilePath());
                 // Not sure why, but this check fails spuriously every now and then.
@@ -182,20 +182,14 @@ public enum Renderer {
                 break;
 
             case ENTITY:
-                GL11.glColor4f(1F, 1F, 1F, 1F);
+                Entity mob = EntityList.createEntityByName(job.getEntity().idName, Minecraft.getMinecraft().theWorld);
+                mob.readFromNBT(job.getEntity().targetTags);
 
-                TaskHunt taskHunt = job.getEntity();
-                Entity mob = null;
-                if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
-                    mob = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
-                    if (mob != null) mob.readFromNBT(taskHunt.targetTags);
-                }
-                String mobName = EntityList.getEntityString(mob);
-                int rectSize = 15;      // why is it limited to 16 for a model to be centered?
+                int rectSize = 15;
                 int center = 8;
                 float width, height, scale, posX, posY, rotation, pitch;
 
-                switch (mobName) {
+                switch (job.getEntity().idName) {
                     case "Automagy.WispNether":
                     case "Thaumcraft.Wisp":
                         rotation= 0F;
@@ -256,6 +250,7 @@ public enum Renderer {
                         posY = rectSize;
                 }
 
+                GL11.glColor4f(1F, 1F, 1F, 1F);
                 renderEntity(posX, posY, 0F, scale, rotation, pitch, mob);
                 break;
 
@@ -294,7 +289,7 @@ public enum Renderer {
     }
 
     /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */
-    private BufferedImage readImage(RenderJob job) {
+    private BufferedImage readImage() {
         ByteBuffer imageByteBuffer = BufferUtils.createByteBuffer(4 * imageDim * imageDim);
         GL11.glReadPixels(
                 0, 0, imageDim, imageDim,
