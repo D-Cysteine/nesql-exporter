@@ -79,10 +79,10 @@ public final class IdUtil {
     public static String entityId(TaskHunt taskHunt) {
         String id = entityId(taskHunt.idName);
 
-        NBTTagCompound nbt = taskHunt.targetTags;
+ /*       NBTTagCompound nbt = taskHunt.targetTags;
         if (!nbt.hasNoTags()) {
             id += ID_SEPARATOR + StringUtil.encodeNbt(nbt);
-        }
+        }*/
 
         return id;
     }

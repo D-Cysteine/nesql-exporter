@@ -36,14 +36,14 @@ public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.En
             internalName = entityId;
         }
 
-        String nbt = "";
+/*        String nbt = "";
         if (!taskHunt.targetTags.hasNoTags())
-            nbt = taskHunt.targetTags.toString();
+            nbt = taskHunt.targetTags.toString();*/
 
         net.minecraft.entity.Entity target = null;
         if (EntityList.stringToClassMapping.containsKey(taskHunt.idName)) {
             target = EntityList.createEntityByName(taskHunt.idName, Minecraft.getMinecraft().theWorld);
-            if (target != null) target.readFromNBT(taskHunt.targetTags);
+            //if (target != null) target.readFromNBT(taskHunt.targetTags);
         }
 
         sqlEntity = new Entity(
@@ -53,8 +53,8 @@ public class EntityFactory extends com.github.dcysteine.nesql.exporter.plugin.En
                 internalName,
                 entityId,
                 StringUtil.stripFormatting(target.getCommandSenderName()),
-                target.getEntityId(),
-                nbt);
+                target.getEntityId()//,
+                /*nbt*/);
 
         if (ConfigOptions.RENDER_ENTITIES.get()) {
             Logger.intermittentLog(

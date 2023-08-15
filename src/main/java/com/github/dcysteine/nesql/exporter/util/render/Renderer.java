@@ -190,7 +190,6 @@ public enum Renderer {
 
             case ENTITY:
                 Entity mob = EntityList.createEntityByName(job.getEntity().idName, Minecraft.getMinecraft().theWorld);
-                mob.readFromNBT(job.getEntity().targetTags);
 
                 float rectSize = 6; // max is 16
                 float centerY = 10;
@@ -208,6 +207,20 @@ public enum Renderer {
                     rotation = 150;
                     pitch = 15;
                     scale *= 2;
+                } else if (job.getEntity().idName.toLowerCase().contains("bat")
+                        || job.getEntity().idName.contains("Bird")) {
+                    mob.readFromNBT(job.getEntity().targetTags);
+                    rotation = -30;
+                    pitch = 15;
+                } else if (job.getEntity().idName.contains("Hydra")) {
+                    rotation = -30;
+                    pitch = 15;
+                    Entity head = EntityList.createEntityByName("TwilightForest.HydraHead", Minecraft.getMinecraft().theWorld);
+                    renderEntity(7.5F, 8.15F, 0, scale, rotation, pitch, head);
+                    renderEntity(8.5F, 8.3F, 0, scale, rotation, pitch, head);
+                    renderEntity(9.5F, 8.45F, 0, scale, rotation, pitch, head);
+                    renderEntity(8F, 7F, 0, scale, rotation, pitch, head);
+                    renderEntity(9F, 7.15F, 0, scale, rotation, pitch, head);
                 } else if (job.getEntity().idName.contains("Squid")) {
                     rotation = -30;
                     pitch = 15;

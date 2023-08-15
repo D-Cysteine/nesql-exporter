@@ -1,7 +1,6 @@
 package com.github.dcysteine.nesql.sql.base.entity;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
-import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.quest.Task;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
@@ -43,8 +42,8 @@ public class Entity implements Identifiable<String> {
     /** The Minecraft entity ID. These IDs can vary from world to world, so don't rely on them! */
     private int entityId;
 
-    @Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)
-    private String nbt;
+    //@Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)
+    //private String nbt;
 
     @OneToMany
     @OrderColumn
@@ -60,8 +59,8 @@ public class Entity implements Identifiable<String> {
             String internalName,
             String unlocalizedName,
             String localizedName,
-            int entityId,
-            String nbt) {
+            int entityId//,
+            /*String nbt*/) {
         this.id = id;
         this.imageFilePath = imageFilePath;
         this.modId = modId;
@@ -69,7 +68,7 @@ public class Entity implements Identifiable<String> {
         this.unlocalizedName = unlocalizedName;
         this.localizedName = localizedName;
         this.entityId = entityId;
-        this.nbt = nbt;
+        //this.nbt = nbt;
     }
 
     /**
@@ -104,13 +103,13 @@ public class Entity implements Identifiable<String> {
         return entityId;
     }
 
-    public boolean hasNbt() {
+/*    public boolean hasNbt() {
         return !nbt.isEmpty();
     }
 
     public String getNbt() {
         return nbt;
-    }
+    }*/
 
     public List<Task> getTasks() {
         return tasks;
@@ -119,11 +118,11 @@ public class Entity implements Identifiable<String> {
     @Override
     public int compareTo(Identifiable<String> other) {
         if (other instanceof Entity) {
-            return Comparator.comparing(Entity::getModId)
-                    .thenComparing(Entity::getInternalName)
-                    .thenComparing(Entity::getUnlocalizedName)
-                    .thenComparing(Entity::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
-                    .thenComparing(Entity::getId)
+            return Comparator.comparing(Entity::getId)//Entity::getModId)
+                    //.thenComparing(Entity::getInternalName)
+                    //.thenComparing(Entity::getUnlocalizedName)
+                    //.thenComparing(Entity::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                    //.thenComparing(Entity::getId)
                     .compare(this, (Entity) other);
         } else {
             return Identifiable.super.compareTo(other);
