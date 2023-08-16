@@ -11,8 +11,6 @@ import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.forge.FluidContainer;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-import java.util.Map;
-
 public class FluidContainerFactory extends EntityFactory<FluidContainer, String> {
     private final FluidFactory fluidFactory;
     private final ItemFactory itemFactory;

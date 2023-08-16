@@ -105,7 +105,7 @@ public final class Exporter {
                         .createEntityManagerFactory("NESQL", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
+        boolean renderingImages = ConfigOptions.RENDER_ICONS.get() || ConfigOptions.RENDER_ENTITIES.get();
         if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
 

@@ -7,10 +7,15 @@ import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
@@ -19,13 +24,13 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {
@@ -155,6 +160,12 @@ public enum Renderer {
     }
 
     private void render(RenderJob job) {
+        if (job.getType() == RenderJob.JobType.ENTITY)
+            imageDim = ConfigOptions.ENTITY_DIMENSION.get() * 3;
+        else
+            imageDim = ConfigOptions.ICON_DIMENSION.get();
+        framebuffer.createBindFramebuffer(imageDim, imageDim);
+
         switch (job.getType()) {
             case ITEM:
                 GuiContainerManager.drawItem(0, 0, job.getItem());
@@ -177,8 +188,88 @@ public enum Renderer {
                 GL11.glColor4f(1f, 1f, 1f, 1f);
                 break;
 
+            case ENTITY:
+                Entity mob = EntityList.createEntityByName(job.getEntity().idName, Minecraft.getMinecraft().theWorld);
+
+                float rectSize = 6; // max is 16
+                float centerY = 10;
+                float rotation, pitch;
+                float scale = mob.width > mob.height ? rectSize / mob.width : rectSize / mob.height;
+                float thePlayerPitch = Minecraft.getMinecraft().thePlayer.rotationPitch;
+
+                if (job.getEntity().idName.contains("Wisp")) {
+                    changeTheCameraPitch(90);
+                    scale *= 2;
+                    rotation = 0;
+                    pitch = 90;
+                    centerY -= 2;
+                } else if (job.getEntity().idName.contains("ChaosGuardian")) {
+                    rotation = 150;
+                    pitch = 15;
+                    scale *= 2;
+                } else if (job.getEntity().idName.toLowerCase().contains("bat")
+                        || job.getEntity().idName.contains("Bird")) {
+                    mob.readFromNBT(job.getEntity().targetTags);
+                    rotation = -30;
+                    pitch = 15;
+                } else if (job.getEntity().idName.contains("Hydra")) {
+                    rotation = -30;
+                    pitch = 15;
+                    Entity head = EntityList.createEntityByName("TwilightForest.HydraHead", Minecraft.getMinecraft().theWorld);
+                    renderEntity(7.5F, 8.15F, 0, scale, rotation, pitch, head);
+                    renderEntity(8.5F, 8.3F, 0, scale, rotation, pitch, head);
+                    renderEntity(9.5F, 8.45F, 0, scale, rotation, pitch, head);
+                    renderEntity(8F, 7F, 0, scale, rotation, pitch, head);
+                    renderEntity(9F, 7.15F, 0, scale, rotation, pitch, head);
+                } else if (job.getEntity().idName.contains("Squid")) {
+                    rotation = -30;
+                    pitch = 15;
+                    centerY -= 3;
+                } else {
+                    rotation = -30;
+                    pitch = 15;
+                }
+
+                GL11.glColor4f(1, 1, 1, 1);
+                renderEntity(8, centerY, 0, scale, rotation, pitch, mob);
+                if (thePlayerPitch != Minecraft.getMinecraft().thePlayer.rotationPitch)
+                    changeTheCameraPitch(thePlayerPitch);
+            break;
+
             default:
                 throw new IllegalArgumentException("Unrecognized job type: " + job);
+        }
+    }
+
+    private void changeTheCameraPitch(float pitch) {
+        Minecraft.getMinecraft().thePlayer.rotationPitch = pitch;
+        ActiveRenderInfo.updateRenderInfo(Minecraft.getMinecraft().thePlayer,
+                Minecraft.getMinecraft().gameSettings.thirdPersonView == 2);
+    }
+
+    public void renderEntity(float posX, float posY, float posZ, float scale, float rotation, float pitch, Entity entity)  {
+        try {
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glTranslatef(posX, posY, posZ);
+            GL11.glScalef(-scale, scale, scale); // Not entirely sure why mobs are flipped but this is how vanilla GUIs fix it so...
+            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(pitch, 1F, 0F, 0F);
+            GL11.glRotatef(rotation, 0F, 1F, 0F);
+            RenderHelper.enableStandardItemLighting();
+            RenderManager.instance.playerViewY = 180.0F;
+            RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glPopMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+            GL11.glEnable(GL11.GL_TEXTURE_2D); // Breaks subsequent text rendering if not included
+        } catch(Exception e) {
+            // Hides rendering errors with entities which are common for invalid/technical entities
         }
     }
 
@@ -206,7 +297,75 @@ public enum Renderer {
         BufferedImage image =
                 new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, imageDim, imageDim, flippedPixels, 0, imageDim);
+
+        if (job.getType() == RenderJob.JobType.ENTITY)
+            image = trimResizeCenterImage(image, ConfigOptions.ENTITY_DIMENSION.get());
         return image;
+    }
+
+    private BufferedImage trimResizeCenterImage(BufferedImage image, int size) {
+        BufferedImage result = trimImage(image);
+        float scale = result.getWidth() > result.getHeight() ? size * .9F / result.getWidth() : size * .9F / result.getHeight();
+        Image scaledImage = result.getScaledInstance((int) (result.getWidth() * scale),
+                (int) (result.getHeight() * scale), Image.SCALE_SMOOTH);
+        result = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        result.getGraphics().drawImage(scaledImage, (size - scaledImage.getWidth(null)) / 2,
+                (size - scaledImage.getHeight(null)) / 2, null);
+        return result;
+    }
+
+    private BufferedImage trimImage(BufferedImage image) {
+        WritableRaster raster = image.getAlphaRaster();
+        int width = raster.getWidth();
+        int height = raster.getHeight();
+        int left = 0;
+        int top = 0;
+        int right = width - 1;
+        int bottom = height - 1;
+        int minRight = width - 1;
+        int minBottom = height - 1;
+
+        top:
+        for (;top <= bottom; top++) {
+            for (int x = 0; x < width; x++) {
+                if (raster.getSample(x, top, 0) != 0) {
+                    minRight = x;
+                    minBottom = top;
+                    break top;
+                }
+            }
+        }
+
+        left:
+        for (;left < minRight; left++) {
+            for (int y = height - 1; y > top; y--) {
+                if (raster.getSample(left, y, 0) != 0) {
+                    minBottom = y;
+                    break left;
+                }
+            }
+        }
+
+        bottom:
+        for (;bottom > minBottom; bottom--) {
+            for (int x = width - 1; x >= left; x--) {
+                if (raster.getSample(x, bottom, 0) != 0) {
+                    minRight = x;
+                    break bottom;
+                }
+            }
+        }
+
+        right:
+        for (;right > minRight; right--) {
+            for (int y = bottom; y >= top; y--) {
+                if (raster.getSample(right, y, 0) != 0) {
+                    break right;
+                }
+            }
+        }
+
+        return image.getSubimage(left, top, right - left + 1, bottom - top + 1);
     }
 
     private void clearBuffer() {

@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.util;
 
+import bq_standard.tasks.TaskHunt;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
@@ -72,6 +73,34 @@ public final class IdUtil {
         int firstIndex = fluidId.indexOf(ID_SEPARATOR);
         return "fluid" + File.separator + fluidId.substring(0, firstIndex) + File.separator
                 + fluidId.substring(firstIndex + ID_SEPARATOR.length())
+                + Renderer.IMAGE_FILE_EXTENSION;
+    }
+
+    public static String entityId(TaskHunt taskHunt) {
+        String id = entityId(taskHunt.idName);
+
+ /*       NBTTagCompound nbt = taskHunt.targetTags;
+        if (!nbt.hasNoTags()) {
+            id += ID_SEPARATOR + StringUtil.encodeNbt(nbt);
+        }*/
+
+        return id;
+    }
+
+    public static String entityId(String entityId) {
+        int firstIndex = entityId.indexOf('.');
+        if (firstIndex > 0)
+            return sanitize(entityId.substring(0, firstIndex) + ID_SEPARATOR
+                    + entityId.substring(firstIndex + ID_SEPARATOR.length()));
+        else
+            return sanitize("minecraft" + ID_SEPARATOR + entityId);
+    }
+
+    public static String imageFilePath(TaskHunt taskHunt) {
+        String entityId = entityId(taskHunt);
+        int firstIndex = entityId.indexOf(ID_SEPARATOR);
+        return "entity" + File.separator + entityId.substring(0, firstIndex) + File.separator
+                + entityId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
     }
 

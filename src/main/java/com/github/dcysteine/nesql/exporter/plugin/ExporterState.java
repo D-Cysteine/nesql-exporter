@@ -18,6 +18,7 @@ public class ExporterState {
     private final EntityManager entityManager;
     private int itemCount;
     private int fluidCount;
+    private int entityCount;
 
     // TODO do we want to provide some sort of RecipeType registry here?
     // If so, something like: Map<Class<T>, T> where T is a plugin-custom recipe repository class.
@@ -34,6 +35,7 @@ public class ExporterState {
         this.entityManager = entityManager;
         this.itemCount = 0;
         this.fluidCount = 0;
+        this.entityCount = 0;
         this.itemListeners = new ArrayList<>();
     }
 
@@ -60,6 +62,10 @@ public class ExporterState {
 
     public int incrementFluidCount() {
         return ++fluidCount;
+    }
+
+    public int incrementEntityCount() {
+        return ++entityCount;
     }
 
     public void addItemListener(ItemListener listener) {

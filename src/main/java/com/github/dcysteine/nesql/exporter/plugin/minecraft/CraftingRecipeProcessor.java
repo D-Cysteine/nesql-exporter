@@ -4,7 +4,6 @@ import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
-import com.github.dcysteine.nesql.exporter.plugin.minecraft.MinecraftRecipeTypeHandler;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
 import net.minecraft.item.ItemStack;

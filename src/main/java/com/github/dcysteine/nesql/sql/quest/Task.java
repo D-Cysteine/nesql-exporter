@@ -1,16 +1,10 @@
 package com.github.dcysteine.nesql.sql.quest;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.base.entity.Entity;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OrderColumn;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -21,7 +15,7 @@ import java.util.List;
  *
  * <p>Each field will only be set for certain task types. See {@link TaskType} for details.
  */
-@Entity
+@jakarta.persistence.Entity
 @EqualsAndHashCode
 @ToString
 public class Task implements Identifiable<String> {
@@ -46,10 +40,10 @@ public class Task implements Identifiable<String> {
     @OrderColumn
     private List<FluidStack> fluids;
 
-    private boolean consume;
+    @ManyToOne
+    private Entity entity;
 
-    @Column(nullable = false)
-    private String entityId;
+    private boolean consume;
 
     private int numberRequired;
 
@@ -62,14 +56,14 @@ public class Task implements Identifiable<String> {
     public Task(
             String id, String name, TaskType type,
             List<ItemGroup> items, List<FluidStack> fluids,
-            boolean consume, String entityId, int numberRequired, String dimensionName) {
+            boolean consume, Entity entity, int numberRequired, String dimensionName) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.items = items;
         this.fluids = fluids;
         this.consume = consume;
-        this.entityId = entityId;
+        this.entity = entity;
         this.numberRequired = numberRequired;
         this.dimensionName = dimensionName;
     }
@@ -95,12 +89,12 @@ public class Task implements Identifiable<String> {
         return fluids;
     }
 
-    public boolean isConsume() {
-        return consume;
+    public Entity getEntity() {
+        return entity;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public boolean isConsume() {
+        return consume;
     }
 
     public int getNumberRequired() {
