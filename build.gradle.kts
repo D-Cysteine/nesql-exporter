@@ -1,5 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.minecraftforge.gradle.user.UserExtension
+import java.net.HttpURLConnection
+import java.net.URL
+import java.io.IOException
 
 buildscript {
     repositories {
@@ -88,6 +91,7 @@ repositories {
 
     maven("https://maven.ic2.player.to") {
         name = "IC2 Maven"
+		url = uri(getURL("https://maven.ic2.player.to", "https://maven2.ic2.player.to"))
         metadataSources {
             artifact()
         }
@@ -182,6 +186,23 @@ tasks.withType<Jar> {
         )
     }
     archiveBaseName.set("NESQL-Exporter")
+}
+
+fun getURL(main: String, fallback: String): String {
+    return if (pingURL(main, 10000)) main else fallback
+}
+
+fun pingURL(url: String, timeout: Int): Boolean {
+    return try {
+        val connection = URL(url.replaceFirst("^https".toRegex(), "http")).openConnection() as HttpURLConnection
+        connection.connectTimeout = timeout
+        connection.readTimeout = timeout
+        connection.requestMethod = "HEAD"
+        val responseCode = connection.responseCode
+        responseCode in 200..399
+    } catch (e: IOException) {
+        false
+    }
 }
 
 // Unfortunately, we can neither minimize the shadow jar nor relocate it,
