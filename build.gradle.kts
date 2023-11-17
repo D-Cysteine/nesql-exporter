@@ -39,7 +39,7 @@ java {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.0.0-rc-2"
+		artifact = "com.google.protobuf:protoc:3.17.3"
     }
 }
 
