@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GTRecipeMap.makeGTRecipe;
+import static com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeMap.makeGTRecipe;
 
 
 /** Registry of plugins. Register new plugins here! */

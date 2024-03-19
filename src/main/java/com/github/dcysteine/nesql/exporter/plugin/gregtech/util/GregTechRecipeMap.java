@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import static codechicken.nei.recipe.RecipeCatalysts.getRecipeCatalysts;
 
 /** Enum of supported GregTech recipe maps. */
-public class GTRecipeMap {
-    public static HashMap<String, GTRecipeMap> allNEIRecipeMaps=new HashMap<>();
+public class GregTechRecipeMap {
+    public static HashMap<String, GregTechRecipeMap> allNEIRecipeMaps=new HashMap<>();
     private final gregtech.api.recipe.RecipeMap<? extends RecipeMapBackend> recipeMap;
     /** Used for IDs. */
     private final String shortName;
@@ -29,7 +29,7 @@ public class GTRecipeMap {
     private final Dimension fluidInputDimension;
     private final Dimension itemOutputDimension;
     private final Dimension fluidOutputDimension;
-    GTRecipeMap(
+    GregTechRecipeMap(
             gregtech.api.recipe.RecipeMap<? extends RecipeMapBackend> recipeMap, String shortName, ItemStack icon, boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
@@ -47,7 +47,7 @@ public class GTRecipeMap {
         for(gregtech.api.recipe.RecipeMap<?> oriGTRecipeMap:gregtech.api.recipe.RecipeMap.ALL_RECIPE_MAPS.values()){
             List<ItemStack> catalysts=getRecipeCatalysts(oriGTRecipeMap.unlocalizedName).stream().map(var->var.item).collect(Collectors.toList());
             if(catalysts.isEmpty())continue;
-            GTRecipeMap gtRecipeMap=new GTRecipeMap(
+            GregTechRecipeMap gregTechRecipeMap =new GregTechRecipeMap(
                     oriGTRecipeMap,
                     oriGTRecipeMap.unlocalizedName,
                     catalysts.get(catalysts.size()-1),
@@ -61,7 +61,7 @@ public class GTRecipeMap {
                     getDimension(oriGTRecipeMap.getFrontend().getUIProperties().fluidOutputPositionsGetter.apply(
                             oriGTRecipeMap.getFrontend().getUIProperties().maxFluidOutputs))
             );
-            allNEIRecipeMaps.put(oriGTRecipeMap.unlocalizedName,gtRecipeMap);
+            allNEIRecipeMaps.put(oriGTRecipeMap.unlocalizedName, gregTechRecipeMap);
             Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("RecipeMap "+
                     StatCollector.translateToLocal(oriGTRecipeMap.unlocalizedName)+" export!"));
         }

@@ -15,41 +15,41 @@ public class GregTechRecipeTypeHandler extends PluginHelper {
     public static final String RECIPE_ID = "gregtech";
     public static final String RECIPE_CATEGORY = "gregtech";
 
-    private final Table<GTRecipeMap, Voltage, RecipeType> recipeTypeTable;
+    private final Table<GregTechRecipeMap, Voltage, RecipeType> recipeTypeTable;
 
     public GregTechRecipeTypeHandler(PluginExporter exporter) {
         super(exporter);
         recipeTypeTable =
                 ArrayTable.create(
-                        GTRecipeMap.allNEIRecipeMaps.values(), Arrays.asList(Voltage.values()));
+                        GregTechRecipeMap.allNEIRecipeMaps.values(), Arrays.asList(Voltage.values()));
     }
 
     public void initialize() {
         ItemFactory itemFactory = new ItemFactory(exporter);
         RecipeTypeFactory recipeTypeFactory = new RecipeTypeFactory(exporter);
 
-        for (GTRecipeMap GTRecipeMap : GTRecipeMap.allNEIRecipeMaps.values()) {
-            Item icon = itemFactory.get(GTRecipeMap.getIcon());
+        for (GregTechRecipeMap GregTechRecipeMap : GregTechRecipeMap.allNEIRecipeMaps.values()) {
+            Item icon = itemFactory.get(GregTechRecipeMap.getIcon());
             for (Voltage voltage : Voltage.values()) {
                 recipeTypeTable.put(
-                        GTRecipeMap, voltage,
+                        GregTechRecipeMap, voltage,
                         recipeTypeFactory.newBuilder()
-                                .setId(RECIPE_ID, GTRecipeMap.getShortName(), voltage.getName())
+                                .setId(RECIPE_ID, GregTechRecipeMap.getShortName(), voltage.getName())
                                 .setCategory(RECIPE_CATEGORY)
-                                .setType(GTRecipeMap.getName(voltage))
+                                .setType(GregTechRecipeMap.getName(voltage))
                                 .setIcon(icon)
                                 .setIconInfo(voltage.getName())
-                                .setShapeless(GTRecipeMap.isShapeless())
-                                .setItemInputDimension(GTRecipeMap.getItemInputDimension())
-                                .setFluidInputDimension(GTRecipeMap.getFluidInputDimension())
-                                .setItemOutputDimension(GTRecipeMap.getItemOutputDimension())
-                                .setFluidOutputDimension(GTRecipeMap.getFluidOutputDimension())
+                                .setShapeless(GregTechRecipeMap.isShapeless())
+                                .setItemInputDimension(GregTechRecipeMap.getItemInputDimension())
+                                .setFluidInputDimension(GregTechRecipeMap.getFluidInputDimension())
+                                .setItemOutputDimension(GregTechRecipeMap.getItemOutputDimension())
+                                .setFluidOutputDimension(GregTechRecipeMap.getFluidOutputDimension())
                                 .build());
             }
         }
     }
 
-    public RecipeType getRecipeType(GTRecipeMap GTRecipeMap, Voltage voltage) {
-        return recipeTypeTable.get(GTRecipeMap, voltage);
+    public RecipeType getRecipeType(GregTechRecipeMap GregTechRecipeMap, Voltage voltage) {
+        return recipeTypeTable.get(GregTechRecipeMap, voltage);
     }
 }

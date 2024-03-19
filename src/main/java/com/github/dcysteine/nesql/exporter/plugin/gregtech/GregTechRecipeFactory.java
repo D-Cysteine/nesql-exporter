@@ -3,7 +3,7 @@ package com.github.dcysteine.nesql.exporter.plugin.gregtech;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
-import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GTRecipeMap;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeMap;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.Voltage;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.NumberUtil;
@@ -31,7 +31,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
     }
 
     public GregTechRecipe get(
-            Recipe recipe, GTRecipeMap GTRecipeMap, GT_Recipe gregTechRecipe,
+            Recipe recipe, GregTechRecipeMap GregTechRecipeMap, GT_Recipe gregTechRecipe,
             Voltage voltageTier, int voltage, List<ItemStack> specialItems) {
         String id = IdPrefixUtil.GREG_TECH_RECIPE.applyPrefix(recipe.getId());
 
@@ -51,7 +51,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         .collect(Collectors.toCollection(ArrayList::new));
 
         List<String> additionalInfo = new ArrayList<>();
-        switch (GTRecipeMap.getShortName()) {
+        switch (GregTechRecipeMap.getShortName()) {
             case "gt.recipe.fusionreactor": {
                 // Special handling for fusion recipes.
                 int euToStart = gregTechRecipe.mSpecialValue;
@@ -118,7 +118,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         recipe,
                         voltageTier.getName(),
                         voltage,
-                        GTRecipeMap.getAmperage(),
+                        GregTechRecipeMap.getAmperage(),
                         gregTechRecipe.mDuration,
                         requiresCleanroom,
                         requiresLowGravity,
