@@ -3,7 +3,7 @@ package com.github.dcysteine.nesql.exporter.plugin.gregtech;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
-import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.RecipeMap;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GTRecipeMap;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.Voltage;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.NumberUtil;
@@ -31,7 +31,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
     }
 
     public GregTechRecipe get(
-            Recipe recipe, RecipeMap recipeMap, GT_Recipe gregTechRecipe,
+            Recipe recipe, GTRecipeMap GTRecipeMap, GT_Recipe gregTechRecipe,
             Voltage voltageTier, int voltage, List<ItemStack> specialItems) {
         String id = IdPrefixUtil.GREG_TECH_RECIPE.applyPrefix(recipe.getId());
 
@@ -51,8 +51,8 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         .collect(Collectors.toCollection(ArrayList::new));
 
         List<String> additionalInfo = new ArrayList<>();
-        switch (recipeMap) {
-            case FUSION: {
+        switch (GTRecipeMap.getShortName()) {
+            case "gt.recipe.fusionreactor": {
                 // Special handling for fusion recipes.
                 int euToStart = gregTechRecipe.mSpecialValue;
 
@@ -86,8 +86,8 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                 break;
             }
 
-            case BLAST_FURNACE:
-            case PLASMA_FORGE: {
+            case "gt.recipe.blastfurnace":
+            case "gt.recipe.plasnaforge": {
                 // Special handling for EBF and DTPF recipes.
                 int heat = gregTechRecipe.mSpecialValue;
 
@@ -118,7 +118,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         recipe,
                         voltageTier.getName(),
                         voltage,
-                        recipeMap.getAmperage(),
+                        GTRecipeMap.getAmperage(),
                         gregTechRecipe.mDuration,
                         requiresCleanroom,
                         requiresLowGravity,
