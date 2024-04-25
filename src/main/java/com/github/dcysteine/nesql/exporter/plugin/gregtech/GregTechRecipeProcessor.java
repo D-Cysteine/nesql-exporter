@@ -37,7 +37,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
             logger.info("Processing recipe map: " + recipeMap.getName());
             recipeMapCount++;
 
-            Collection<GT_Recipe> recipes = recipeMap.getRecipeMap().mRecipeList;
+            Collection<GT_Recipe> recipes = recipeMap.getRecipeMap().getAllRecipes();
             int total = recipes.size();
             logger.info("Processing {} GregTech recipes...", total);
 

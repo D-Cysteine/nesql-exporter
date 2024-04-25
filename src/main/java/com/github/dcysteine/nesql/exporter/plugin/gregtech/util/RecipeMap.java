@@ -2,13 +2,14 @@ package com.github.dcysteine.nesql.exporter.plugin.gregtech.util;
 
 import com.github.dcysteine.nesql.sql.base.recipe.Dimension;
 import gregtech.api.enums.ItemList;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_Recipe;
 
 /** Enum of supported GregTech recipe maps. */
 public enum RecipeMap {
     ORE_WASHER(
-            GT_Recipe.GT_Recipe_Map.sOreWasherRecipes,
+            RecipeMaps.oreWasherRecipes,
             "orewasher",
             ItemList.Machine_HV_OreWasher,
             true,
@@ -18,7 +19,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     THERMAL_CENTRIFUGE(
-            GT_Recipe.GT_Recipe_Map.sThermalCentrifugeRecipes,
+            RecipeMaps.thermalCentrifugeRecipes,
             "thermalcentrifuge",
             ItemList.Machine_HV_ThermalCentrifuge,
             true,
@@ -28,7 +29,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     COMPRESSOR(
-            GT_Recipe.GT_Recipe_Map.sCompressorRecipes,
+            RecipeMaps.compressorRecipes,
             "compressor",
             ItemList.Machine_HV_Compressor,
             true,
@@ -38,7 +39,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     EXTRACTOR(
-            GT_Recipe.GT_Recipe_Map.sExtractorRecipes,
+            RecipeMaps.extractorRecipes,
             "extractor",
             ItemList.Machine_HV_Extractor,
             true,
@@ -48,7 +49,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     SCANNER(
-            GT_Recipe.GT_Recipe_Map.sScannerFakeRecipes,
+            RecipeMaps.scannerFakeRecipes,
             "scanner",
             ItemList.Machine_HV_Scanner,
             true,
@@ -58,7 +59,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     ROCK_BREAKER(
-            GT_Recipe.GT_Recipe_Map.sRockBreakerFakeRecipes,
+            RecipeMaps.rockBreakerFakeRecipes,
             "rockbreaker",
             ItemList.Machine_HV_RockBreaker,
             true,
@@ -68,7 +69,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     REPLICATOR(
-            GT_Recipe.GT_Recipe_Map.sReplicatorFakeRecipes,
+            RecipeMaps.replicatorRecipes,
             "replicator",
             ItemList.Machine_HV_Replicator,
             true,
@@ -78,7 +79,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     ASSEMBLY_LINE(
-            GT_Recipe.GT_Recipe_Map.sAssemblylineVisualRecipes,
+            RecipeMaps.assemblylineVisualRecipes,
             "assemblyline",
             ItemList.Machine_Multi_Assemblyline,
             false,
@@ -88,7 +89,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     PLASMA_ARC_FURNACE(
-            GT_Recipe.GT_Recipe_Map.sPlasmaArcFurnaceRecipes,
+            RecipeMaps.plasmaArcFurnaceRecipes,
             "plasmaarcfurnace",
             ItemList.Machine_HV_PlasmaArcFurnace,
             true,
@@ -98,7 +99,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     ARC_FURNACE(
-            GT_Recipe.GT_Recipe_Map.sArcFurnaceRecipes,
+            RecipeMaps.arcFurnaceRecipes,
             "arcfurnace",
             ItemList.Machine_HV_ArcFurnace,
             true,
@@ -108,7 +109,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     PRINTER(
-            GT_Recipe.GT_Recipe_Map.sPrinterRecipes,
+            RecipeMaps.printerRecipes,
             "printer",
             ItemList.Machine_HV_Printer,
             true,
@@ -118,7 +119,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     SIFTER(
-            GT_Recipe.GT_Recipe_Map.sSifterRecipes,
+            RecipeMaps.sifterRecipes,
             "sifter",
             ItemList.Machine_HV_Sifter,
             true,
@@ -127,9 +128,9 @@ public enum RecipeMap {
             new Dimension(3, 3),
             new Dimension(1, 1)),
 
-    PRESS(
-            GT_Recipe.GT_Recipe_Map.sPressRecipes,
-            "press",
+    FORMING_PRESS(
+            RecipeMaps.formingPressRecipes,
+            "formingpress",
             ItemList.Machine_HV_Press,
             true,
             new Dimension(3, 2),
@@ -138,7 +139,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     LASER_ENGRAVER(
-            GT_Recipe.GT_Recipe_Map.sLaserEngraverRecipes,
+            RecipeMaps.laserEngraverRecipes,
             "laserengraver",
             ItemList.Machine_HV_LaserEngraver,
             true,
@@ -148,7 +149,7 @@ public enum RecipeMap {
             new Dimension(2, 1)),
 
     MIXER(
-            GT_Recipe.GT_Recipe_Map.sMixerRecipes,
+            RecipeMaps.mixerRecipes,
             "mixer",
             ItemList.Machine_HV_Mixer,
             true,
@@ -158,7 +159,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     AUTOCLAVE(
-            GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes,
+            RecipeMaps.autoclaveRecipes,
             "autoclave",
             ItemList.Machine_HV_Autoclave,
             true,
@@ -168,7 +169,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     ELECTROMAGNETIC_SEPARATOR(
-            GT_Recipe.GT_Recipe_Map.sElectroMagneticSeparatorRecipes,
+            RecipeMaps.electroMagneticSeparatorRecipes,
             "electromagneticseparator",
             ItemList.Machine_HV_ElectromagneticSeparator,
             true,
@@ -178,7 +179,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     POLARIZER(
-            GT_Recipe.GT_Recipe_Map.sPolarizerRecipes,
+            RecipeMaps.polarizerRecipes,
             "polarizer",
             ItemList.Machine_HV_Polarizer,
             true,
@@ -188,7 +189,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     MACERATOR(
-            GT_Recipe.GT_Recipe_Map.sMaceratorRecipes,
+            RecipeMaps.maceratorRecipes,
             "macerator",
             ItemList.Machine_HV_Macerator,
             true,
@@ -198,7 +199,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     CHEMICAL_BATH(
-            GT_Recipe.GT_Recipe_Map.sChemicalBathRecipes,
+            RecipeMaps.chemicalBathRecipes,
             "chemicalbath",
             ItemList.Machine_HV_ChemicalBath,
             true,
@@ -208,7 +209,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     FLUID_CANNER(
-            GT_Recipe.GT_Recipe_Map.sFluidCannerRecipes,
+            RecipeMaps.fluidCannerRecipes,
             "fluidcanner",
             ItemList.Machine_HV_FluidCanner,
             true,
@@ -218,7 +219,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     BREWING(
-            GT_Recipe.GT_Recipe_Map.sBrewingRecipes,
+            RecipeMaps.brewingRecipes,
             "brewing",
             ItemList.Machine_HV_Brewery,
             true,
@@ -228,7 +229,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     FLUID_HEATER(
-            GT_Recipe.GT_Recipe_Map.sFluidHeaterRecipes,
+            RecipeMaps.fluidHeaterRecipes,
             "fluidheater",
             ItemList.Machine_HV_FluidHeater,
             true,
@@ -238,7 +239,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     DISTILLERY(
-            GT_Recipe.GT_Recipe_Map.sDistilleryRecipes,
+            RecipeMaps.distilleryRecipes,
             "distillery",
             ItemList.Machine_HV_Distillery,
             true,
@@ -248,7 +249,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     FERMENTING(
-            GT_Recipe.GT_Recipe_Map.sFermentingRecipes,
+            RecipeMaps.fermentingRecipes,
             "fermenting",
             ItemList.Machine_HV_Fermenter,
             true,
@@ -257,9 +258,9 @@ public enum RecipeMap {
             new Dimension(0, 0),
             new Dimension(1, 1)),
 
-    FLUID_SOLIDIFICATION(
-            GT_Recipe.GT_Recipe_Map.sFluidSolidficationRecipes,
-            "fluidsolidification",
+    FLUID_SOLIDIFIER(
+            RecipeMaps.fluidSolidifierRecipes,
+            "fluidsolidifier",
             ItemList.Machine_HV_FluidSolidifier,
             true,
             new Dimension(1, 1),
@@ -268,7 +269,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     FLUID_EXTRACTION(
-            GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes,
+            RecipeMaps.fluidExtractionRecipes,
             "fluidextraction",
             ItemList.Machine_HV_FluidExtractor,
             true,
@@ -277,9 +278,9 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(1, 1)),
 
-    BOXINATOR(
-            GT_Recipe.GT_Recipe_Map.sBoxinatorRecipes,
-            "boxinator",
+    PACKAGER(
+            RecipeMaps.packagerRecipes,
+            "packager",
             ItemList.Machine_HV_Boxinator,
             true,
             new Dimension(2, 1),
@@ -287,9 +288,9 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(0, 0)),
 
-    UNBOXINATOR(
-            GT_Recipe.GT_Recipe_Map.sUnboxinatorRecipes,
-            "unboxinator",
+    UNPACKAGER(
+            RecipeMaps.unpackagerRecipes,
+            "unpackager",
             ItemList.Machine_HV_Unboxinator,
             true,
             new Dimension(1, 1),
@@ -298,7 +299,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     FUSION(
-            GT_Recipe.GT_Recipe_Map.sFusionRecipes,
+            RecipeMaps.fusionRecipes,
             "fusion",
             ItemList.FusionComputer_LuV,
             true,
@@ -307,18 +308,8 @@ public enum RecipeMap {
             new Dimension(0, 0),
             new Dimension(1, 1)),
 
-    COMPLEX_FUSION(
-            GT_Recipe.GT_Recipe_Map.sComplexFusionRecipes,
-            "complexfusion",
-            ItemList.FusionComputer_UV,
-            true,
-            new Dimension(0, 0),
-            new Dimension(2, 2),
-            new Dimension(0, 0),
-            new Dimension(2, 1)),
-
     CENTRIFUGE(
-            GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes,
+            RecipeMaps.centrifugeRecipes,
             "centrifuge",
             ItemList.Machine_HV_Centrifuge,
             true,
@@ -328,7 +319,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     ELECTROLYZER(
-            GT_Recipe.GT_Recipe_Map.sElectrolyzerRecipes,
+            RecipeMaps.electrolyzerRecipes,
             "electrolyzer",
             ItemList.Machine_HV_Electrolyzer,
             true,
@@ -337,9 +328,9 @@ public enum RecipeMap {
             new Dimension(3, 2),
             new Dimension(1, 1)),
 
-    BLAST(
-            GT_Recipe.GT_Recipe_Map.sBlastRecipes,
-            "blast",
+    BLAST_FURNACE(
+            RecipeMaps.blastFurnaceRecipes,
+            "blastfurnace",
             ItemList.Machine_Multi_BlastFurnace,
             true,
             new Dimension(3, 2),
@@ -348,7 +339,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     PLASMA_FORGE(
-            GT_Recipe.GT_Recipe_Map.sPlasmaForgeRecipes,
+            RecipeMaps.plasmaForgeRecipes,
             "plasmaforge",
             ItemList.Machine_Multi_PlasmaForge,
             true,
@@ -357,8 +348,12 @@ public enum RecipeMap {
             new Dimension(3, 3),
             new Dimension(3, 3)),
 
+    // TODO RecipeMaps.transcendentPlasmaMixerRecipes, RecipeMaps.spaceProjectFakeRecipes
+    // transcendentPlasmaMixerRecipes a.k.a. DTPF, 3x3 for all four input / output (item & fluid)
+    // but it has a temperature mechanic. Need to check coils too.
+
     PRIMITIVE_BLAST(
-            GT_Recipe.GT_Recipe_Map.sPrimitiveBlastRecipes,
+            RecipeMaps.primitiveBlastRecipes,
             "primitiveblast",
             ItemList.Machine_Bricked_BlastFurnace,
             true,
@@ -368,7 +363,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     IMPLOSION(
-            GT_Recipe.GT_Recipe_Map.sImplosionRecipes,
+            RecipeMaps.implosionRecipes,
             "implosion",
             ItemList.Machine_Multi_ImplosionCompressor,
             true,
@@ -377,9 +372,9 @@ public enum RecipeMap {
             new Dimension(2, 1),
             new Dimension(0, 0)),
 
-    VACUUM(
-            GT_Recipe.GT_Recipe_Map.sVacuumRecipes,
-            "vacuum",
+    VACUUM_FREEZER(
+            RecipeMaps.vacuumFreezerRecipes,
+            "vacuumfreezer",
             ItemList.Machine_Multi_VacuumFreezer,
             true,
             new Dimension(1, 1),
@@ -387,9 +382,9 @@ public enum RecipeMap {
             new Dimension(1, 1),
             new Dimension(1, 1)),
 
-    CHEMICAL(
-            GT_Recipe.GT_Recipe_Map.sChemicalRecipes,
-            "chemical",
+    CHEMICAL_REACTOR(
+            RecipeMaps.chemicalReactorRecipes,
+            "chemicalreactor",
             ItemList.Machine_HV_ChemicalReactor,
             true,
             new Dimension(2, 1),
@@ -397,9 +392,9 @@ public enum RecipeMap {
             new Dimension(2, 1),
             new Dimension(1, 1)),
 
-    MULTIBLOCK_CHEMICAL(
-            GT_Recipe.GT_Recipe_Map.sMultiblockChemicalRecipes,
-            "multiblockchemical",
+    MULTIBLOCK_CHEMICAL_REACTOR(
+            RecipeMaps.multiblockChemicalReactorRecipes,
+            "multiblockchemicalReactor",
             ItemList.Machine_Multi_LargeChemicalReactor,
             true,
             new Dimension(3, 2),
@@ -407,9 +402,9 @@ public enum RecipeMap {
             new Dimension(3, 2),
             new Dimension(3, 2)),
 
-    DISTILLATION(
-            GT_Recipe.GT_Recipe_Map.sDistillationRecipes,
-            "distillation",
+    DISTILLATION_TOWER(
+            RecipeMaps.distillationTowerRecipes,
+            "distillationtower",
             ItemList.Distillation_Tower,
             true,
             new Dimension(2, 1),
@@ -418,7 +413,7 @@ public enum RecipeMap {
             new Dimension(3, 4)),
 
     CRACKING(
-            GT_Recipe.GT_Recipe_Map.sCrackingRecipes,
+            RecipeMaps.crackingRecipes,
             "cracking",
             ItemList.OilCracker,
             true,
@@ -428,7 +423,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     PYROLYSE(
-            GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes,
+            RecipeMaps.pyrolyseRecipes,
             "pyrolyse",
             ItemList.PyrolyseOven,
             true,
@@ -438,7 +433,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     WIREMILL(
-            GT_Recipe.GT_Recipe_Map.sWiremillRecipes,
+            RecipeMaps.wiremillRecipes,
             "wiremill",
             ItemList.Machine_HV_Wiremill,
             true,
@@ -448,7 +443,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     BENDER(
-            GT_Recipe.GT_Recipe_Map.sBenderRecipes,
+            RecipeMaps.benderRecipes,
             "bender",
             ItemList.Machine_HV_Bender,
             true,
@@ -458,7 +453,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     ALLOY_SMELTER(
-            GT_Recipe.GT_Recipe_Map.sAlloySmelterRecipes,
+            RecipeMaps.alloySmelterRecipes,
             "alloysmelter",
             ItemList.Machine_HV_AlloySmelter,
             true,
@@ -468,7 +463,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     ASSEMBLER(
-            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes,
+            RecipeMaps.assemblerRecipes,
             "assembler",
             ItemList.Machine_HV_Assembler,
             true,
@@ -478,7 +473,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     CIRCUIT_ASSEMBLER(
-            GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes,
+            RecipeMaps.circuitAssemblerRecipes,
             "circuitassembler",
             ItemList.Machine_HV_CircuitAssembler,
             true,
@@ -488,7 +483,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     CANNER(
-            GT_Recipe.GT_Recipe_Map.sCannerRecipes,
+            RecipeMaps.cannerRecipes,
             "canner",
             ItemList.Machine_HV_Canner,
             true,
@@ -498,7 +493,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     LATHE(
-            GT_Recipe.GT_Recipe_Map.sLatheRecipes,
+            RecipeMaps.latheRecipes,
             "lathe",
             ItemList.Machine_HV_Lathe,
             true,
@@ -508,7 +503,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     CUTTER(
-            GT_Recipe.GT_Recipe_Map.sCutterRecipes,
+            RecipeMaps.cutterRecipes,
             "cutter",
             ItemList.Machine_HV_Cutter,
             true,
@@ -518,7 +513,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     SLICER(
-            GT_Recipe.GT_Recipe_Map.sSlicerRecipes,
+            RecipeMaps.slicerRecipes,
             "slicer",
             ItemList.Machine_HV_Slicer,
             true,
@@ -528,7 +523,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     EXTRUDER(
-            GT_Recipe.GT_Recipe_Map.sExtruderRecipes,
+            RecipeMaps.extruderRecipes,
             "extruder",
             ItemList.Machine_HV_Extruder,
             true,
@@ -538,7 +533,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     HAMMER(
-            GT_Recipe.GT_Recipe_Map.sHammerRecipes,
+            RecipeMaps.hammerRecipes,
             "hammer",
             ItemList.Machine_HV_Hammer,
             true,
@@ -548,7 +543,7 @@ public enum RecipeMap {
             new Dimension(2, 1)),
 
     AMPLIFIERS(
-            GT_Recipe.GT_Recipe_Map.sAmplifiers,
+            RecipeMaps.amplifierRecipes,
             "amplifiers",
             ItemList.Machine_HV_Amplifab,
             true,
@@ -558,7 +553,7 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     MASS_FAB(
-            GT_Recipe.GT_Recipe_Map.sMassFabFakeRecipes,
+            RecipeMaps.massFabFakeRecipes,
             "massfab",
             ItemList.Machine_HV_Massfab,
             true,
@@ -568,8 +563,9 @@ public enum RecipeMap {
             new Dimension(1, 1)),
 
     MULTIBLOCK_ELECTROLYZER(
-            GT_Recipe.GT_Recipe_Map.sMultiblockElectrolyzerRecipes,
+            RecipeMaps.electrolyzerNonCellRecipes,
             "multiblockelectrolyzer",
+            // TODO use GT++ machine icon?
             ItemList.Machine_IV_Electrolyzer,
             true,
             new Dimension(3, 2),
@@ -578,8 +574,9 @@ public enum RecipeMap {
             new Dimension(3, 2)),
 
     MULTIBLOCK_CENTRIFUGE(
-            GT_Recipe.GT_Recipe_Map.sMultiblockCentrifugeRecipes,
+            RecipeMaps.centrifugeNonCellRecipes,
             "multiblockcentrifuge",
+            // TODO use GT++ machine icon?
             ItemList.Machine_IV_Centrifuge,
             true,
             new Dimension(3, 2),
@@ -588,8 +585,9 @@ public enum RecipeMap {
             new Dimension(3, 2)),
 
     MULTIBLOCK_MIXER(
-            GT_Recipe.GT_Recipe_Map.sMultiblockMixerRecipes,
+            RecipeMaps.mixerNonCellRecipes,
             "multiblockmixer",
+            // TODO use GT++ machine icon?
             ItemList.Machine_IV_Mixer,
             true,
             new Dimension(3, 3),
@@ -598,7 +596,7 @@ public enum RecipeMap {
             new Dimension(3, 2)),
 
     NANO_FORGE(
-            GT_Recipe.GT_Recipe_Map.sNanoForge,
+            RecipeMaps.nanoForgeRecipes,
             "nanoforge",
             ItemList.NanoForge,
             true,
@@ -608,7 +606,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
 
     PCB_FACTORY(
-            GT_Recipe.GT_Recipe_Map.sPCBFactory,
+            RecipeMaps.pcbFactoryRecipes,
             "pcbfactory",
             ItemList.PCBFactory,
             true,
@@ -618,7 +616,7 @@ public enum RecipeMap {
             new Dimension(0, 0)),
     ;
 
-    private final GT_Recipe.GT_Recipe_Map recipeMap;
+    private final gregtech.api.recipe.RecipeMap<?> recipeMap;
     /** Used for IDs. */
     private final String shortName;
     private final String name;
@@ -630,12 +628,13 @@ public enum RecipeMap {
     private final Dimension fluidOutputDimension;
 
     RecipeMap(
-            GT_Recipe.GT_Recipe_Map recipeMap, String shortName, ItemList icon, boolean shapeless,
+            gregtech.api.recipe.RecipeMap<?> recipeMap,
+            String shortName, ItemList icon, boolean shapeless,
             Dimension itemInputDimension, Dimension fluidInputDimension,
             Dimension itemOutputDimension, Dimension fluidOutputDimension) {
         this.recipeMap = recipeMap;
         this.shortName = shortName;
-        this.name = GT_LanguageManager.getTranslation(recipeMap.mUnlocalizedName);
+        this.name = GT_LanguageManager.getTranslation(recipeMap.unlocalizedName);
         this.icon = icon;
         this.shapeless = shapeless;
         this.itemInputDimension = itemInputDimension;
@@ -644,7 +643,7 @@ public enum RecipeMap {
         this.fluidOutputDimension = fluidOutputDimension;
     }
 
-    public GT_Recipe.GT_Recipe_Map getRecipeMap() {
+    public gregtech.api.recipe.RecipeMap<?> getRecipeMap() {
         return recipeMap;
     }
 
@@ -665,7 +664,7 @@ public enum RecipeMap {
     }
 
     public int getAmperage() {
-        return recipeMap.mAmperage;
+        return recipeMap.getAmperage();
     }
 
     public boolean isShapeless() {

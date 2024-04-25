@@ -52,8 +52,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
 
         List<String> additionalInfo = new ArrayList<>();
         switch (recipeMap) {
-            case FUSION:
-            case COMPLEX_FUSION: {
+            case FUSION: {
                 // Special handling for fusion recipes.
                 int euToStart = gregTechRecipe.mSpecialValue;
 
@@ -87,7 +86,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                 break;
             }
 
-            case BLAST: {
+            case BLAST_FURNACE: {
                 // Special handling for EBF recipes.
                 int heat = gregTechRecipe.mSpecialValue;
 
@@ -106,6 +105,8 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                         String.format("Heat: %sK (%s)", NumberUtil.formatInteger(heat), tier));
                 break;
             }
+
+            // TODO special handling for TRANSCENDENT_PLASMA_MIXER?
         }
         if (gregTechRecipe.getNeiDesc() != null) {
             additionalInfo.addAll(Arrays.asList(gregTechRecipe.getNeiDesc()));
