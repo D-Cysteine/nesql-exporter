@@ -1,24 +1,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import net.minecraftforge.gradle.user.UserExtension
-
-buildscript {
-    repositories {
-        maven("https://maven.minecraftforge.net") { name = "Forge" }
-        maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") { name = "GTNH Maven" }
-    }
-    dependencies {
-        classpath("net.minecraftforge.gradle:ForgeGradle:1.2.13")
-    }
-}
 
 plugins {
     idea
     java
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("com.google.protobuf") version "0.9.3"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.google.protobuf") version "0.9.4"
+    id("com.gtnewhorizons.retrofuturagradle") version "1.3.35"
 }
-
-apply(plugin = "forge")
 
 val projectJavaVersion = JavaLanguageVersion.of(8)
 
@@ -36,7 +24,7 @@ java {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.0.0-rc-2"
+        artifact = "com.google.protobuf:protoc:4.26.1"
     }
 }
 
@@ -49,52 +37,50 @@ group = "com.github.dcysteine.nesql.exporter"
 version = nesqlExporterVersion
 
 val minecraftVersion: String by project
-val forgeVersion: String by project
-minecraft.version = "$minecraftVersion-$forgeVersion-$minecraftVersion"
-
-configure<UserExtension> {
-    replacements.putAll(
-        mapOf(
-            Pair("@version@", project.version)
-        )
-    )
-    runDir = "run"
+minecraft {
+    mcVersion.set(minecraftVersion)
 }
-
-val Project.minecraft: UserExtension
-    get() = extensions.getByName<UserExtension>("minecraft")
 
 val shadowImplementation: Configuration by configurations.creating {
     configurations["implementation"].extendsFrom(this)
 }
 
 val shadowRuntime: Configuration by configurations.creating {
-    configurations["runtime"].extendsFrom(this)
+    configurations["runtimeOnly"].extendsFrom(this)
 }
 
 repositories {
-    maven("https://maven.minecraftforge.net") {
-        name = "Forge"
-        metadataSources {
-            artifact()
-        }
-    }
-    maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") {
+    maven("https://nexus.gtnewhorizons.com/repository/public/") {
         name = "GTNH Maven"
     }
     maven("https://cursemaven.com") {
         name = "Curse Maven"
     }
 
+    /*
+     * This repo seems to be broken...
     maven("https://maven.ic2.player.to") {
         name = "IC2 Maven"
         metadataSources {
+            mavenPom()
             artifact()
         }
         content {
             includeGroup("net.industrial-craft")
         }
     }
+     */
+    maven("https://maven2.ic2.player.to") {
+        name = "IC2 Maven2"
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+        content {
+            includeGroup("net.industrial-craft")
+        }
+    }
+
     maven("https://gregtech.overminddl1.com") {
         content {
             includeGroup("thaumcraft")
@@ -131,34 +117,7 @@ dependencies {
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
 
     val gregTech5Version: String by project
-    implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev") {
-        isTransitive = false
-    }
-    // The following are compile-time dependencies of GT5.
-    val industrialCraft2Version: String by project
-    compileOnly("net.industrial-craft:industrialcraft-2:$industrialCraft2Version-experimental:api") {
-        isTransitive = false
-    }
-    val forestryVersion: String by project
-    compileOnly("com.github.GTNewHorizons:ForestryMC:$forestryVersion:api") {
-        isTransitive = false
-    }
-    val railcraftVersion: String by project
-    compileOnly("com.github.GTNewHorizons:Railcraft:$railcraftVersion:api") {
-        isTransitive = false
-    }
-    val buildCraftVersion: String by project
-    compileOnly("com.github.GTNewHorizons:BuildCraft:$buildCraftVersion:api") {
-        isTransitive = false
-    }
-    val enderIoVersion: String by project
-    compileOnly("com.github.GTNewHorizons:EnderIO:$enderIoVersion:api") {
-        isTransitive = false
-    }
-    val projectRedVersion: String by project
-    compileOnly("com.github.GTNewHorizons:ProjectRed:$projectRedVersion:dev") {
-        isTransitive = false
-    }
+    implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev")
 
     val thaumcraftVersion: String by project
     implementation("thaumcraft:Thaumcraft:$minecraftVersion-$thaumcraftVersion:dev")
@@ -166,9 +125,7 @@ dependencies {
     implementation("curse.maven:thaumcraft-nei-plugin-225095:$thaumcraftNeiVersion")
 
     val betterQuestingVersion: String by project
-    implementation("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev") {
-        isTransitive = false
-    }
+    implementation("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev")
 }
 
 tasks.withType<Jar> {
@@ -231,11 +188,6 @@ val sourcesJar by tasks.creating(Jar::class) {
     archiveClassifier.set("sources")
 }
 
-val devJar by tasks.creating(Jar::class) {
-    from(sourceSets.main.get().output)
-    archiveClassifier.set("dev")
-}
-
 // Export SQL Schema for NESQL Server.
 val sqlJar by tasks.creating(Jar::class) {
     from(sourceSets.main.get().output)
@@ -249,6 +201,5 @@ val sqlJar by tasks.creating(Jar::class) {
 artifacts {
     archives(depsJar)
     archives(sourcesJar)
-    archives(devJar)
     archives(sqlJar)
 }
