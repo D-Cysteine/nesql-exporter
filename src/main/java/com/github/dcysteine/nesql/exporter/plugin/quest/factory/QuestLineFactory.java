@@ -2,7 +2,6 @@ package com.github.dcysteine.nesql.exporter.plugin.quest.factory;
 
 import betterquesting.api.properties.NativeProps;
 import betterquesting.api.questing.IQuestLine;
-import betterquesting.api.questing.IQuestLineEntry;
 import betterquesting.api.utils.UuidConverter;
 import betterquesting.api2.utils.QuestTranslation;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
@@ -12,11 +11,7 @@ import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.quest.QuestLine;
-import com.github.dcysteine.nesql.sql.quest.QuestLineEntry;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public class QuestLineFactory extends EntityFactory<QuestLine, String> {
@@ -42,15 +37,12 @@ public class QuestLineFactory extends EntityFactory<QuestLine, String> {
                         QuestTranslation.translate(questLine.getProperty(NativeProps.DESC)));
         String visibility = questLine.getProperty(NativeProps.VISIBILITY).name();
 
-        Set<QuestLineEntry> questLineEntries = new HashSet<>();
         QuestLine questLineEntity =
-                new QuestLine(id, encodedQuestLineId, icon, name, description, visibility, questLineEntries);
+                new QuestLine(id, encodedQuestLineId, icon, name, description, visibility);
 
-        Set<Map.Entry<UUID, IQuestLineEntry>> qlEntries = questLine.entrySet();
-
-        for (Map.Entry<UUID, IQuestLineEntry> entry : qlEntries) {
-            questLineEntries.add(questLineEntryFactory.get(questLineEntity, entry.getKey(), entry.getValue()));
-        }
+        // No need to actually do anything with the returned QuestLineEntry objects, because the
+        // QuestLineEntry has ownership of the bidirectional QuestLine <-> QuestLineEntry link.
+        questLine.forEach((k, v) -> questLineEntryFactory.get(questLineEntity, questLineId, k, v));
 
         return findOrPersist(QuestLine.class, questLineEntity);
     }

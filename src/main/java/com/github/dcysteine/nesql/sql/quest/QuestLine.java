@@ -3,7 +3,11 @@ package com.github.dcysteine.nesql.sql.quest;
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.base.item.Item;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -44,14 +48,13 @@ public class QuestLine implements Identifiable<String> {
 
     public QuestLine(
             String id, String questLineId, Item icon, String name, String description,
-            String visibility, Set<QuestLineEntry> questLineEntries) {
+            String visibility) {
         this.id = id;
         this.questLineId = questLineId;
         this.icon = icon;
         this.name = name;
         this.description = description;
         this.visibility = visibility;
-        this.questLineEntries = questLineEntries;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.util;
 
+import betterquesting.api.utils.UuidConverter;
 import com.github.dcysteine.nesql.exporter.util.render.Renderer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
@@ -10,6 +11,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.io.File;
+import java.util.UUID;
 
 /** Utility class containing methods for generating unique row IDs. */
 public final class IdUtil {
@@ -73,6 +75,11 @@ public final class IdUtil {
         return "fluid" + File.separator + fluidId.substring(0, firstIndex) + File.separator
                 + fluidId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
+    }
+
+    public static String questLineEntryId(UUID questLineId, UUID questId) {
+        return UuidConverter.encodeUuid(questLineId)
+                + ID_SEPARATOR + UuidConverter.encodeUuid(questId);
     }
 
     /**

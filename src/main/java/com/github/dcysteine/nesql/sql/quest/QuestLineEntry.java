@@ -55,7 +55,9 @@ public class QuestLineEntry implements Identifiable<String> {
     }
 
     @Override
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
     public int getPosX() {
         return posX;
