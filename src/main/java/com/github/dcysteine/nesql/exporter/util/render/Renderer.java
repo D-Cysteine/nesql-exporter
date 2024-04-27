@@ -23,9 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {

@@ -12,12 +12,12 @@ import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
-import jakarta.persistence.EntityManagerFactory;
 import java.io.File;
 import java.util.Map;
 

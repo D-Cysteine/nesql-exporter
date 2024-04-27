@@ -2,10 +2,10 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.fluid.Fluid;
+import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStackWithProbability;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
-import com.github.dcysteine.nesql.sql.base.fluid.FluidGroup;
 import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
