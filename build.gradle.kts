@@ -28,10 +28,6 @@ protobuf {
     }
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
 val nesqlExporterVersion: String by project
 group = "com.github.dcysteine.nesql.exporter"
 version = nesqlExporterVersion
@@ -39,6 +35,8 @@ version = nesqlExporterVersion
 val minecraftVersion: String by project
 minecraft {
     mcVersion.set(minecraftVersion)
+
+    injectedTags.put("EXPORTER_VERSION", project.version)
 }
 
 val shadowImplementation: Configuration by configurations.creating {
@@ -128,6 +126,10 @@ dependencies {
     implementation("com.github.GTNewHorizons:BetterQuesting:$betterQuestingVersion:dev")
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
 tasks.withType<Jar> {
     // Replace version in mcmod.info
     filesMatching("mcmod.info") {
@@ -139,6 +141,10 @@ tasks.withType<Jar> {
         )
     }
     archiveBaseName.set("NESQL-Exporter")
+}
+
+tasks.injectTags.configure {
+    outputClassName.set("com.github.dcysteine.nesql.Tags")
 }
 
 // Unfortunately, we can neither minimize the shadow jar nor relocate it,
@@ -191,6 +197,7 @@ val sourcesJar by tasks.creating(Jar::class) {
 // Export SQL Schema for NESQL Server.
 val sqlJar by tasks.creating(Jar::class) {
     from(sourceSets.main.get().output)
+    from(sourceSets.injectedTags.get().output)
     exclude("com/github/dcysteine/nesql/exporter")
     exclude("*.proto")
     exclude("META-INF")

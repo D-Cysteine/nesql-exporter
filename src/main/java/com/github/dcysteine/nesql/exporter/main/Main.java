@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.main;
 
+import com.github.dcysteine.nesql.Tags;
 import com.github.dcysteine.nesql.exporter.main.config.Config;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigGuiFactory;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
@@ -25,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 public final class Main {
     public static final String MOD_ID = "nesql-exporter";
     public static final String MOD_NAME = "Not Enough SQL Exporter";
-    public static final String MOD_VERSION = "@version@";
+    public static final String MOD_VERSION = Tags.EXPORTER_VERSION;
     public static final String MOD_DEPENDENCIES = "required-after:NotEnoughItems;";
 
     @Instance(MOD_ID)

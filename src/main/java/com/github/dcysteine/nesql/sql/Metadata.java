@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.sql;
 
+import com.github.dcysteine.nesql.Tags;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -23,12 +24,12 @@ public class Metadata implements Identifiable<Integer> {
     public static final int ID = 0;
 
     /**
-     * This constant will be replaced with the NESQL version by the buildscript.
+     * The NESQL Exporter and SQL schema version.
      *
      * <p>The server can check this field to know its version of the SQL schema, and check the
      * {@link #version} field on the {@code Metadata} row to know the version of the repository.
      */
-    public static final String VERSION = "@version@";
+    public static final String VERSION = Tags.EXPORTER_VERSION;
 
     /** The maximum length for long string fields. Increase this if needed. */
     public static final int MAX_STRING_LENGTH = Short.MAX_VALUE;
