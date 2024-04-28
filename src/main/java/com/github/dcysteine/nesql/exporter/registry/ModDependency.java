@@ -4,6 +4,8 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
 public enum ModDependency {
+    MOBS_INFO("mobsinfo"),
+
     // GregTech 5 shares a mod ID with GregTech 6, so we must also check the mod version.
     GREGTECH_5("gregtech") {
         @Override

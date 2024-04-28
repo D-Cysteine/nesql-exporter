@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.quest;
 import com.github.dcysteine.nesql.sql.Identifiable;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
+import com.github.dcysteine.nesql.sql.base.mob.Mob;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -10,11 +11,14 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class contains data for the various types of BetterQuesting tasks.
@@ -48,8 +52,8 @@ public class Task implements Identifiable<String> {
 
     private boolean consume;
 
-    @Column(nullable = false)
-    private String entityId;
+    @ManyToOne
+    private Mob mob;
 
     private int numberRequired;
 
@@ -62,14 +66,14 @@ public class Task implements Identifiable<String> {
     public Task(
             String id, String name, TaskType type,
             List<ItemGroup> items, List<FluidStack> fluids,
-            boolean consume, String entityId, int numberRequired, String dimensionName) {
+            boolean consume, @Nullable Mob mob, int numberRequired, String dimensionName) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.items = items;
         this.fluids = fluids;
         this.consume = consume;
-        this.entityId = entityId;
+        this.mob = mob;
         this.numberRequired = numberRequired;
         this.dimensionName = dimensionName;
     }
@@ -99,8 +103,8 @@ public class Task implements Identifiable<String> {
         return consume;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public Optional<Mob> getMob() {
+        return Optional.ofNullable(mob);
     }
 
     public int getNumberRequired() {

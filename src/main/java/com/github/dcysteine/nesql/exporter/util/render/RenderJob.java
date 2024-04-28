@@ -12,7 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 @AutoOneOf(RenderJob.JobType.class)
 public abstract class RenderJob {
     public enum JobType {
-        ITEM, FLUID
+        ITEM, FLUID, MOB_NAME
     }
 
     public static RenderJob ofItem(ItemStack itemStack) {
@@ -25,9 +25,28 @@ public abstract class RenderJob {
         return AutoOneOf_RenderJob.fluid(fluidStack);
     }
 
+    public static RenderJob ofMobName(String mobName) {
+        return AutoOneOf_RenderJob.mobName(mobName);
+    }
+
     public abstract JobType getType();
     public abstract ItemStack getItem();
     public abstract FluidStack getFluid();
+    public abstract String getMobName();
+
+    public Renderer.RenderTarget getRenderTarget() {
+        switch (getType()) {
+            case ITEM:
+            case FLUID:
+                return Renderer.RenderTarget.ICON;
+
+            case MOB_NAME:
+                return Renderer.RenderTarget.MOB;
+
+            default:
+                throw new IllegalStateException("Unhandled job type: " + this);
+        }
+    }
 
     public String getImageFilePath() {
         switch (getType()) {
@@ -36,6 +55,9 @@ public abstract class RenderJob {
 
             case FLUID:
                 return IdUtil.imageFilePath(getFluid());
+
+            case MOB_NAME:
+                return IdUtil.mobImageFilePath(getMobName());
 
             default:
                 throw new IllegalStateException("Unhandled job type: " + this);

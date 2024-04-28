@@ -77,6 +77,29 @@ public final class IdUtil {
                 + Renderer.IMAGE_FILE_EXTENSION;
     }
 
+    public static String mobId(String mobName) {
+        int separator = mobName.indexOf('.');
+
+        if (separator < 0) {
+            // Vanilla mob; no mod ID in name
+            return sanitize("minecraft" + ID_SEPARATOR + mobName);
+        } else {
+            return sanitize(
+                    mobName.substring(0, separator)
+                            + ID_SEPARATOR + mobName.substring(separator + 1));
+        }
+    }
+
+    public static String mobImageFilePath(String mobName) {
+        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
+        // folder.
+        String mobId = mobId(mobName);
+        int firstIndex = mobId.indexOf(ID_SEPARATOR);
+        return "mob" + File.separator + mobId.substring(0, firstIndex) + File.separator
+                + mobId.substring(firstIndex + ID_SEPARATOR.length())
+                + Renderer.IMAGE_FILE_EXTENSION;
+    }
+
     public static String questLineEntryId(UUID questLineId, UUID questId) {
         return UuidConverter.encodeUuid(questLineId)
                 + ID_SEPARATOR + UuidConverter.encodeUuid(questId);

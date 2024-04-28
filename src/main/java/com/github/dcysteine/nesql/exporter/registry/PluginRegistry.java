@@ -6,6 +6,7 @@ import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.forge.ForgePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.GregTechPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.minecraft.MinecraftPluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.mobsinfo.MobsInfoPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.nei.NeiPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.thaumcraft.ThaumcraftPluginExporter;
@@ -28,6 +29,8 @@ public class PluginRegistry {
         builder.add(RegistryEntry.create(Plugin.MINECRAFT, MinecraftPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.FORGE, ForgePluginExporter::new));
+
+        builder.add(RegistryEntry.create(Plugin.MOBS_INFO, MobsInfoPluginExporter::new));
 
         builder.add(
                 RegistryEntry.create(

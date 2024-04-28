@@ -114,6 +114,9 @@ dependencies {
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")
 
+    val mobsInfoVersion: String by project
+    implementation("com.github.GTNewHorizons:Mobs-Info:$mobsInfoVersion:dev")
+
     val gregTech5Version: String by project
     implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev")
 

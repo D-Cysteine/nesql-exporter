@@ -10,6 +10,8 @@ public enum Plugin {
     NEI("nei"),
     FORGE("forge"),
 
+    MOBS_INFO("mobsinfo"),
+
     GREGTECH("gregtech"),
     THAUMCRAFT("thaumcraft"),
     QUEST("quest"),

@@ -11,6 +11,7 @@ public enum IdPrefixUtil {
     FLUID("f"),
     ITEM_GROUP("ig"),
     FLUID_GROUP("fg"),
+    MOB("m"),
     RECIPE("r"),
     RECIPE_TYPE("rt"),
 
@@ -18,6 +19,9 @@ public enum IdPrefixUtil {
     FLUID_BLOCK("fb"),
     FLUID_CONTAINER("fc"),
     EMPTY_CONTAINER("ec"),
+
+    MOB_INFO("mi"),
+    MOB_DROP("md"),
 
     GREG_TECH_RECIPE("gtr"),
 

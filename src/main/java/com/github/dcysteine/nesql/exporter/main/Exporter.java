@@ -105,7 +105,8 @@ public final class Exporter {
                         .createEntityManagerFactory("NESQL", properties);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        boolean renderingImages = ConfigOptions.RENDER_ICONS.get();
+        boolean renderingImages =
+                ConfigOptions.RENDER_ICONS.get() || ConfigOptions.RENDER_MOBS.get();
         if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
 
@@ -115,7 +116,7 @@ public final class Exporter {
                 RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
                 renderingImages = false;
             } else {
-                Renderer.INSTANCE.preinitialize(imageDirectory);
+                Renderer.INSTANCE.preInitialize(imageDirectory);
                 RenderDispatcher.INSTANCE.setRendererState(
                         RenderDispatcher.RendererState.INITIALIZING);
             }

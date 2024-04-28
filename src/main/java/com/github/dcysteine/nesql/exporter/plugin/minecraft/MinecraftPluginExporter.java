@@ -22,5 +22,6 @@ public class MinecraftPluginExporter extends PluginExporter {
     public void process() {
         new CraftingRecipeProcessor(this, recipeTypeHandler).process();
         new FurnaceRecipeProcessor(this, recipeTypeHandler).process();
+        new EntityProcessor(this).process();
     }
 }

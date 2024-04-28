@@ -7,10 +7,14 @@ import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
@@ -23,7 +27,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /** Singleton class that handles rendering items and fluids and saving the resulting image data. */
 public enum Renderer {
@@ -32,9 +38,55 @@ public enum Renderer {
     public static final String IMAGE_FILE_EXTENSION = ".png";
     private static final String IMAGE_FORMAT = "PNG";
 
-    private int imageDim;
+    /** Enum which handles rendering different types / sizes of images. */
+    public enum RenderTarget {
+        ICON,
+        MOB,
+        ;
+
+        /** Holds the currently bound render target, or null if all render targets are unbound. */
+        private static RenderTarget boundBuffer = null;
+
+        private static void forEach(Consumer<RenderTarget> consumer) {
+            Arrays.stream(values()).forEach(consumer);
+        }
+
+        private int imageDim;
+        private Framebuffer framebuffer;
+
+        /** Initializes the framebuffer, which must be done on the render thread. */
+        private void initialize() {
+            framebuffer = new Framebuffer(imageDim, imageDim, true);
+        }
+
+        /** Binds the framebuffer if not already bound. Must be done on the render thread. */
+        private void bind() {
+            if (boundBuffer != this) {
+                framebuffer.bindFramebuffer(true);
+                // Do we need to bind GL_DRAW_FRAMEBUFFER here as well?
+                // Seems to work fine as-is though...
+                OpenGlHelper.func_153171_g(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
+
+                boundBuffer = this;
+            }
+        }
+
+        /** Unbinds the framebuffer if bound. Must be done on the render thread. */
+        private void unbind() {
+            if (boundBuffer == this) {
+                framebuffer.unbindFramebuffer();
+                boundBuffer = null;
+            }
+        }
+
+        /** Destroys the framebuffer, which must be done on the render thread. */
+        private void destroy() {
+            framebuffer.deleteFramebuffer();
+            framebuffer = null;
+        }
+    }
+
     private File imageDirectory;
-    private Framebuffer framebuffer;
 
     // Used for intermittent logging.
     private int loggingCounter;
@@ -43,27 +95,28 @@ public enum Renderer {
      * This method is meant to be called from the client thread, prior to setting the dispatcher
      * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
      */
-    public void preinitialize(File imageDirectory) {
-        this.imageDim = ConfigOptions.ICON_DIMENSION.get();
+    public void preInitialize(File imageDirectory) {
+        RenderTarget.ICON.imageDim = ConfigOptions.ICON_DIMENSION.get();
+        RenderTarget.MOB.imageDim = ConfigOptions.MOB_IMAGE_DIMENSION.get();
+
         this.imageDirectory = imageDirectory;
         this.loggingCounter = 0;
     }
 
     /**
-     * Perform initialization of render-related variables, which must be done on the render thread.
+     * Performs initialization of render-related variables, which must be done on the render thread.
      */
     private void initialize() {
-        this.framebuffer = new Framebuffer(imageDim, imageDim, true);
+        RenderTarget.forEach(RenderTarget::initialize);
 
         RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZED);
     }
 
     /**
-     * Perform destruction of render-related variables, which must be done on the render thread.
+     * Performs destruction of render-related variables, which must be done on the render thread.
      */
     private void destroy() {
-        framebuffer.deleteFramebuffer();
-        framebuffer = null;
+        RenderTarget.forEach(RenderTarget::destroy);
 
         RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.UNINITIALIZED);
     }
@@ -112,9 +165,10 @@ public enum Renderer {
                 }
 
                 RenderJob job = jobOptional.get();
-                clearBuffer();
+                RenderTarget target = job.getRenderTarget();
+                bindAndClearBuffer(target);
                 render(job);
-                BufferedImage image = readImage(job);
+                BufferedImage image = readImage(target);
 
                 File outputFile = new File(imageDirectory, job.getImageFilePath());
                 // Not sure why, but this check fails spuriously every now and then.
@@ -124,7 +178,7 @@ public enum Renderer {
                 /*
                 if (outputFile.exists()) {
                     // If we cannot avoid queueing up duplicate render jobs, we can replace this
-                    // throw with a continue, and move this check to before we call readImage(job)
+                    // throw with a continue, and move this check to before we call readImage(...)
                     throw new RuntimeException(
                             "Render output file already exists: " + outputFile.getPath());
                 }
@@ -152,7 +206,10 @@ public enum Renderer {
         }
     }
 
+    /** Returns whether the render succeeded. */
     private void render(RenderJob job) {
+        RenderTarget target = job.getRenderTarget();
+
         switch (job.getType()) {
             case ITEM:
                 GuiContainerManager.drawItem(0, 0, job.getItem());
@@ -175,39 +232,76 @@ public enum Renderer {
                 GL11.glColor4f(1f, 1f, 1f, 1f);
                 break;
 
+            case MOB_NAME:
+                Entity entity =
+                        EntityList.createEntityByName(
+                                job.getMobName(), Minecraft.getMinecraft().theWorld);
+                if (entity == null) {
+                    Logger.MOD.error("Got null when creating entity: {}", job);
+                    break;
+                }
+
+                float scale =
+                        // Magic constant to make most mobs fit within the rendered image.
+                        // It's not a perfect fit, and varies a bit from mob to mob.
+                        // TODO maybe improve this? Probably pretty difficult, though.
+                        // Could also make it a config option.
+                        0.035f * Math.min(
+                                target.imageDim / entity.width,
+                                target.imageDim / entity.height);
+
+                // Lots of mob renderers don't do a good job of cleaning up their state...
+                GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(8f, 0f, 0f);  // Center the mob in the rendered image.
+                GL11.glScalef(scale, scale, scale);
+                RenderManager.instance.renderEntityWithPosYaw(entity, 0d, 0d, 0d, 0f, 1f);
+                GL11.glPopMatrix();
+                GL11.glPopAttrib();
+                break;
+
             default:
                 throw new IllegalArgumentException("Unrecognized job type: " + job);
         }
     }
 
     /** Returns the rendered image, in {@link BufferedImage#TYPE_INT_ARGB} format. */
-    private BufferedImage readImage(RenderJob job) {
+    private BufferedImage readImage(RenderTarget target) {
+        int imageDim = target.imageDim;
         ByteBuffer imageByteBuffer = BufferUtils.createByteBuffer(4 * imageDim * imageDim);
         GL11.glReadPixels(
-                0, 0, imageDim, imageDim,
-                GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageByteBuffer);
+                0, 0, imageDim, imageDim, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageByteBuffer);
+
+        int[] pixels = new int[imageDim * imageDim];
+        imageByteBuffer.asIntBuffer().get(pixels);
 
         // OpenGL uses inverted y-coordinates compared to our draw methods.
         // So we must flip the saved image vertically.
         //
         // Unfortunately, for some reason, the rendering seems to break if we try to invert using
         // OpenGL matrix transforms, so let's just do this on the pixel array.
-        int[] pixels = new int[imageDim * imageDim];
-        imageByteBuffer.asIntBuffer().get(pixels);
-        int[] flippedPixels = new int[pixels.length];
-        for (int i = 0; i < pixels.length; i++) {
-            int x = i % imageDim;
-            int y = imageDim - (i / imageDim + 1);
-            flippedPixels[i] = pixels[x + imageDim * y];
+        //
+        // For some reason, mob rendering doesn't need to be flipped.
+        if (target == RenderTarget.ICON) {
+            int[] flippedPixels = new int[pixels.length];
+            for (int i = 0; i < pixels.length; i++) {
+                int x = i % imageDim;
+                int y = imageDim - (i / imageDim + 1);
+                flippedPixels[i] = pixels[x + imageDim * y];
+            }
+            pixels = flippedPixels;
         }
 
         BufferedImage image =
                 new BufferedImage(imageDim, imageDim, BufferedImage.TYPE_INT_ARGB);
-        image.setRGB(0, 0, imageDim, imageDim, flippedPixels, 0, imageDim);
+        image.setRGB(0, 0, imageDim, imageDim, pixels, 0, imageDim);
         return image;
     }
 
-    private void clearBuffer() {
+    private void bindAndClearBuffer(RenderTarget target) {
+        target.bind();
+
         // Parameters are RGBA. Set full transparent background.
         GL11.glClearColor(0f, 0f, 0f, 0f);
         GL11.glClearDepth(1D);
@@ -228,12 +322,9 @@ public enum Renderer {
         RenderHelper.enableGUIStandardItemLighting();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        framebuffer.bindFramebuffer(true);
-        // Do we need to bind GL_DRAW_FRAMEBUFFER here as well? Seems to work fine as-is though...
-        OpenGlHelper.func_153171_g(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
     }
 
     private void teardownRenderState() {
-        framebuffer.unbindFramebuffer();
+        RenderTarget.forEach(RenderTarget::unbind);
     }
 }

@@ -26,6 +26,7 @@ public enum TaskType {
     /** Does not set any fields. */
     UNHANDLED("unhandled"),
     ;
+
     private final String name;
 
     TaskType(String name) {

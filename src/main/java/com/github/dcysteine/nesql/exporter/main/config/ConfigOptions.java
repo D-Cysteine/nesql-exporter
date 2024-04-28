@@ -60,6 +60,19 @@ public final class ConfigOptions {
                             + " can't handle the default.")
                     .register();
 
+    public static final Option<Integer> MOB_IMAGE_DIMENSION =
+            new IntegerOption(
+                    Category.OPTIONS, "mob_image_dimension", 256,
+                    "The size of rendered mob images, in pixels."
+                            + "\nHas no effect if render_entities is false.")
+                    .register();
+
+    public static final Option<Boolean> RENDER_MOBS =
+            new BooleanOption(
+                    Category.OPTIONS, "render_mobs", true,
+                    "Whether to render mob images when exporting.")
+                    .register();
+
     public static final Option<Integer> LOGGING_FREQUENCY =
             new IntegerOption(
                     Category.OPTIONS, "logging_frequency", 100,

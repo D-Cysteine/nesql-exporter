@@ -12,10 +12,12 @@ import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemGroupFactory;
+import com.github.dcysteine.nesql.exporter.plugin.base.factory.MobFactory;
 import com.github.dcysteine.nesql.exporter.plugin.quest.QuestUtil;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.sql.base.fluid.FluidStack;
 import com.github.dcysteine.nesql.sql.base.item.ItemGroup;
+import com.github.dcysteine.nesql.sql.base.mob.Mob;
 import com.github.dcysteine.nesql.sql.quest.Task;
 import com.github.dcysteine.nesql.sql.quest.TaskType;
 
@@ -25,11 +27,13 @@ import java.util.List;
 public class TaskFactory extends EntityFactory<Task, String> {
     private final ItemGroupFactory itemGroupFactory;
     private final FluidFactory fluidFactory;
+    private final MobFactory mobFactory;
 
     public TaskFactory(PluginExporter exporter) {
         super(exporter);
         itemGroupFactory = new ItemGroupFactory(exporter);
         fluidFactory = new FluidFactory(exporter);
+        mobFactory = new MobFactory(exporter);
     }
 
     public Task get(String encodedQuestId, int index, ITask task) {
@@ -44,7 +48,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
             taskEntity =
                     new Task(
                             id, name, TaskType.RETRIEVAL, items, new ArrayList<>(),
-                            typedTask.consume, "", 0, "");
+                            typedTask.consume, null, 0, "");
 
         } else if (task instanceof TaskCrafting) {
             TaskCrafting typedTask = (TaskCrafting) task;
@@ -52,27 +56,32 @@ public class TaskFactory extends EntityFactory<Task, String> {
             taskEntity =
                     new Task(
                             id, name, TaskType.CRAFTING, items, new ArrayList<>(),
-                            false, "", 0, "");
+                            false, null, 0, "");
 
         } else if (task instanceof TaskFluid) {
             TaskFluid typedTask = (TaskFluid) task;
             List<FluidStack> fluids = QuestUtil.buildFluids(fluidFactory, typedTask.requiredFluids);
             taskEntity =
                     new Task(
-                            id, name, TaskType.FLUID, new ArrayList<>(), fluids, false, "", 0, "");
+                            id, name, TaskType.FLUID, new ArrayList<>(), fluids, false, null, 0, "");
 
         } else if (task instanceof TaskCheckbox) {
             taskEntity =
                     new Task(
                             id, name, TaskType.CHECKBOX, new ArrayList<>(), new ArrayList<>(),
-                            false, "", 0, "");
+                            false, null, 0, "");
 
         } else if (task instanceof TaskHunt) {
             TaskHunt typedTask = (TaskHunt) task;
+            // TODO handle NBT. This will require creating a helper class holding mob name and NBT.
+            // We'll have to add NBT to the rendering logic, SQL table definition, and ID logic.
+            // Not sure if any quests even use this feature, so might not be worth it.
+            // But we might need it for wither skeletons =S
+            Mob mob = mobFactory.get(typedTask.idName);
             taskEntity =
                     new Task(
                             id, name, TaskType.HUNT, new ArrayList<>(), new ArrayList<>(),
-                            false, typedTask.idName, typedTask.required, "");
+                            false, mob, typedTask.required, "");
 
 
         } else if (task instanceof TaskLocation) {
@@ -81,7 +90,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
             taskEntity =
                     new Task(
                             id, name, TaskType.LOCATION, new ArrayList<>(), new ArrayList<>(),
-                            false, "", 0, TaskLocation.getDimName(typedTask.dim));
+                            false, null, 0, TaskLocation.getDimName(typedTask.dim));
 
         } else {
             // TODO add any additional task types that we need to handle here.
@@ -89,7 +98,7 @@ public class TaskFactory extends EntityFactory<Task, String> {
             taskEntity =
                     new Task(
                             id, name, TaskType.UNHANDLED, new ArrayList<>(), new ArrayList<>(),
-                            false, "", 0, "");
+                            false, null, 0, "");
         }
 
         return findOrPersist(Task.class, taskEntity);

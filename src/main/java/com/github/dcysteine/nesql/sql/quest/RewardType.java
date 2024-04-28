@@ -23,6 +23,7 @@ public enum RewardType {
     /** Does not set any fields. */
     UNHANDLED("unhandled"),
     ;
+
     private final String name;
 
     RewardType(String name) {
