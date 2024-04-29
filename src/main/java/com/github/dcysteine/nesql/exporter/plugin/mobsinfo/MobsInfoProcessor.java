@@ -13,10 +13,6 @@ public class MobsInfoProcessor extends PluginHelper {
     }
 
     public void process() {
-        // TODO create new mobsinfo plugin and get data from this list
-        // mobsinfo plugin will have two tables: MobInfo and MobDrop
-        // MobInfo one-to-one with Mob and has infernal, peaceful, etc. flags
-        // MobDrop many-to-one with Mob and has dropped item info
         Map<String, MobRecipeLoader.GeneralMappedMob> mobInfoMap = MobRecipeLoader.GeneralMobList;
         int total = mobInfoMap.size();
         logger.info("Processing {} mob info...", total);
