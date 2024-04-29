@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import java.util.Comparator;
 /** Holds information about an {@link Item}'s quantity of a single aspect. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class AspectEntry implements Identifiable<String> {
     @Id
@@ -36,23 +38,6 @@ public class AspectEntry implements Identifiable<String> {
         this.aspect = aspect;
         this.item = item;
         this.amount = amount;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public Aspect getAspect() {
-        return aspect;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public int getAmount() {
-        return amount;
     }
 
     @Override

@@ -8,11 +8,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 /** Holds an association between a fluid and its block form. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class FluidBlock implements Identifiable<String> {
     @Id
@@ -32,18 +34,5 @@ public class FluidBlock implements Identifiable<String> {
         this.id = id;
         this.fluid = fluid;
         this.block = block;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public Fluid getFluid() {
-        return fluid;
-    }
-
-    public Item getBlock() {
-        return block;
     }
 }

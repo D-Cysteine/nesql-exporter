@@ -7,10 +7,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class OreDictionary implements Identifiable<String> {
     @Id
@@ -30,18 +32,5 @@ public class OreDictionary implements Identifiable<String> {
         this.id = id;
         this.name = name;
         this.itemGroup = itemGroup;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ItemGroup getItemGroup() {
-        return itemGroup;
     }
 }

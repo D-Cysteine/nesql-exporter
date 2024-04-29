@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -15,6 +16,7 @@ import java.util.Comparator;
 /** Contains information about a type of recipe. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class RecipeType implements Identifiable<String> {
     /**
@@ -78,47 +80,6 @@ public class RecipeType implements Identifiable<String> {
         this.fluidInputDimension = fluidInputDimension;
         this.itemOutputDimension = itemOutputDimension;
         this.fluidOutputDimension = fluidOutputDimension;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Item getIcon() {
-        return icon;
-    }
-
-    public String getIconInfo() {
-        return iconInfo;
-    }
-
-    public boolean isShapeless() {
-        return shapeless;
-    }
-
-    public Dimension getItemInputDimension() {
-        return itemInputDimension;
-    }
-
-    public Dimension getFluidInputDimension() {
-        return fluidInputDimension;
-    }
-
-    public Dimension getItemOutputDimension() {
-        return itemOutputDimension;
-    }
-
-    public Dimension getFluidOutputDimension() {
-        return fluidOutputDimension;
     }
 
     @Override

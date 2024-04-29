@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -19,6 +20,7 @@ import java.util.Set;
 /** Holds information about a BetterQuesting quest line. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class QuestLine implements Identifiable<String> {
     @Id
@@ -66,41 +68,8 @@ public class QuestLine implements Identifiable<String> {
         questLineEntries = new HashSet<>();
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getQuestLineId() {
-        return questLineId;
-    }
-
-    public Item getIcon() {
-        return icon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
     public void addQuest(Quest quest) {
         quests.add(quest);
-    }
-
-    public Set<QuestLineEntry> getQuestLineEntries() {
-        return questLineEntries;
     }
 
     public void addQuestLineEntry(QuestLineEntry entry) {

@@ -19,11 +19,8 @@ import com.github.dcysteine.nesql.sql.quest.Task;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class QuestFactory extends EntityFactory<Quest, String> {
     private final ItemFactory itemFactory;
@@ -85,11 +82,6 @@ public class QuestFactory extends EntityFactory<Quest, String> {
     }
 
     public void setRequiredQuests(Quest quest, Collection<UUID> requiredQuestIds) {
-        Set<Quest> requiredQuests =
-                requiredQuestIds.stream()
-                        .map(this::findQuest)
-                        .collect(Collectors.toCollection(HashSet::new));
-
-        quest.setRequiredQuests(requiredQuests);
+        requiredQuestIds.stream().map(this::findQuest).forEach(quest::addRequiredQuest);
     }
 }

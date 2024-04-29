@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import javax.annotation.Nullable;
@@ -27,6 +28,7 @@ import java.util.Optional;
  */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Task implements Identifiable<String> {
     @Id
@@ -78,40 +80,7 @@ public class Task implements Identifiable<String> {
         this.dimensionName = dimensionName;
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public TaskType getType() {
-        return type;
-    }
-
-    public List<ItemGroup> getItems() {
-        return items;
-    }
-
-    public List<FluidStack> getFluids() {
-        return fluids;
-    }
-
-    public boolean isConsume() {
-        return consume;
-    }
-
     public Optional<Mob> getMob() {
         return Optional.ofNullable(mob);
-    }
-
-    public int getNumberRequired() {
-        return numberRequired;
-    }
-
-    public String getDimensionName() {
-        return dimensionName;
     }
 }

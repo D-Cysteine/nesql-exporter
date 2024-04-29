@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.SortNatural;
 
@@ -18,6 +19,7 @@ import java.util.TreeSet;
 
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class MobInfo implements Identifiable<String> {
     @Id
@@ -57,41 +59,8 @@ public class MobInfo implements Identifiable<String> {
         drops = new TreeSet<>();
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public Mob getMob() {
-        return mob;
-    }
-
-    public SortedSet<MobDrop> getDrops() {
-        return drops;
-    }
-
     public void addDrop(MobDrop drop) {
         drops.add(drop);
-    }
-
-    public boolean isAllowedInPeaceful() {
-        return allowedInPeaceful;
-    }
-
-    public boolean isSoulVialUsable() {
-        return soulVialUsable;
-    }
-
-    public boolean isAllowedInfernal() {
-        return allowedInfernal;
-    }
-
-    public boolean isAlwaysInfernal() {
-        return alwaysInfernal;
-    }
-
-    public SortedSet<String> getSpawnInfo() {
-        return spawnInfo;
     }
 
     @Override

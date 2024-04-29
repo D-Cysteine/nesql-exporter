@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Reward implements Identifiable<String> {
     @Id
@@ -64,38 +66,5 @@ public class Reward implements Identifiable<String> {
         this.xp = xp;
         this.levels = levels;
         this.completeQuestId = completeQuestId;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public RewardType getType() {
-        return type;
-    }
-
-    public List<ItemGroup> getItems() {
-        return items;
-    }
-
-    public String getCommand() {
-        return command;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
-    public boolean isLevels() {
-        return levels;
-    }
-
-    public String getCompleteQuestId() {
-        return completeQuestId;
     }
 }

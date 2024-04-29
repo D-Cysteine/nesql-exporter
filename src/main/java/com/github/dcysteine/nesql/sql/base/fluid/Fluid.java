@@ -6,12 +6,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
 
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Fluid implements Identifiable<String> {
     /**
@@ -81,66 +83,8 @@ public class Fluid implements Identifiable<String> {
         this.gaseous = gaseous;
     }
 
-    /**
-     * This is the unique table key, NOT the Forge fluid ID! The latter is not unique (there can be
-     * multiple fluid rows for the same Forge fluid ID).
-     */
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getImageFilePath() {
-        return imageFilePath;
-    }
-
-    public String getModId() {
-        return modId;
-    }
-
-    public String getInternalName() {
-        return internalName;
-    }
-
-    public String getUnlocalizedName() {
-        return unlocalizedName;
-    }
-
-    public String getLocalizedName() {
-        return localizedName;
-    }
-
-    /** The Forge fluid ID. These are regenerated on game startup, and so are not stable! */
-    public int getFluidId() {
-        return fluidId;
-    }
-
-    public int getLuminosity() {
-        return luminosity;
-    }
-
-    public int getDensity() {
-        return density;
-    }
-
-    public int getTemperature() {
-        return temperature;
-    }
-
-    public int getViscosity() {
-        return viscosity;
-    }
-
-    public boolean isGaseous() {
-        return gaseous;
-    }
-
     public boolean hasNbt() {
         return !nbt.isEmpty();
-    }
-
-    public String getNbt() {
-        return nbt;
     }
 
     @Override

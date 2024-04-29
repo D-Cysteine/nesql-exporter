@@ -8,6 +8,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.SortNatural;
 
@@ -18,6 +19,7 @@ import java.util.TreeSet;
 /** Contains metadata about the repository. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Metadata implements Identifiable<Integer> {
     /** There will only ever be one metadata entry, and it will have this ID. */
@@ -64,17 +66,5 @@ public class Metadata implements Identifiable<Integer> {
     @Override
     public Integer getId() {
         return id;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public long getCreationTimeMillis() {
-        return creationTimeMillis;
-    }
-
-    public SortedSet<Plugin> getActivePlugins() {
-        return activePlugins;
     }
 }

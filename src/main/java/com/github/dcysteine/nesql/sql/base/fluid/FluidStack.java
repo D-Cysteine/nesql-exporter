@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.base.fluid;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,7 @@ import java.util.Comparator;
  */
 @Embeddable
 @EqualsAndHashCode
+@Getter
 @ToString
 public class FluidStack implements Comparable<FluidStack> {
     @ManyToOne
@@ -27,14 +29,6 @@ public class FluidStack implements Comparable<FluidStack> {
     public FluidStack(Fluid fluid, int amount) {
         this.fluid = fluid;
         this.amount = amount;
-    }
-
-    public Fluid getFluid() {
-        return fluid;
-    }
-
-    public int getAmount() {
-        return amount;
     }
 
     @Override

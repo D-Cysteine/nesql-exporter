@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
 /** A group of {@link FluidStack}s, all fitting into a single input slot in a recipe. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class FluidGroup implements Identifiable<String> {
     @Id
@@ -31,14 +33,5 @@ public class FluidGroup implements Identifiable<String> {
     public FluidGroup(String id, Set<FluidStack> fluidStacks) {
         this.id = id;
         this.fluidStacks = fluidStacks;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public Set<FluidStack> getFluidStacks() {
-        return fluidStacks;
     }
 }

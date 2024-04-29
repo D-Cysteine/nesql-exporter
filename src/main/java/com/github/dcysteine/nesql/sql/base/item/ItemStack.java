@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.base.item;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,7 @@ import java.util.Comparator;
  */
 @Embeddable
 @EqualsAndHashCode
+@Getter
 @ToString
 public class ItemStack implements Comparable<ItemStack> {
     @ManyToOne
@@ -27,14 +29,6 @@ public class ItemStack implements Comparable<ItemStack> {
     public ItemStack(Item item, int stackSize) {
         this.item = item;
         this.stackSize = stackSize;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public int getStackSize() {
-        return stackSize;
     }
 
     @Override

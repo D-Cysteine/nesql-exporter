@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.quest;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,7 @@ import java.util.Comparator;
 /** Holds information about a BetterQuesting quest line entry. */
 @Embeddable
 @EqualsAndHashCode
+@Getter
 @ToString
 public class QuestLineEntry implements Comparable<QuestLineEntry> {
     @ManyToOne
@@ -30,26 +32,6 @@ public class QuestLineEntry implements Comparable<QuestLineEntry> {
         this.posY = posY;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-    }
-
-    public Quest getQuest() {
-        return quest;
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
     }
 
     @Override

@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class GregTechRecipe implements Identifiable<String> {
     @Id
@@ -87,46 +89,6 @@ public class GregTechRecipe implements Identifiable<String> {
     @Override
     public String getId() {
         return id;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public String getVoltageTier() {
-        return voltageTier;
-    }
-
-    public int getVoltage() {
-        return voltage;
-    }
-
-    public int getAmperage() {
-        return amperage;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public boolean isRequiresCleanroom() {
-        return requiresCleanroom;
-    }
-
-    public boolean isRequiresLowGravity() {
-        return requiresLowGravity;
-    }
-
-    public List<Item> getSpecialItems() {
-        return specialItems;
-    }
-
-    public List<String> getModOwners() {
-        return modOwners;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
     }
 
     @Override

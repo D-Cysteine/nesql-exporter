@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ import java.util.Comparator;
 
 @Embeddable
 @EqualsAndHashCode
+@Getter
 @ToString
 public class MobDrop implements Comparable<MobDrop> {
     @Enumerated(EnumType.STRING)
@@ -42,30 +44,6 @@ public class MobDrop implements Comparable<MobDrop> {
         this.probability = probability;
         this.lootable = lootable;
         this.playerOnly = playerOnly;
-    }
-
-    public MobDropType getType() {
-        return type;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public int getStackSize() {
-        return stackSize;
-    }
-
-    public double getProbability() {
-        return probability;
-    }
-
-    public boolean isLootable() {
-        return lootable;
-    }
-
-    public boolean isPlayerOnly() {
-        return playerOnly;
     }
 
     public ItemStack asItemStack() {

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import java.util.Set;
 /** Holds basic information about Thaumcraft aspects. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Aspect implements Identifiable<String> {
     @Id
@@ -57,40 +59,12 @@ public class Aspect implements Identifiable<String> {
         this.name = name;
         this.description = description;
         this.primal = primal;
-        this.components = new HashSet<>();
+
+        components = new HashSet<>();
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public Item getIcon() {
-        return icon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isPrimal() {
-        return primal;
-    }
-
-    public Set<Aspect> getComponents() {
-        return components;
-    }
-
-    public void setComponents(Set<Aspect> components) {
-        this.components = components;
-    }
-
-    public Set<Aspect> getComponentOf() {
-        return componentOf;
+    public void addComponent(Aspect component) {
+        components.add(component);
     }
 
     @Override

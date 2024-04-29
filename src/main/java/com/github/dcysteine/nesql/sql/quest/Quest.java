@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import java.util.Set;
 /** Holds information about a BetterQuesting quest. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Quest implements Identifiable<String> {
     @Id
@@ -93,70 +95,14 @@ public class Quest implements Identifiable<String> {
         this.repeatTime = repeatTime;
         this.questLogic = questLogic;
         this.taskLogic = taskLogic;
-        this.requiredQuests = new HashSet<>();
         this.tasks = tasks;
         this.rewards = rewards;
+
+        requiredQuests = new HashSet<>();
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getQuestId() {
-        return questId;
-    }
-
-    public Item getIcon() {
-        return icon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public int getRepeatTime() {
-        return repeatTime;
-    }
-
-    public Set<QuestLine> getQuestLines() {
-        return questLines;
-    }
-
-    public String getQuestLogic() {
-        return questLogic;
-    }
-
-    public Set<Quest> getRequiredQuests() {
-        return requiredQuests;
-    }
-
-    public void setRequiredQuests(Set<Quest> requiredQuests) {
-        this.requiredQuests = requiredQuests;
-    }
-
-    public Set<Quest> getRequiredByQuests() {
-        return requiredByQuests;
-    }
-
-    public String getTaskLogic() {
-        return taskLogic;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public List<Reward> getRewards() {
-        return rewards;
+    public void addRequiredQuest(Quest quest) {
+        requiredQuests.add(quest);
     }
 
     @Override

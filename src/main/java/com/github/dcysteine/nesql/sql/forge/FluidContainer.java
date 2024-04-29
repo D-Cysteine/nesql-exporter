@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 /** Holds data for a fluid container. */
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class FluidContainer implements Identifiable<String> {
     @Id
@@ -39,23 +41,6 @@ public class FluidContainer implements Identifiable<String> {
         this.fluidStack = fluidStack;
         this.container = container;
         this.emptyContainer = emptyContainer;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public FluidStack getFluidStack() {
-        return fluidStack;
-    }
-
-    public Item getContainer() {
-        return container;
-    }
-
-    public Item getEmptyContainer() {
-        return emptyContainer;
     }
 
     @Override

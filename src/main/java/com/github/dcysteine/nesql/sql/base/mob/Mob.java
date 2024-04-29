@@ -6,12 +6,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
 
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Mob implements Identifiable<String> {
     @Id
@@ -70,57 +72,8 @@ public class Mob implements Identifiable<String> {
         this.leashable = leashable;
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getImageFilePath() {
-        return imageFilePath;
-    }
-
-    public String getModId() {
-        return modId;
-    }
-
-    public String getInternalName() {
-        return internalName;
-    }
-
-    public String getLocalizedName() {
-        return localizedName;
-    }
-
     public boolean hasNbt() {
         return !nbt.isEmpty();
-    }
-
-    public String getNbt() {
-        return nbt;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getHealth() {
-        return health;
-    }
-
-    public int getArmour() {
-        return armour;
-    }
-
-    public boolean isImmuneToFire() {
-        return immuneToFire;
-    }
-
-    public boolean isLeashable() {
-        return leashable;
     }
 
     @Override

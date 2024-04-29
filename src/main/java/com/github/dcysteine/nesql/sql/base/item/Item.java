@@ -7,6 +7,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Entity
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Item implements Identifiable<String> {
     /**
@@ -90,67 +92,8 @@ public class Item implements Identifiable<String> {
         this.toolClasses = toolClasses;
     }
 
-    /**
-     * This is the unique table key, NOT the Minecraft item ID! The latter is not unique (there can
-     * be multiple item rows for the same Minecraft item ID).
-     */
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public String getImageFilePath() {
-        return imageFilePath;
-    }
-
-    public String getModId() {
-        return modId;
-    }
-
-    public String getInternalName() {
-        return internalName;
-    }
-
-    public String getUnlocalizedName() {
-        return unlocalizedName;
-    }
-
-    public String getLocalizedName() {
-        return localizedName;
-    }
-
-    /** The Minecraft item ID. These IDs can vary from world to world, so don't rely on them! */
-    public int getItemId() {
-        return itemId;
-    }
-
-    public int getItemDamage() {
-        return itemDamage;
-    }
-
     public boolean hasNbt() {
         return !nbt.isEmpty();
-    }
-
-    public String getNbt() {
-        return nbt;
-    }
-
-    public String getTooltip() {
-        return tooltip;
-    }
-
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
-    public int getMaxDamage() {
-        return maxDamage;
-    }
-
-    /** Returns a map of tool class to harvest level. */
-    public Map<String, Integer> getToolClasses() {
-        return toolClasses;
     }
 
     @Override

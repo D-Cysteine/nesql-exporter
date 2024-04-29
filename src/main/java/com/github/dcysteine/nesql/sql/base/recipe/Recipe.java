@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import java.util.Set;
 @Entity
 @Table(indexes = {@Index(columnList = "RECIPE_TYPE_ID")})
 @EqualsAndHashCode
+@Getter
 @ToString
 public class Recipe implements Identifiable<String> {
     @Id
@@ -87,45 +89,12 @@ public class Recipe implements Identifiable<String> {
         fluidInputsFluids = new HashSet<>();
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public RecipeType getRecipeType() {
-        return recipeType;
-    }
-
-    public Map<Integer, ItemGroup> getItemInputs() {
-        return itemInputs;
-    }
-
-    public Set<Item> getItemInputsItems() {
-        return itemInputsItems;
-    }
-
     public void addItemInputsItem(Item item) {
         itemInputsItems.add(item);
     }
 
-    public Map<Integer, FluidGroup> getFluidInputs() {
-        return fluidInputs;
-    }
-
-    public Set<Fluid> getFluidInputsFluids() {
-        return fluidInputsFluids;
-    }
-
     public void addFluidInputsFluid(Fluid fluid) {
         fluidInputsFluids.add(fluid);
-    }
-
-    public Map<Integer, ItemStackWithProbability> getItemOutputs() {
-        return itemOutputs;
-    }
-
-    public Map<Integer, FluidStackWithProbability> getFluidOutputs() {
-        return fluidOutputs;
     }
 
     @Override
