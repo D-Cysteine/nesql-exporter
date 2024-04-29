@@ -1,6 +1,5 @@
 package com.github.dcysteine.nesql.exporter.util;
 
-import betterquesting.api.utils.UuidConverter;
 import com.github.dcysteine.nesql.exporter.common.MobSpec;
 import com.github.dcysteine.nesql.exporter.render.Renderer;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -13,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.UUID;
 
 /** Utility class containing methods for generating unique row IDs. */
 public final class IdUtil {
@@ -80,7 +78,7 @@ public final class IdUtil {
     }
 
     public static String mobId(MobSpec spec) {
-        String id = spec.getModId() + ID_SEPARATOR + spec.getShortName();
+        String id = sanitize(spec.getModId() + ID_SEPARATOR + spec.getShortName());
 
         Optional<NBTTagCompound> nbt = spec.getNbt();
         if (nbt.isPresent()) {
@@ -98,11 +96,6 @@ public final class IdUtil {
         return "mob" + File.separator + mobId.substring(0, firstIndex) + File.separator
                 + mobId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
-    }
-
-    public static String questLineEntryId(UUID questLineId, UUID questId) {
-        return UuidConverter.encodeUuid(questLineId)
-                + ID_SEPARATOR + UuidConverter.encodeUuid(questId);
     }
 
     /**

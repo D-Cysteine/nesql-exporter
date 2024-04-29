@@ -10,7 +10,6 @@ import com.github.dcysteine.nesql.exporter.render.Renderer;
 import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.Plugin;
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
