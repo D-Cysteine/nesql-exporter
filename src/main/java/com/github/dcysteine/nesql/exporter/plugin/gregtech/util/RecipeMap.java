@@ -347,9 +347,19 @@ public enum RecipeMap {
             new Dimension(3, 3),
             new Dimension(3, 3)),
 
-    // TODO RecipeMaps.transcendentPlasmaMixerRecipes, RecipeMaps.spaceProjectFakeRecipes
-    // transcendentPlasmaMixerRecipes a.k.a. DTPF, 3x3 for all four input / output (item & fluid)
-    // but it has a temperature mechanic. Need to check coils too.
+    TRANSCENDENT_PLASMA_MIXER(
+            RecipeMaps.transcendentPlasmaMixerRecipes,
+            "transcendentplasmaforge",
+            ItemList.Machine_Multi_TranscendentPlasmaMixer,
+            true,
+            new Dimension(1, 1),
+            new Dimension(4, 5),
+            new Dimension(0, 0),
+            new Dimension(1, 1)),
+
+    // TODO RecipeMaps.spaceProjectFakeRecipes
+    // Also other space elevator recipes? Eye of Harmony? Don't seem to be in RecipeMaps though
+    // gregtech.api.recipe.RecipeMap.ALL_RECIPE_MAPS.get("gt.recipe.<recipe>") ?
 
     PRIMITIVE_BLAST(
             RecipeMaps.primitiveBlastRecipes,

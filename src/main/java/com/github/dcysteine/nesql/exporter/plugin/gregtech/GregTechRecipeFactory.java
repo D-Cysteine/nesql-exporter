@@ -86,8 +86,9 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                 break;
             }
 
-            case BLAST_FURNACE: {
-                // Special handling for EBF recipes.
+            case BLAST_FURNACE:
+            case PLASMA_FORGE: {
+                // Special handling for EBF and DTPF recipes.
                 int heat = gregTechRecipe.mSpecialValue;
 
                 String tier = HeatingCoilLevel.MAX.getName();
@@ -102,11 +103,10 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
                 }
 
                 additionalInfo.add(
-                        String.format("Heat: %sK (%s)", NumberUtil.formatInteger(heat), tier));
+                        String.format(
+                                "Heat capacity: %sK (%s)", NumberUtil.formatInteger(heat), tier));
                 break;
             }
-
-            // TODO special handling for TRANSCENDENT_PLASMA_MIXER?
         }
         if (gregTechRecipe.getNeiDesc() != null) {
             additionalInfo.addAll(Arrays.asList(gregTechRecipe.getNeiDesc()));
