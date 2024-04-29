@@ -5,16 +5,16 @@ import net.minecraft.command.ICommandSender;
 
 import java.util.List;
 
-/** Command to run NESQL export. */
-final class ExportCommand implements ICommand {
+/** Command to run NESQL export, and overwrite if the specified repository already exists. */
+final class ExportOverwriteCommand implements ICommand {
     @Override
     public String getCommandName() {
-        return "nesql";
+        return "nesqlf";
     }
 
     @Override
     public String getCommandUsage(ICommandSender unused) {
-        return "/nesql [filename suffix]";
+        return "/nesqlf [filename suffix]";
     }
 
     @Override
@@ -32,9 +32,9 @@ final class ExportCommand implements ICommand {
 
         Exporter exporter;
         if (args.length == 1) {
-            exporter = new Exporter(false, args[0]);
+            exporter = new Exporter(true, args[0]);
         } else {
-            exporter = new Exporter(false);
+            exporter = new Exporter(true);
         }
         new Thread(exporter::exportReportException).start();
     }

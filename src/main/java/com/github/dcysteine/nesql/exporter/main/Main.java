@@ -58,7 +58,8 @@ public final class Main {
         }
 
         event.registerServerCommand(new ExportCommand());
-        Logger.MOD.info("Export command registered!");
+        event.registerServerCommand(new ExportOverwriteCommand());
+        Logger.MOD.info("Commands registered!");
     }
 
     @SubscribeEvent
@@ -66,7 +67,7 @@ public final class Main {
     public void onClientConnected(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (ConfigOptions.AUTO_EXPORT_ON_CONNECT.get()) {
             Logger.MOD.info("Automatically exporting...");
-            new Thread(new Exporter()::exportReportException).start();
+            new Thread(new Exporter(false)::exportReportException).start();
         }
     }
 }

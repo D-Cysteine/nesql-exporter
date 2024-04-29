@@ -16,9 +16,11 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
+import org.apache.commons.io.FileUtils;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /** Exports recipes and other data to a file. */
@@ -27,16 +29,19 @@ public final class Exporter {
     private static final String DATABASE_FILE_PATH = "nesql-db";
     private static final String IMAGE_DIRECTORY_PATH = "image";
 
+    /** If true, existing repositories will be deleted and overwritten. */
+    private final boolean overwrite;
     private final String repositoryName;
     private final File repositoryDirectory;
     private final File databaseFile;
     private final File imageDirectory;
 
-    public Exporter() {
-        this(ConfigOptions.REPOSITORY_NAME.get());
+    public Exporter(boolean overwrite) {
+        this(overwrite, ConfigOptions.REPOSITORY_NAME.get());
     }
 
-    public Exporter(String repositoryName) {
+    public Exporter(boolean overwrite, String repositoryName) {
+        this.overwrite = overwrite;
         this.repositoryName = repositoryName;
         this.repositoryDirectory =
                 new File(
@@ -77,11 +82,26 @@ public final class Exporter {
     private void export() {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data to:");
         Logger.chatMessage(repositoryDirectory.getAbsolutePath());
+
         if (repositoryDirectory.exists()) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED + String.format(
-                            "Cannot create repository \"%s\"; it already exists!", repositoryName));
-            return;
+            if (overwrite) {
+                Logger.chatMessage(
+                        EnumChatFormatting.YELLOW + String.format(
+                                "Repository \"%s\" already exists; deleting...", repositoryName));
+                try {
+                    FileUtils.deleteDirectory(repositoryDirectory);
+                } catch (IOException e) {
+                    Logger.chatMessage(
+                            EnumChatFormatting.RED + String.format(
+                                    "Could not delete repository \"%s\"!", repositoryName));
+                    throw new RuntimeException(e);
+                }
+            } else {
+                Logger.chatMessage(
+                        EnumChatFormatting.RED + String.format(
+                                "Cannot create repository \"%s\"; it already exists!", repositoryName));
+                return;
+            }
         }
         if (!repositoryDirectory.mkdirs()) {
             Logger.chatMessage(
