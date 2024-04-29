@@ -30,7 +30,9 @@ public class PluginRegistry {
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.FORGE, ForgePluginExporter::new));
 
-        builder.add(RegistryEntry.create(Plugin.MOBS_INFO, MobsInfoPluginExporter::new));
+        builder.add(
+                RegistryEntry.create(
+                        Plugin.MOBS_INFO, MobsInfoPluginExporter::new, ModDependency.MOBS_INFO));
 
         builder.add(
                 RegistryEntry.create(
