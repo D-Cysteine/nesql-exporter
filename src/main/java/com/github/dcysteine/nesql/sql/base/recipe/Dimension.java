@@ -3,6 +3,7 @@ package com.github.dcysteine.nesql.sql.base.recipe;
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
@@ -31,7 +32,7 @@ public class Dimension implements Comparable<Dimension> {
     }
 
     @Override
-    public int compareTo(Dimension other) {
+    public int compareTo(@NotNull Dimension other) {
         return Comparator.comparing(Dimension::getWidth)
                 .thenComparing(Dimension::getHeight)
                 .compare(this, other);

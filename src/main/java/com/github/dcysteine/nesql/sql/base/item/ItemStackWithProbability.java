@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
@@ -48,7 +49,7 @@ public class ItemStackWithProbability implements Comparable<ItemStackWithProbabi
     }
 
     @Override
-    public int compareTo(ItemStackWithProbability other) {
+    public int compareTo(@NotNull ItemStackWithProbability other) {
         return Comparator.comparing(ItemStackWithProbability::getItem)
                 .thenComparing(ItemStackWithProbability::getStackSize)
                 .thenComparing(ItemStackWithProbability::getProbability)

@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
@@ -37,7 +38,7 @@ public class ItemStack implements Comparable<ItemStack> {
     }
 
     @Override
-    public int compareTo(ItemStack other) {
+    public int compareTo(@NotNull ItemStack other) {
         return Comparator.comparing(ItemStack::getItem).thenComparing(ItemStack::getStackSize)
                 .compare(this, other);
     }

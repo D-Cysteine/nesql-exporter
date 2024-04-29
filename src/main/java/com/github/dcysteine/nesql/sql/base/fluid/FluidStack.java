@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
@@ -37,7 +38,7 @@ public class FluidStack implements Comparable<FluidStack> {
     }
 
     @Override
-    public int compareTo(FluidStack other) {
+    public int compareTo(@NotNull FluidStack other) {
         return Comparator.comparing(FluidStack::getFluid).thenComparing(FluidStack::getAmount)
                 .compare(this, other);
     }
