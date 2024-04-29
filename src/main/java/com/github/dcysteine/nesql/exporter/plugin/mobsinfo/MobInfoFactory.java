@@ -3,9 +3,13 @@ package com.github.dcysteine.nesql.exporter.plugin.mobsinfo;
 import com.github.dcysteine.nesql.exporter.common.MobSpec;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.MobFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
+import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.mob.Mob;
+import com.github.dcysteine.nesql.sql.mobinfo.MobDrop;
+import com.github.dcysteine.nesql.sql.mobinfo.MobDropType;
 import com.github.dcysteine.nesql.sql.mobinfo.MobInfo;
 import com.kuba6000.mobsinfo.api.SpawnInfo;
 import com.kuba6000.mobsinfo.loader.MobRecipeLoader;
@@ -16,12 +20,32 @@ import java.util.stream.Collectors;
 
 public class MobInfoFactory extends EntityFactory<MobInfo, String> {
     private final MobFactory mobFactory;
-    private final MobDropFactory mobDropFactory;
+    private final ItemFactory itemFactory;
+
+    private static MobDropType convertDropType(
+            com.kuba6000.mobsinfo.api.MobDrop.DropType dropType) {
+        switch (dropType) {
+            case Normal:
+                return MobDropType.NORMAL;
+
+            case Rare:
+                return MobDropType.RARE;
+
+            case Additional:
+                return MobDropType.ADDITIONAL;
+
+            case Infernal:
+                return MobDropType.INFERNAL;
+
+            default:
+                throw new IllegalArgumentException("Unhandled drop type: " + dropType);
+        }
+    }
 
     public MobInfoFactory(PluginExporter exporter) {
         super(exporter);
         this.mobFactory = new MobFactory(exporter);
-        this.mobDropFactory = new MobDropFactory(exporter);
+        this.itemFactory = new ItemFactory(exporter);
     }
 
     public MobInfo get(String mobName, MobRecipeLoader.GeneralMappedMob info) {
@@ -52,13 +76,22 @@ public class MobInfoFactory extends EntityFactory<MobInfo, String> {
                 info.recipe.infernalityAllowed,
                 info.recipe.alwaysinfernal,
                 spawnInfo);
-
-        // No need to actually do anything with the returned MobDrop objects,
-        // because the MobDrop has ownership of the bidirectional MobInfo <-> MobDrop link.
-        for (int i = 0; i < info.drops.size(); i++) {
-            mobDropFactory.get(mobInfo, i, info.drops.get(i));
-        }
+        info.drops.forEach(d -> mobInfo.addDrop(buildDrop(d)));
 
         return findOrPersist(MobInfo.class, mobInfo);
+    }
+
+    public MobDrop buildDrop(com.kuba6000.mobsinfo.api.MobDrop drop) {
+        MobDropType dropType = convertDropType(drop.type);
+        net.minecraft.item.ItemStack itemStack = drop.stack;
+        Item item = itemFactory.get(itemStack);
+
+        return new MobDrop(
+                dropType,
+                item,
+                itemStack.stackSize,
+                drop.chance / 100_00d,
+                drop.lootable,
+                drop.playerOnly);
     }
 }

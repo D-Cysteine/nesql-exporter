@@ -6,7 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,7 +13,6 @@ import org.hibernate.annotations.SortNatural;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -29,9 +27,9 @@ public class MobInfo implements Identifiable<String> {
     @OneToOne
     Mob mob;
 
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "mobInfo")
-    private Set<MobDrop> drops;
+    @ElementCollection
+    @SortNatural
+    private SortedSet<MobDrop> drops;
 
     private boolean allowedInPeaceful;
     private boolean soulVialUsable;
@@ -55,6 +53,8 @@ public class MobInfo implements Identifiable<String> {
         this.allowedInfernal = allowedInfernal;
         this.alwaysInfernal = alwaysInfernal;
         this.spawnInfo = new TreeSet<>(spawnInfo);
+
+        drops = new TreeSet<>();
     }
 
     @Override
@@ -66,8 +66,12 @@ public class MobInfo implements Identifiable<String> {
         return mob;
     }
 
-    public Set<MobDrop> getDrops() {
+    public SortedSet<MobDrop> getDrops() {
         return drops;
+    }
+
+    public void addDrop(MobDrop drop) {
+        drops.add(drop);
     }
 
     public boolean isAllowedInPeaceful() {

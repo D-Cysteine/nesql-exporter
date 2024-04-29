@@ -1,45 +1,32 @@
 package com.github.dcysteine.nesql.sql.mobinfo;
 
-import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
+import com.github.dcysteine.nesql.sql.base.item.ItemStackWithProbability;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 
-@Entity
+@Embeddable
 @EqualsAndHashCode
 @ToString
-public class MobDrop implements Identifiable<String> {
-    /**
-     * Unfortunately, I had to include an integer index in this ID in order to disambiguate when we
-     * have multiple very similar mob drop entries.
-     *
-     * <p>As a consequence, these IDs might not be stable, and may vary with each export, or when
-     * the pack is updated.
-     */
-    @Id
-    @Column(nullable = false)
-    private String id;
-
-    @EqualsAndHashCode.Exclude
-    @ManyToOne
-    MobInfo mobInfo;
-
-    /** This field is always set. */
+public class MobDrop implements Comparable<MobDrop> {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     MobDropType type;
 
-    ItemStack itemStack;
+    @ManyToOne
+    private Item item;
 
-    private double chance;
+    private int stackSize;
+    private double probability;
     private boolean lootable;
     private boolean playerOnly;
 
@@ -47,36 +34,30 @@ public class MobDrop implements Identifiable<String> {
     protected MobDrop() {}
 
     public MobDrop(
-            String id, MobInfo mobInfo, MobDropType type, ItemStack itemStack,
-            double chance, boolean lootable, boolean playerOnly) {
-        this.id = id;
-        this.mobInfo = mobInfo;
+            MobDropType type, Item item, int stackSize,
+            double probability, boolean lootable, boolean playerOnly) {
         this.type = type;
-        this.itemStack = itemStack;
-        this.chance = chance;
+        this.item = item;
+        this.stackSize = stackSize;
+        this.probability = probability;
         this.lootable = lootable;
         this.playerOnly = playerOnly;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public MobInfo getMobInfo() {
-        return mobInfo;
     }
 
     public MobDropType getType() {
         return type;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
+    public Item getItem() {
+        return item;
     }
 
-    public double getChance() {
-        return chance;
+    public int getStackSize() {
+        return stackSize;
+    }
+
+    public double getProbability() {
+        return probability;
     }
 
     public boolean isLootable() {
@@ -87,16 +68,22 @@ public class MobDrop implements Identifiable<String> {
         return playerOnly;
     }
 
+    public ItemStack asItemStack() {
+        return new ItemStack(item, stackSize);
+    }
+
+    public ItemStackWithProbability asItemStackWithProbability() {
+        return new ItemStackWithProbability(item, stackSize, probability);
+    }
+
     @Override
-    public int compareTo(Identifiable<String> other) {
-        if (other instanceof MobDrop) {
-            return Comparator.comparing(MobDrop::getMobInfo)
-                    .thenComparing(MobDrop::getType)
-                    .thenComparing(MobDrop::getChance)
-                    .thenComparing(MobDrop::getId)
-                    .compare(this, (MobDrop) other);
-        } else {
-            return Identifiable.super.compareTo(other);
-        }
+    public int compareTo(@NotNull MobDrop other) {
+        return Comparator.comparing(MobDrop::getType)
+                .thenComparing(MobDrop::getProbability)
+                .thenComparing(MobDrop::getItem)
+                .thenComparing(MobDrop::getStackSize)
+                .thenComparing(MobDrop::isLootable)
+                .thenComparing(MobDrop::isPlayerOnly)
+                .compare(this, other);
     }
 }

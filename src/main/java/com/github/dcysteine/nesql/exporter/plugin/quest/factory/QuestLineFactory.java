@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.plugin.quest.factory;
 
 import betterquesting.api.properties.NativeProps;
 import betterquesting.api.questing.IQuestLine;
+import betterquesting.api.questing.IQuestLineEntry;
 import betterquesting.api.utils.UuidConverter;
 import betterquesting.api2.utils.QuestTranslation;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
@@ -10,18 +11,21 @@ import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
 import com.github.dcysteine.nesql.exporter.util.StringUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
+import com.github.dcysteine.nesql.sql.quest.Quest;
 import com.github.dcysteine.nesql.sql.quest.QuestLine;
+import com.github.dcysteine.nesql.sql.quest.QuestLineEntry;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class QuestLineFactory extends EntityFactory<QuestLine, String> {
     private final ItemFactory itemFactory;
-    private final QuestLineEntryFactory questLineEntryFactory;
+    private final QuestFactory questFactory;
 
     public QuestLineFactory(PluginExporter exporter) {
         super(exporter);
         itemFactory = new ItemFactory(exporter);
-        questLineEntryFactory = new QuestLineEntryFactory(exporter);
+        questFactory = new QuestFactory(exporter);
     }
 
     public QuestLine get(UUID questLineId, IQuestLine questLine) {
@@ -40,9 +44,19 @@ public class QuestLineFactory extends EntityFactory<QuestLine, String> {
         QuestLine questLineEntity =
                 new QuestLine(id, encodedQuestLineId, icon, name, description, visibility);
 
-        // No need to actually do anything with the returned QuestLineEntry objects, because the
-        // QuestLineEntry has ownership of the bidirectional QuestLine <-> QuestLineEntry link.
-        questLine.forEach((k, v) -> questLineEntryFactory.get(questLineEntity, questLineId, k, v));
+        for (Map.Entry<UUID, IQuestLineEntry> entry : questLine.entrySet()) {
+            Quest quest = questFactory.findQuest(entry.getKey());
+            IQuestLineEntry questLineEntry = entry.getValue();
+
+            questLineEntity.addQuest(quest);
+            questLineEntity.addQuestLineEntry(
+                    new QuestLineEntry(
+                            quest,
+                            questLineEntry.getPosX(),
+                            questLineEntry.getPosY(),
+                            questLineEntry.getSizeX(),
+                            questLineEntry.getSizeY()));
+        }
 
         return findOrPersist(QuestLine.class, questLineEntity);
     }

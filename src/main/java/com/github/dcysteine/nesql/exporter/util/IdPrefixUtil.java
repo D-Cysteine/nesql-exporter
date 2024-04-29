@@ -21,7 +21,6 @@ public enum IdPrefixUtil {
     EMPTY_CONTAINER("ec"),
 
     MOB_INFO("mi"),
-    MOB_DROP("md"),
 
     GREG_TECH_RECIPE("gtr"),
 
@@ -30,7 +29,6 @@ public enum IdPrefixUtil {
 
     QUEST("q"),
     QUEST_LINE("ql"),
-    QUEST_LINE_ENTRY("qle"),
     QUEST_TASK("qt"),
     QUEST_REWARD("qr"),
     ;

@@ -44,10 +44,10 @@ public class Quest implements Identifiable<String> {
 
     private int repeatTime;
 
-    /** Quest line entries that this quest belongs to. */
+    /** Quest lines that this quest belongs to. */
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "quest")
-    private Set<QuestLineEntry> questLineEntries;
+    @OneToMany(mappedBy = "quests")
+    private Set<QuestLine> questLines;
 
     @Column(nullable = false)
     private String questLogic;
@@ -127,8 +127,8 @@ public class Quest implements Identifiable<String> {
         return repeatTime;
     }
 
-    public Set<QuestLineEntry> getQuestLineEntries() {
-        return questLineEntries;
+    public Set<QuestLine> getQuestLines() {
+        return questLines;
     }
 
     public String getQuestLogic() {
