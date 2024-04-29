@@ -6,6 +6,9 @@ import cpw.mods.fml.common.ModContainer;
 public enum ModDependency {
     MOBS_INFO("mobsinfo"),
 
+    AVARITIA("Avaritia"),
+    FORESTRY("Forestry"),
+
     // GregTech 5 shares a mod ID with GregTech 6, so we must also check the mod version.
     GREGTECH_5("gregtech") {
         @Override
@@ -18,8 +21,6 @@ public enum ModDependency {
         }
     },
 
-    AVARITIA("Avaritia"),
-    FORESTRY("Forestry"),
     THAUMCRAFT("Thaumcraft"),
     THAUMCRAFT_NEI("thaumcraftneiplugin"),
     BETTER_QUESTING("betterquesting"),

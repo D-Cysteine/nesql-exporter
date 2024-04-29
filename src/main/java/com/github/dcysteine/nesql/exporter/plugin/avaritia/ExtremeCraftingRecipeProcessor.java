@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.plugin.minecraft;
+package com.github.dcysteine.nesql.exporter.plugin.avaritia;
 
 import codechicken.nei.NEIServerUtils;
 import com.github.dcysteine.nesql.exporter.main.Logger;
@@ -6,72 +6,73 @@ import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
+import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
+import fox.spiteful.avaritia.crafting.ExtremeShapedOreRecipe;
+import fox.spiteful.avaritia.crafting.ExtremeShapedRecipe;
+import fox.spiteful.avaritia.crafting.ExtremeShapelessRecipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CraftingRecipeProcessor extends PluginHelper {
-    private final RecipeType shapedCrafting;
-    private final RecipeType shapelessCrafting;
+/**
+ * Has almost identical logic to
+ * {@link com.github.dcysteine.nesql.exporter.plugin.minecraft.CraftingRecipeProcessor}.
+ *
+ * <p>Many of the checks and logged warnings are probably not actually needed for Avaritia recipes.
+ */
+public class ExtremeCraftingRecipeProcessor extends PluginHelper {
+    private final RecipeType shapedExtremeCrafting;
+    private final RecipeType shapelessExtremeCrafting;
 
-    public CraftingRecipeProcessor(
-            PluginExporter exporter, MinecraftRecipeTypeHandler recipeTypeHandler) {
+    public ExtremeCraftingRecipeProcessor(
+            PluginExporter exporter, AvaritiaRecipeTypeHandler recipeTypeHandler) {
         super(exporter);
-        this.shapedCrafting =
+        this.shapedExtremeCrafting =
                 recipeTypeHandler.getRecipeType(
-                        MinecraftRecipeTypeHandler.MinecraftRecipeType.SHAPED_CRAFTING);
-        this.shapelessCrafting =
+                        AvaritiaRecipeTypeHandler.AvaritiaRecipeType.SHAPED_EXTREME_CRAFTING);
+        this.shapelessExtremeCrafting =
                 recipeTypeHandler.getRecipeType(
-                        MinecraftRecipeTypeHandler.MinecraftRecipeType.SHAPELESS_CRAFTING);
+                        AvaritiaRecipeTypeHandler.AvaritiaRecipeType.SHAPELESS_EXTREME_CRAFTING);
     }
 
     public void process() {
         @SuppressWarnings("unchecked")
-        List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+        List<IRecipe> recipes = ExtremeCraftingManager.getInstance().getRecipeList();
         int total = recipes.size();
-        logger.info("Processing {} crafting recipes...", total);
+        logger.info("Processing {} Avaritia extreme crafting recipes...", total);
 
         int count = 0;
         for (IRecipe recipe : recipes) {
             count++;
 
-            if (recipe.getRecipeOutput() == null) {
-                logger.warn("Skipping crafting recipe with null output: {}", recipe);
-                continue;
-            }
-
-            if (recipe instanceof ShapedRecipes) {
-                processShapedRecipe((ShapedRecipes) recipe);
-            } else if (recipe instanceof ShapedOreRecipe) {
-                processShapedOreRecipe((ShapedOreRecipe) recipe);
-            } else if (recipe instanceof ShapelessRecipes) {
-                processShapelessRecipe((ShapelessRecipes) recipe);
+            if (recipe instanceof ExtremeShapedRecipe) {
+                processShapedRecipe((ExtremeShapedRecipe) recipe);
+            } else if (recipe instanceof ExtremeShapedOreRecipe) {
+                processShapedOreRecipe((ExtremeShapedOreRecipe) recipe);
+            } else if (recipe instanceof ExtremeShapelessRecipe) {
+                processShapelessRecipe((ExtremeShapelessRecipe) recipe);
             } else if (recipe instanceof ShapelessOreRecipe) {
                 processShapelessOreRecipe((ShapelessOreRecipe) recipe);
             } else {
-                logger.warn("Unhandled crafting recipe: {}", recipe);
+                logger.warn("Unhandled Avaritia extreme crafting recipe: {}", recipe);
             }
 
             if (Logger.intermittentLog(count)) {
-                logger.info("Processed crafting recipe {} of {}", count, total);
+                logger.info("Processed Avaritia extreme crafting recipe {} of {}", count, total);
                 logger.info(
                         "Most recent recipe: {}", recipe.getRecipeOutput().getDisplayName());
             }
         }
 
         exporterState.flushEntityManager();
-        logger.info("Finished processing crafting recipes!");
+        logger.info("Finished processing Avaritia extreme crafting recipes!");
     }
 
-    private void processShapedRecipe(ShapedRecipes recipe) {
-        RecipeBuilder builder = new RecipeBuilder(exporter, shapedCrafting);
+    private void processShapedRecipe(ExtremeShapedRecipe recipe) {
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapedExtremeCrafting);
         for (Object itemInput : recipe.recipeItems) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -83,8 +84,8 @@ public class CraftingRecipeProcessor extends PluginHelper {
         builder.addItemOutput(recipe.getRecipeOutput()).build();
     }
 
-    private void processShapedOreRecipe(ShapedOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(exporter, shapedCrafting);
+    private void processShapedOreRecipe(ExtremeShapedOreRecipe recipe) {
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapedExtremeCrafting);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput == null) {
                 builder.skipItemInput();
@@ -100,14 +101,14 @@ public class CraftingRecipeProcessor extends PluginHelper {
         builder.addItemOutput(recipe.getRecipeOutput()).build();
     }
 
-    private void processShapelessRecipe(ShapelessRecipes recipe) {
+    private void processShapelessRecipe(ExtremeShapelessRecipe recipe) {
         // Apparently this actually happens? At least, according to a comment in NEI source.
         if (recipe.recipeItems == null) {
             logger.warn("Crafting recipe with null inputs: {}", recipe);
             return;
         }
 
-        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessExtremeCrafting);
         for (Object itemInput : recipe.recipeItems) {
             handleItemInput(builder, itemInput);
         }
@@ -115,7 +116,7 @@ public class CraftingRecipeProcessor extends PluginHelper {
     }
 
     private void processShapelessOreRecipe(ShapelessOreRecipe recipe) {
-        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessCrafting);
+        RecipeBuilder builder = new RecipeBuilder(exporter, shapelessExtremeCrafting);
         for (Object itemInput : recipe.getInput()) {
             if (itemInput instanceof List && ((List<?>) itemInput).isEmpty()) {
                 logger.warn("Shapeless ore crafting recipe with empty list ingredient: {}", recipe);

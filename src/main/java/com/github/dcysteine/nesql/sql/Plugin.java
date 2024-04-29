@@ -12,6 +12,7 @@ public enum Plugin {
 
     MOBS_INFO("mobsinfo"),
 
+    AVARITIA("avaritia"),
     GREGTECH("gregtech"),
     THAUMCRAFT("thaumcraft"),
     QUEST("quest"),

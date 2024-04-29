@@ -2,6 +2,7 @@ package com.github.dcysteine.nesql.exporter.registry;
 
 import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
+import com.github.dcysteine.nesql.exporter.plugin.avaritia.AvaritiaPluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.BasePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.forge.ForgePluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.GregTechPluginExporter;
@@ -34,6 +35,9 @@ public class PluginRegistry {
                 RegistryEntry.create(
                         Plugin.MOBS_INFO, MobsInfoPluginExporter::new, ModDependency.MOBS_INFO));
 
+        builder.add(
+                RegistryEntry.create(
+                        Plugin.AVARITIA, AvaritiaPluginExporter::new, ModDependency.AVARITIA));
         builder.add(
                 RegistryEntry.create(
                         Plugin.GREGTECH, GregTechPluginExporter::new, ModDependency.GREGTECH_5));

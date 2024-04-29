@@ -18,11 +18,6 @@ public class NeiItemListProcessor extends PluginHelper {
         int total = ItemList.items.size();
         logger.info("Processing {} NEI items...", total);
 
-        if (total == 0) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED + "NEI item list is empty; did you forget to load it?");
-        }
-
         ItemFactory itemFactory = new ItemFactory(exporter);
         int count = 0;
         for (ItemStack itemStack : ItemList.items) {

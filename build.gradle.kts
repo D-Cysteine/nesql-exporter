@@ -117,6 +117,9 @@ dependencies {
     val mobsInfoVersion: String by project
     implementation("com.github.GTNewHorizons:Mobs-Info:$mobsInfoVersion:dev")
 
+    val avaritiaVersion: String by project
+    implementation("com.github.GTNewHorizons:Avaritia:$avaritiaVersion:dev")
+
     val gregTech5Version: String by project
     implementation("com.github.GTNewHorizons:GT5-Unofficial:$gregTech5Version:dev")
 

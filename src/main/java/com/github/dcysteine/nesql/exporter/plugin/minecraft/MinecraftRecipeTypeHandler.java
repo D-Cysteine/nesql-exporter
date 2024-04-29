@@ -19,7 +19,6 @@ public class MinecraftRecipeTypeHandler extends PluginHelper {
         SHAPED_CRAFTING,
         SHAPELESS_CRAFTING,
         FURNACE,
-        ;
     }
 
     private final EnumMap<MinecraftRecipeType, RecipeType> recipeTypeMap;

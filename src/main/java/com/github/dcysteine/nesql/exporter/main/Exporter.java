@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.main;
 
+import codechicken.nei.ItemList;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import com.github.dcysteine.nesql.exporter.plugin.ExporterState;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
@@ -140,12 +141,6 @@ public final class Exporter {
                 RenderDispatcher.INSTANCE.setRendererState(
                         RenderDispatcher.RendererState.INITIALIZING);
             }
-
-            if (Loader.isModLoaded("bugtorch")) {
-                Logger.chatMessage(EnumChatFormatting.RED + "BugTorch mod appears to be loaded;");
-                Logger.chatMessage(
-                        EnumChatFormatting.RED + "enchanted items might not render correctly!");
-            }
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
@@ -155,6 +150,22 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
         activePlugins.keySet().forEach(
                 plugin -> Logger.chatMessage("  " + EnumChatFormatting.YELLOW + plugin.getName()));
+
+        if (activePlugins.containsKey(Plugin.NEI) && ItemList.items.isEmpty()) {
+            Logger.chatMessage(
+                    EnumChatFormatting.RED
+                            + "NEI plugin is enabled and NEI item list is empty!\nAborting...");
+
+            try {
+                FileUtils.deleteDirectory(repositoryDirectory);
+            } catch (IOException e) {
+                Logger.chatMessage(
+                        EnumChatFormatting.RED + String.format(
+                                "Could not clean up repository \"%s\"!", repositoryName));
+                throw new RuntimeException(e);
+            }
+            return;
+        }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
         EntityTransaction transaction = entityManager.getTransaction();
