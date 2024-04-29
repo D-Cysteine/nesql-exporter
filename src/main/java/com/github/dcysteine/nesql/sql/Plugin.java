@@ -17,6 +17,14 @@ public enum Plugin {
     QUEST("quest"),
     ;
 
+    public static final ImmutableList<String> NAMES;
+
+    static {
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        Arrays.stream(values()).map(Plugin::getName).forEach(builder::add);
+        NAMES = builder.build();
+    }
+
     private final String name;
 
     Plugin(String name) {
@@ -25,13 +33,5 @@ public enum Plugin {
 
     public String getName() {
         return name;
-    }
-
-    public static final ImmutableList<String> NAMES;
-
-    static {
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
-        Arrays.stream(values()).map(Plugin::getName).forEach(builder::add);
-        NAMES = builder.build();
     }
 }
