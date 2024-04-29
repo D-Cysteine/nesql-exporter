@@ -159,7 +159,7 @@ public class Item implements Identifiable<String> {
             return Comparator.comparing(Item::getModId)
                     .thenComparing(Item::getInternalName)
                     .thenComparing(Item::getItemDamage)
-                    .thenComparing(Item::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                    .thenComparing(Item::getNbt, Comparator.naturalOrder())
                     .thenComparing(Item::getId)
                     .compare(this, (Item) other);
         } else {

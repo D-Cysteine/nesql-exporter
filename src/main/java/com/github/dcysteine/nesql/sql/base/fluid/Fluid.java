@@ -148,7 +148,7 @@ public class Fluid implements Identifiable<String> {
         if (other instanceof Fluid) {
             return Comparator.comparing(Fluid::getModId)
                     .thenComparing(Fluid::getInternalName)
-                    .thenComparing(Fluid::getNbt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                    .thenComparing(Fluid::getNbt, Comparator.naturalOrder())
                     .thenComparing(Fluid::getId)
                     .compare(this, (Fluid) other);
         } else {

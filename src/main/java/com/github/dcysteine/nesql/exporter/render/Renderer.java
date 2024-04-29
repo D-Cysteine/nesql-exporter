@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.util.render;
+package com.github.dcysteine.nesql.exporter.render;
 
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -7,14 +7,12 @@ import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.BufferUtils;
@@ -232,15 +230,16 @@ public enum Renderer {
                 GL11.glColor4f(1f, 1f, 1f, 1f);
                 break;
 
-            case MOB_NAME:
-                Entity entity =
-                        EntityList.createEntityByName(
-                                job.getMobName(), Minecraft.getMinecraft().theWorld);
-                if (entity == null) {
-                    Logger.MOD.error("Got null when creating entity: {}", job);
+            case MOB:
+                Optional<Entity> entityOptional = job.getMob().createEntity();
+                if (!entityOptional.isPresent()) {
+                    // This shouldn't ever happen,
+                    // because we already check for null entity before enqueueing the render job.
+                    Logger.MOD.error("Could not create entity: {}", job);
                     break;
                 }
 
+                Entity entity = entityOptional.get();
                 float scale =
                         // Magic constant to make most mobs fit within the rendered image.
                         // It's not a perfect fit, and varies a bit from mob to mob.

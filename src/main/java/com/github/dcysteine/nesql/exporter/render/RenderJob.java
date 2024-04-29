@@ -1,5 +1,6 @@
-package com.github.dcysteine.nesql.exporter.util.render;
+package com.github.dcysteine.nesql.exporter.render;
 
+import com.github.dcysteine.nesql.exporter.common.MobSpec;
 import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.google.auto.value.AutoOneOf;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 @AutoOneOf(RenderJob.JobType.class)
 public abstract class RenderJob {
     public enum JobType {
-        ITEM, FLUID, MOB_NAME
+        ITEM, FLUID, MOB
     }
 
     public static RenderJob ofItem(ItemStack itemStack) {
@@ -25,14 +26,14 @@ public abstract class RenderJob {
         return AutoOneOf_RenderJob.fluid(fluidStack);
     }
 
-    public static RenderJob ofMobName(String mobName) {
-        return AutoOneOf_RenderJob.mobName(mobName);
+    public static RenderJob ofMob(MobSpec spec) {
+        return AutoOneOf_RenderJob.mob(spec);
     }
 
     public abstract JobType getType();
     public abstract ItemStack getItem();
     public abstract FluidStack getFluid();
-    public abstract String getMobName();
+    public abstract MobSpec getMob();
 
     public Renderer.RenderTarget getRenderTarget() {
         switch (getType()) {
@@ -40,7 +41,7 @@ public abstract class RenderJob {
             case FLUID:
                 return Renderer.RenderTarget.ICON;
 
-            case MOB_NAME:
+            case MOB:
                 return Renderer.RenderTarget.MOB;
 
             default:
@@ -56,8 +57,8 @@ public abstract class RenderJob {
             case FLUID:
                 return IdUtil.imageFilePath(getFluid());
 
-            case MOB_NAME:
-                return IdUtil.mobImageFilePath(getMobName());
+            case MOB:
+                return IdUtil.mobImageFilePath(getMob());
 
             default:
                 throw new IllegalStateException("Unhandled job type: " + this);

@@ -1,4 +1,4 @@
-package com.github.dcysteine.nesql.exporter.util.render;
+package com.github.dcysteine.nesql.exporter.render;
 
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.google.common.collect.ImmutableSet;

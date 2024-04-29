@@ -1,7 +1,8 @@
 package com.github.dcysteine.nesql.exporter.util;
 
 import betterquesting.api.utils.UuidConverter;
-import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.github.dcysteine.nesql.exporter.common.MobSpec;
+import com.github.dcysteine.nesql.exporter.render.Renderer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.UUID;
 
 /** Utility class containing methods for generating unique row IDs. */
@@ -39,9 +41,9 @@ public final class IdUtil {
     }
 
     public static String imageFilePath(ItemStack itemStack) {
-        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
-        // folder.
         String itemId = itemId(itemStack);
+
+        // Split on the first occurrence of ID_SEPARATOR to get the mod name as a separate folder.
         int firstIndex = itemId.indexOf(ID_SEPARATOR);
         return "item" + File.separator + itemId.substring(0, firstIndex) + File.separator
                 + itemId.substring(firstIndex + ID_SEPARATOR.length())
@@ -68,32 +70,30 @@ public final class IdUtil {
     }
 
     public static String imageFilePath(FluidStack fluidStack) {
-        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
-        // folder.
         String fluidId = fluidId(fluidStack.getFluid());
+
+        // Split on the first occurrence of ID_SEPARATOR to get the mod name as a separate folder.
         int firstIndex = fluidId.indexOf(ID_SEPARATOR);
         return "fluid" + File.separator + fluidId.substring(0, firstIndex) + File.separator
                 + fluidId.substring(firstIndex + ID_SEPARATOR.length())
                 + Renderer.IMAGE_FILE_EXTENSION;
     }
 
-    public static String mobId(String mobName) {
-        int separator = mobName.indexOf('.');
+    public static String mobId(MobSpec spec) {
+        String id = spec.getModId() + ID_SEPARATOR + spec.getShortName();
 
-        if (separator < 0) {
-            // Vanilla mob; no mod ID in name
-            return sanitize("minecraft" + ID_SEPARATOR + mobName);
-        } else {
-            return sanitize(
-                    mobName.substring(0, separator)
-                            + ID_SEPARATOR + mobName.substring(separator + 1));
+        Optional<NBTTagCompound> nbt = spec.getNbt();
+        if (nbt.isPresent()) {
+            id += ID_SEPARATOR + StringUtil.encodeNbt(nbt.get());
         }
+
+        return id;
     }
 
-    public static String mobImageFilePath(String mobName) {
-        // Replace the first occurrence of ID_SEPARATOR to get the mod name as its own separate
-        // folder.
-        String mobId = mobId(mobName);
+    public static String mobImageFilePath(MobSpec spec) {
+        String mobId = mobId(spec);
+
+        // Split on the first occurrence of ID_SEPARATOR to get the mod name as a separate folder.
         int firstIndex = mobId.indexOf(ID_SEPARATOR);
         return "mob" + File.separator + mobId.substring(0, firstIndex) + File.separator
                 + mobId.substring(firstIndex + ID_SEPARATOR.length())

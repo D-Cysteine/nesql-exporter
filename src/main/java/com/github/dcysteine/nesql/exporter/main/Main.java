@@ -4,7 +4,7 @@ import com.github.dcysteine.nesql.Tags;
 import com.github.dcysteine.nesql.exporter.main.config.Config;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigGuiFactory;
 import com.github.dcysteine.nesql.exporter.main.config.ConfigOptions;
-import com.github.dcysteine.nesql.exporter.util.render.Renderer;
+import com.github.dcysteine.nesql.exporter.render.Renderer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;

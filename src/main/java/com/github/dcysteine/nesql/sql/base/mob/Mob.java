@@ -1,6 +1,7 @@
 package com.github.dcysteine.nesql.sql.base.mob;
 
 import com.github.dcysteine.nesql.sql.Identifiable;
+import com.github.dcysteine.nesql.sql.Metadata;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -29,6 +30,9 @@ public class Mob implements Identifiable<String> {
     @Column(nullable = false)
     private String localizedName;
 
+    @Column(length = Metadata.MAX_STRING_LENGTH, nullable = false)
+    private String nbt;
+
     private double width;
     private double height;
     private double health;
@@ -45,6 +49,7 @@ public class Mob implements Identifiable<String> {
             String modId,
             String internalName,
             String localizedName,
+            String nbt,
             double width,
             double height,
             double health,
@@ -56,6 +61,7 @@ public class Mob implements Identifiable<String> {
         this.modId = modId;
         this.internalName = internalName;
         this.localizedName = localizedName;
+        this.nbt = nbt;
         this.width = width;
         this.height = height;
         this.health = health;
@@ -83,6 +89,14 @@ public class Mob implements Identifiable<String> {
 
     public String getLocalizedName() {
         return localizedName;
+    }
+
+    public boolean hasNbt() {
+        return !nbt.isEmpty();
+    }
+
+    public String getNbt() {
+        return nbt;
     }
 
     public double getWidth() {
@@ -114,6 +128,7 @@ public class Mob implements Identifiable<String> {
         if (other instanceof Mob) {
             return Comparator.comparing(Mob::getModId)
                     .thenComparing(Mob::getInternalName)
+                    .thenComparing(Mob::getNbt, Comparator.naturalOrder())
                     .thenComparing(Mob::getId)
                     .compare(this, (Mob) other);
         } else {

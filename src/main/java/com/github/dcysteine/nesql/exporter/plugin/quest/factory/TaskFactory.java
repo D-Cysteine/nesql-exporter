@@ -8,6 +8,7 @@ import bq_standard.tasks.TaskFluid;
 import bq_standard.tasks.TaskHunt;
 import bq_standard.tasks.TaskLocation;
 import bq_standard.tasks.TaskRetrieval;
+import com.github.dcysteine.nesql.exporter.common.MobSpec;
 import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.FluidFactory;
@@ -73,11 +74,14 @@ public class TaskFactory extends EntityFactory<Task, String> {
 
         } else if (task instanceof TaskHunt) {
             TaskHunt typedTask = (TaskHunt) task;
-            // TODO handle NBT. This will require creating a helper class holding mob name and NBT.
-            // We'll have to add NBT to the rendering logic, SQL table definition, and ID logic.
-            // Not sure if any quests even use this feature, so might not be worth it.
-            // But we might need it for wither skeletons =S
-            Mob mob = mobFactory.get(typedTask.idName);
+
+            Mob mob;
+            if (!typedTask.ignoreNBT) {
+                mob = mobFactory.get(MobSpec.create(typedTask.idName, typedTask.targetTags));
+            } else {
+                mob = mobFactory.get(MobSpec.create(typedTask.idName));
+            }
+
             taskEntity =
                     new Task(
                             id, name, TaskType.HUNT, new ArrayList<>(), new ArrayList<>(),

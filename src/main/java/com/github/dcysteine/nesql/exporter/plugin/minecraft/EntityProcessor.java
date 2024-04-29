@@ -1,5 +1,6 @@
 package com.github.dcysteine.nesql.exporter.plugin.minecraft;
 
+import com.github.dcysteine.nesql.exporter.common.MobSpec;
 import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
@@ -29,7 +30,7 @@ public class EntityProcessor extends PluginHelper {
             String entityName = entry.getKey();
             Class<Entity> clazz = entry.getValue();
             if (clazz != null && EntityLiving.class.isAssignableFrom(clazz)) {
-                mobFactory.get(entityName);
+                mobFactory.get(MobSpec.create(entityName));
             }
 
             if (Logger.intermittentLog(count)) {
@@ -38,7 +39,8 @@ public class EntityProcessor extends PluginHelper {
             }
         }
 
-        // TODO maybe manually include wither skeleton and charged creeper? Need NBT support for it
+        // Wither skeletons are a special case. Manually export them.
+        mobFactory.getWitherSkeleton();
 
         exporterState.flushEntityManager();
         logger.info("Finished processing entities!");

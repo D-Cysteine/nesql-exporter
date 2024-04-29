@@ -4,7 +4,6 @@ import com.github.dcysteine.nesql.exporter.plugin.EntityFactory;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.ItemFactory;
 import com.github.dcysteine.nesql.exporter.util.IdPrefixUtil;
-import com.github.dcysteine.nesql.exporter.util.IdUtil;
 import com.github.dcysteine.nesql.sql.base.item.Item;
 import com.github.dcysteine.nesql.sql.base.item.ItemStack;
 import com.github.dcysteine.nesql.sql.mobinfo.MobDrop;
@@ -39,15 +38,13 @@ public class MobDropFactory extends EntityFactory<MobDrop, String> {
         this.itemFactory = new ItemFactory(exporter);
     }
 
-    public MobDrop get(
-            String mobName, MobInfo mobInfo, int dropIndex,
-            com.kuba6000.mobsinfo.api.MobDrop drop) {
+    public MobDrop get(MobInfo mobInfo, int dropIndex, com.kuba6000.mobsinfo.api.MobDrop drop) {
         MobDropType dropType = convertDropType(drop.type);
         net.minecraft.item.ItemStack itemStack = drop.stack;
         Item item = itemFactory.get(itemStack);
         String id =
                 IdPrefixUtil.MOB_DROP.applyPrefix(
-                        IdUtil.mobId(mobName), Integer.toString(dropIndex), dropType.getName(),
+                        mobInfo.getId(), Integer.toString(dropIndex), dropType.getName(),
                         item.getId());
 
         MobDrop mobDrop = new MobDrop(
