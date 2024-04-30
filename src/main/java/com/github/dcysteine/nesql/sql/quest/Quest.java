@@ -48,7 +48,7 @@ public class Quest implements Identifiable<String> {
 
     /** Quest lines that this quest belongs to. */
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "quests")
+    @ManyToMany(mappedBy = "quests")
     private Set<QuestLine> questLines;
 
     @Column(nullable = false)
