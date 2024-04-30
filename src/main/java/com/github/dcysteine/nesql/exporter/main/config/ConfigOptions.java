@@ -12,10 +12,12 @@ import java.util.function.Supplier;
 public final class ConfigOptions {
     private static final List<Option<?>> allOptions = new ArrayList<>();
 
-    public static final Option<String> REPOSITORY_NAME =
-            new StringOption(
-                    Category.OPTIONS, "repository_name", "nesql-repository",
-                    "The default name of the exported repository.")
+    public static final Option<Boolean> ENABLE_CONFIG_FILE =
+            new BooleanOption(
+                    Category.OPTIONS, "enable_config_file", false,
+                    "Whether to generate a config file."
+                            + "\nIf disabled, config changes will be forgotten when exiting!"
+                            + "\nDISABLING THIS OPTION WILL DELETE YOUR CONFIG FILE!")
                     .register();
 
     public static final Option<List<String>> ENABLED_PLUGINS =
@@ -25,19 +27,46 @@ public final class ConfigOptions {
                             + " You should not normally need to modify this.")
                     .register();
 
+    public static final Option<String> REPOSITORY_NAME =
+            new StringOption(
+                    Category.OPTIONS, "repository_name", "nesql-repository",
+                    "The default name of the exported repository.")
+                    .register();
+
+    public static final Option<Boolean> USE_POSTGRESQL =
+            new BooleanOption(
+                    Category.OPTIONS, "use_postgresql", false,
+                    "If true, will connect to a local PostgreSQL server instead of using HSQLDB."
+                            + "\nWARNING: The PostgreSQL database will be deleted and overwritten!")
+                    .register();
+
+    public static final Option<Integer> POSTGRESQL_PORT =
+            new IntegerOption(
+                    Category.OPTIONS, "postgresql_port", 5432,
+                    "The port to use when trying to connect to PostgreSQL."
+                            + "\nHas no effect if use_postgresql is not true.")
+                    .register();
+
+    public static final Option<String> DATABASE_USER =
+            new StringOption(
+                    Category.OPTIONS, "database_user", "sa",
+                    "The username to use when creating or accessing the SQL database.")
+                    .register();
+
+    public static final Option<String> DATABASE_PASSWORD =
+            new StringOption(
+                    Category.OPTIONS, "database_password", "",
+                    "The password to use when creating or accessing the SQL database.")
+                    .register();
+
     public static final Option<Boolean> AUTO_EXPORT_ON_CONNECT =
             new BooleanOption(
                     Category.OPTIONS, "auto_export_on_connect", false,
                     "Whether to automatically export upon connecting to a world."
-                            + "\nThe default repository name will be used.")
-                    .register();
-
-    public static final Option<Boolean> ENABLE_CONFIG_FILE =
-            new BooleanOption(
-                    Category.OPTIONS, "enable_config_file", false,
-                    "Whether to generate a config file."
-                            + "\nConfig changes will be forgotten if this option is not enabled!"
-                            + "\nDISABLING THIS OPTION WILL DELETE YOUR CONFIG FILE!")
+                            + "\nThe default repository name will be used."
+                            + "\n/nesql won't work on servers, so use this option instead."
+                            + "\nWARNING: Export will not wait for the NEI item list to load!"
+                            + "\nThis can be worked around by joining a single-player world first.")
                     .register();
 
     public static final Option<Integer> ICON_DIMENSION =

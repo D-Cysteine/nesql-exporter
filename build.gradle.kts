@@ -8,18 +8,11 @@ plugins {
     id("com.gtnewhorizons.retrofuturagradle") version "1.3.35"
 }
 
-val projectJavaVersion = JavaLanguageVersion.of(8)
-
 idea {
     module {
         isDownloadJavadoc = true
         isDownloadSources = true
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 protobuf {
@@ -110,6 +103,9 @@ dependencies {
 
     val hsqldbVersion: String by project
     shadowRuntime("org.hsqldb:hsqldb:$hsqldbVersion:jdk8")
+
+    val postgresqlVersion: String by project
+    shadowRuntime("org.postgresql:postgresql:$postgresqlVersion")
 
     val neiVersion: String by project
     implementation("com.github.GTNewHorizons:NotEnoughItems:$neiVersion:dev")

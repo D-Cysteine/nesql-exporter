@@ -10,8 +10,6 @@
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbc.JDBCDriver"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.archive.autodetection" value="class"/>
@@ -20,7 +18,7 @@
                       value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"/>
             <!-- Needed to handle multiple fields of the same embedded type. -->
             <property name="hibernate.implicit_naming_strategy" value="component-path"/>
-            <!-- Set this to true to log SQL. -->
+            <!-- Set this to true to log SQL. WARNING: Will log enormous amounts (GB?) of text! -->
             <property name="hibernate.show_sql" value="false"/>
             <!-- This should enable SQL statistics, but doesn't seem to work.
                  Maybe it needs DEBUG-level logging output enabled? -->

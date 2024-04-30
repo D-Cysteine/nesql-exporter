@@ -9,7 +9,6 @@ import com.github.dcysteine.nesql.exporter.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.render.Renderer;
 import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.Plugin;
-import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -21,6 +20,7 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /** Exports recipes and other data to a file. */
@@ -117,16 +117,32 @@ public final class Exporter {
             return;
         }
 
-        ImmutableMap<String, String> properties =
-                ImmutableMap.of(
-                        "hibernate.connection.url",
-                        "jdbc:hsqldb:file:" + databaseFile.getAbsolutePath());
-        // Append this to the path if we need cached tables.
-        // Note: this seems to 3x or 4x the time needed to export. It should drastically decrease
-        // server start-up time, at the cost of slightly increasing query time.
-        //+ ";hsqldb.default_table_type=CACHED"
-        // Append this if we need to use lobs (this will set min lob size to 1KB).
-        //+ ";hsqldb.lob_compressed=true;hsqldb.lob_file_scale=1"
+        Map<String, String> properties = new HashMap<>();
+        properties.put("hibernate.connection.username", ConfigOptions.DATABASE_USER.get());
+        properties.put("hibernate.connection.password", ConfigOptions.DATABASE_PASSWORD.get());
+
+        if (ConfigOptions.USE_POSTGRESQL.get()) {
+            properties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
+            properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect");
+            properties.put(
+                    "hibernate.connection.url",
+                    String.format(
+                            "jdbc:postgresql://localhost:%d/%s",
+                            ConfigOptions.POSTGRESQL_PORT.get(), repositoryName));
+        } else {
+            // Append this to the path if we need cached tables.
+            // Note: this seems to 3x or 4x the time needed to export.
+            // This should drastically decrease NESQL server start-up time, at the cost of slightly
+            // increasing query time.
+            //+ ";hsqldb.default_table_type=CACHED"
+            //
+            // Append this if we need to use lobs (this will set min lob size to 1KB).
+            //+ ";hsqldb.lob_compressed=true;hsqldb.lob_file_scale=1"
+            properties.put(
+                    "hibernate.connection.url",
+                    "jdbc:hsqldb:file:" + databaseFile.getAbsolutePath());
+        }
+
         EntityManagerFactory entityManagerFactory =
                 new HibernatePersistenceProvider()
                         .createEntityManagerFactory("NESQL", properties);
@@ -170,10 +186,13 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Committing database...");
         transaction.commit();
 
-        Logger.chatMessage(EnumChatFormatting.AQUA + "Compacting database...");
-        entityManager.getTransaction().begin();
-        entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
-        // No need to commit the transaction; SHUTDOWN closes everything already.
+        // SHUTDOWN is an HSQLDB command, so don't run it on PostgreSQL.
+        if (!ConfigOptions.USE_POSTGRESQL.get()) {
+            Logger.chatMessage(EnumChatFormatting.AQUA + "Compacting database...");
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SHUTDOWN COMPACT").executeUpdate();
+            // No need to commit the transaction; SHUTDOWN closes everything already.
+        }
 
         entityManager.close();
         entityManagerFactory.close();
