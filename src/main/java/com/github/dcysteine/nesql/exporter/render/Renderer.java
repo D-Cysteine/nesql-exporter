@@ -156,7 +156,7 @@ public enum Renderer {
 
         setupRenderState();
         try {
-            for (int i = 0; i < ConfigOptions.RENDER_ICONS_PER_TICK.get(); i++) {
+            for (int i = 0; i < ConfigOptions.RENDER_IMAGES_PER_TICK.get(); i++) {
                 Optional<RenderJob> jobOptional = RenderDispatcher.INSTANCE.getJob();
                 if (!jobOptional.isPresent()) {
                     break;

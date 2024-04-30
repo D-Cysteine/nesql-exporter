@@ -53,24 +53,24 @@ public final class ConfigOptions {
                     "Whether to render item and fluid icons when exporting.")
                     .register();
 
-    public static final Option<Integer> RENDER_ICONS_PER_TICK =
-            new IntegerOption(
-                    Category.OPTIONS, "render_icons_per_tick", 256,
-                    "The number of icons to render per tick. Lower this if your computer"
-                            + " can't handle the default.")
-                    .register();
-
     public static final Option<Integer> MOB_IMAGE_DIMENSION =
             new IntegerOption(
                     Category.OPTIONS, "mob_image_dimension", 256,
                     "The size of rendered mob images, in pixels."
-                            + "\nHas no effect if render_entities is false.")
+                            + "\nHas no effect if render_mobs is false.")
                     .register();
 
     public static final Option<Boolean> RENDER_MOBS =
             new BooleanOption(
                     Category.OPTIONS, "render_mobs", true,
                     "Whether to render mob images when exporting.")
+                    .register();
+
+    public static final Option<Integer> RENDER_IMAGES_PER_TICK =
+            new IntegerOption(
+                    Category.OPTIONS, "render_images_per_tick", 256,
+                    "The number of images to render per tick. Lower this if your computer"
+                            + " can't handle the default.")
                     .register();
 
     public static final Option<Integer> LOGGING_FREQUENCY =

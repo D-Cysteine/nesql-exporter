@@ -66,6 +66,13 @@ public final class Exporter {
             } catch (InterruptedException wakeUp) {}
         }
 
+        if (ConfigOptions.ENABLED_PLUGINS.get().contains(Plugin.NEI.getName())
+                && ItemList.items.isEmpty()) {
+            Logger.chatMessage(
+                    EnumChatFormatting.RED + "NEI item list is empty! Please load it, and retry.");
+            return;
+        }
+
         try {
             export();
         } catch (Exception e) {
@@ -149,23 +156,6 @@ public final class Exporter {
         Logger.chatMessage(EnumChatFormatting.AQUA + "Active plugins:");
         activePlugins.keySet().forEach(
                 plugin -> Logger.chatMessage("  " + EnumChatFormatting.YELLOW + plugin.getName()));
-
-        if (activePlugins.containsKey(Plugin.NEI) && ItemList.items.isEmpty()) {
-            Logger.chatMessage(
-                    EnumChatFormatting.RED
-                            + "NEI plugin is enabled and NEI item list is empty!\nAborting...");
-
-            try {
-                FileUtils.deleteDirectory(repositoryDirectory);
-            } catch (IOException e) {
-                Logger.chatMessage(
-                        EnumChatFormatting.RED + String.format(
-                                "Could not clean up repository \"%s\"!", repositoryName));
-                throw new RuntimeException(e);
-            }
-            return;
-        }
-
         Logger.chatMessage(EnumChatFormatting.AQUA + "Exporting data...");
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
