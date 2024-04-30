@@ -142,7 +142,7 @@ tasks.withType<Jar> {
         expand(
             mapOf(
                 "version" to project.version,
-                "mcversion" to project.minecraft.version
+                "mcversion" to minecraftVersion,
             )
         )
     }
