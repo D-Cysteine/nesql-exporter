@@ -9,6 +9,7 @@ import com.github.dcysteine.nesql.exporter.render.RenderDispatcher;
 import com.github.dcysteine.nesql.exporter.render.Renderer;
 import com.github.dcysteine.nesql.sql.Metadata;
 import com.github.dcysteine.nesql.sql.Plugin;
+import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -20,6 +21,9 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,14 +31,14 @@ import java.util.Map;
 public final class Exporter {
     private static final String REPOSITORY_PATH_FORMAT_STRING = "nesql" + File.separator + "%s";
     private static final String DATABASE_FILE_PATH = "nesql-db";
-    private static final String IMAGE_DIRECTORY_PATH = "image";
+    private static final String IMAGE_ZIP_PATH = "image.zip";
 
     /** If true, existing repositories will be deleted and overwritten. */
     private final boolean overwrite;
     private final String repositoryName;
     private final File repositoryDirectory;
     private final File databaseFile;
-    private final File imageDirectory;
+    private final File imageZipFile;
 
     public Exporter(boolean overwrite) {
         this(overwrite, ConfigOptions.REPOSITORY_NAME.get());
@@ -48,8 +52,7 @@ public final class Exporter {
                         (File) FMLInjectionData.data()[6],
                         String.format(REPOSITORY_PATH_FORMAT_STRING, repositoryName));
         this.databaseFile = new File(repositoryDirectory, DATABASE_FILE_PATH);
-        this.imageDirectory = new File(repositoryDirectory, IMAGE_DIRECTORY_PATH);
-
+        this.imageZipFile = new File(repositoryDirectory, IMAGE_ZIP_PATH);
     }
 
     /**
@@ -150,19 +153,26 @@ public final class Exporter {
 
         boolean renderingImages =
                 ConfigOptions.RENDER_ICONS.get() || ConfigOptions.RENDER_MOBS.get();
+        FileSystem imageZipFileSystem = null;
         if (renderingImages) {
             Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing renderer.");
 
-            if (!imageDirectory.exists() && !imageDirectory.mkdirs()) {
-                Logger.chatMessage(EnumChatFormatting.RED + "Could not create image directory!");
-                Logger.chatMessage(EnumChatFormatting.RED + "Skipping rendering!");
-                RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.ERROR);
-                renderingImages = false;
-            } else {
-                Renderer.INSTANCE.preInitialize(imageDirectory);
-                RenderDispatcher.INSTANCE.setRendererState(
-                        RenderDispatcher.RendererState.INITIALIZING);
+            URI uri = URI.create("jar:" + imageZipFile.toURI());
+            Map<String, String> env = ImmutableMap.of("create", "true");
+            try {
+                imageZipFileSystem = FileSystems.newFileSystem(uri, env);
+            } catch (IOException e) {
+                Logger.chatMessage(
+                        EnumChatFormatting.RED
+                                + String.format(
+                                        "Failed to create image zip file:\n%s",
+                                        imageZipFile.getPath()));
+                e.printStackTrace();
+                return;
             }
+
+            Renderer.INSTANCE.preInitialize(imageZipFileSystem);
+            RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.INITIALIZING);
         }
 
         Logger.chatMessage(EnumChatFormatting.AQUA + "Initializing plugins.");
@@ -206,6 +216,17 @@ public final class Exporter {
             } catch (InterruptedException wakeUp) {}
             RenderDispatcher.INSTANCE.setRendererState(RenderDispatcher.RendererState.DESTROYING);
             Logger.chatMessage(EnumChatFormatting.AQUA + "Rendering complete!");
+
+            try {
+                imageZipFileSystem.close();
+            } catch (IOException e) {
+                Logger.chatMessage(
+                        EnumChatFormatting.RED
+                                + String.format(
+                                        "Caught exception trying to close image zip file:\n%s",
+                                        imageZipFile.getPath()));
+                e.printStackTrace();
+            }
         }
         Logger.chatMessage(EnumChatFormatting.AQUA + "Export complete!");
     }

@@ -22,9 +22,12 @@ import org.lwjgl.opengl.GL30;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -84,7 +87,7 @@ public enum Renderer {
         }
     }
 
-    private File imageDirectory;
+    private FileSystem imageZipFileSystem;
 
     // Used for intermittent logging.
     private int loggingCounter;
@@ -93,11 +96,11 @@ public enum Renderer {
      * This method is meant to be called from the client thread, prior to setting the dispatcher
      * state to {@code INITIALIZING}. It performs initialization of non-render-related variables.
      */
-    public void preInitialize(File imageDirectory) {
+    public void preInitialize(FileSystem imageZipFileSystem) {
         RenderTarget.ICON.imageDim = ConfigOptions.ICON_DIMENSION.get();
         RenderTarget.MOB.imageDim = ConfigOptions.MOB_IMAGE_DIMENSION.get();
 
-        this.imageDirectory = imageDirectory;
+        this.imageZipFileSystem = imageZipFileSystem;
         this.loggingCounter = 0;
     }
 
@@ -168,33 +171,18 @@ public enum Renderer {
                 render(job);
                 BufferedImage image = readImage(target);
 
-                File outputFile = new File(imageDirectory, job.getImageFilePath());
-                // Not sure why, but this check fails spuriously every now and then.
-                // It complains that the file exists, but I checked and it didn't actually exist.
-                // Let's just... ignore it for now XD
-                // The failures might be due to Windows getting confused by '~' in filenames XS
-                /*
-                if (outputFile.exists()) {
-                    // If we cannot avoid queueing up duplicate render jobs, we can replace this
-                    // throw with a continue, and move this check to before we call readImage(...)
-                    throw new RuntimeException(
-                            "Render output file already exists: " + outputFile.getPath());
-                }
-                 */
-
-                File parentDir = outputFile.getParentFile();
-                if (parentDir.exists() && !parentDir.isDirectory()) {
-                    throw new RuntimeException(
-                            "Render output file directory already exists as a file: "
-                                    + parentDir.getPath());
-                } else if (!parentDir.exists() && !parentDir.mkdirs()) {
-                    throw new RuntimeException(
-                            "Could not create render output file directory: "
-                                    + parentDir.getPath());
+                Path outputPath = imageZipFileSystem.getPath(job.getImageFilePath());
+                Path outputDir = outputPath.getParent();
+                if (!Files.exists(outputDir)) {
+                    try {
+                        Files.createDirectories(outputPath.getParent());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
-                try {
-                    ImageIO.write(image, IMAGE_FORMAT, outputFile);
+                try (OutputStream os = Files.newOutputStream(outputPath)) {
+                    ImageIO.write(image, IMAGE_FORMAT, os);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

@@ -79,9 +79,8 @@ public class GregTechRecipeProcessor extends PluginHelper {
                     gregTechRecipeFactory.get(
                             recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
                 } catch (Exception e) {
-                    // This try-catch is sadly necessary. There's a few weird exceptions that get
-                    // thrown. There's even some that lack a stack trace!
-                    logger.error("Caught exception processing GregTech recipe!", e);
+                    logger.error("Caught exception processing GregTech recipe!");
+                    e.printStackTrace();
                 }
 
                 if (Logger.intermittentLog(count)) {
