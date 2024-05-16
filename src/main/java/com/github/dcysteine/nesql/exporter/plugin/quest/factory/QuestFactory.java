@@ -41,10 +41,10 @@ public class QuestFactory extends EntityFactory<Quest, String> {
 
         String name =
                 StringUtil.stripFormatting(
-                        QuestTranslation.translate(quest.getProperty(NativeProps.NAME)));
+                        QuestTranslation.translateQuestName(questId,quest));
         String description =
                 StringUtil.stripFormatting(
-                        QuestTranslation.translate(quest.getProperty(NativeProps.DESC)));
+                        QuestTranslation.translateQuestDescription(questId,quest));
 
         String visibility = quest.getProperty(NativeProps.VISIBILITY).name();
         int repeatTime = quest.getProperty(NativeProps.REPEAT_TIME);
