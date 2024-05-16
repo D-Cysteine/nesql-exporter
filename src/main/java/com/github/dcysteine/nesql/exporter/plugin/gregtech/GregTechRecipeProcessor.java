@@ -4,9 +4,9 @@ import com.github.dcysteine.nesql.exporter.main.Logger;
 import com.github.dcysteine.nesql.exporter.plugin.PluginExporter;
 import com.github.dcysteine.nesql.exporter.plugin.PluginHelper;
 import com.github.dcysteine.nesql.exporter.plugin.base.factory.RecipeBuilder;
+import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeMap;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeTypeHandler;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechUtil;
-import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.RecipeMap;
 import com.github.dcysteine.nesql.exporter.plugin.gregtech.util.Voltage;
 import com.github.dcysteine.nesql.sql.base.recipe.Recipe;
 import com.github.dcysteine.nesql.sql.base.recipe.RecipeType;
@@ -28,16 +28,16 @@ public class GregTechRecipeProcessor extends PluginHelper {
     }
 
     public void process() {
-        int recipeMapTotal = RecipeMap.values().length;
+        int recipeMapTotal = GregTechRecipeMap.allNEIRecipeMaps.values().size();
         logger.info("Processing {} GregTech recipe maps...", recipeMapTotal);
 
         GregTechRecipeFactory gregTechRecipeFactory = new GregTechRecipeFactory(exporter);
         int recipeMapCount = 0;
-        for (RecipeMap recipeMap : RecipeMap.values()) {
-            logger.info("Processing recipe map: " + recipeMap.getName());
+        for (GregTechRecipeMap GregTechRecipeMap : GregTechRecipeMap.allNEIRecipeMaps.values()) {
+            logger.info("Processing recipe map: " + GregTechRecipeMap.getName());
             recipeMapCount++;
 
-            Collection<GT_Recipe> recipes = recipeMap.getRecipeMap().getAllRecipes();
+            Collection<GT_Recipe> recipes = GregTechRecipeMap.getRecipeMap().getAllRecipes();
             int total = recipes.size();
             logger.info("Processing {} GregTech recipes...", total);
 
@@ -46,9 +46,9 @@ public class GregTechRecipeProcessor extends PluginHelper {
                 count++;
 
                 try {
-                    int voltage = recipe.mEUt / recipeMap.getAmperage();
+                    int voltage = recipe.mEUt / GregTechRecipeMap.getAmperage();
                     Voltage voltageTier = Voltage.convertVoltage(voltage);
-                    RecipeType recipeType = recipeTypeHandler.getRecipeType(recipeMap, voltageTier);
+                    RecipeType recipeType = recipeTypeHandler.getRecipeType(GregTechRecipeMap, voltageTier);
                     RecipeBuilder builder = new RecipeBuilder(exporter, recipeType);
                     // TODO if we want to avoid skipping slots, esp. output slots, add null checks.
                     for (ItemStack input : recipe.mInputs) {
@@ -77,7 +77,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
 
                     Recipe recipeEntity = builder.build();
                     gregTechRecipeFactory.get(
-                            recipeEntity, recipeMap, recipe, voltageTier, voltage, specialItems);
+                            recipeEntity, GregTechRecipeMap, recipe, voltageTier, voltage, specialItems);
                 } catch (Exception e) {
                     logger.error("Caught exception processing GregTech recipe!");
                     e.printStackTrace();
@@ -86,7 +86,7 @@ public class GregTechRecipeProcessor extends PluginHelper {
                 if (Logger.intermittentLog(count)) {
                     logger.info(
                             "Processed GregTech {} recipe {} of {}",
-                            recipeMap.getName(), count, total);
+                            GregTechRecipeMap.getName(), count, total);
                 }
             }
 

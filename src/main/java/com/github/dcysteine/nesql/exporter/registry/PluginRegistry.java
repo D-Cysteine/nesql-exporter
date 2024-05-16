@@ -17,6 +17,8 @@ import com.google.common.collect.ImmutableList;
 import java.util.EnumMap;
 import java.util.Map;
 
+import static com.github.dcysteine.nesql.exporter.plugin.gregtech.util.GregTechRecipeMap.makeGTRecipe;
+
 
 /** Registry of plugins. Register new plugins here! */
 public class PluginRegistry {
@@ -30,7 +32,7 @@ public class PluginRegistry {
         builder.add(RegistryEntry.create(Plugin.MINECRAFT, MinecraftPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.NEI, NeiPluginExporter::new));
         builder.add(RegistryEntry.create(Plugin.FORGE, ForgePluginExporter::new));
-
+        makeGTRecipe();
         builder.add(
                 RegistryEntry.create(
                         Plugin.MOBS_INFO, MobsInfoPluginExporter::new, ModDependency.MOBS_INFO));
