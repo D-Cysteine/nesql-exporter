@@ -87,7 +87,7 @@ public class GregTechRecipeFactory extends EntityFactory<GregTechRecipe, String>
             }
 
             case "gt.recipe.blastfurnace":
-            case "gt.recipe.plasnaforge": {
+            case "gt.recipe.plasmaforge": {
                 // Special handling for EBF and DTPF recipes.
                 int heat = gregTechRecipe.mSpecialValue;
 
